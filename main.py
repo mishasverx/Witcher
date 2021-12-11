@@ -22,13 +22,16 @@ if __name__ == "__main__":
     def drawPlayer():
         global anim_count
         screen.blit(bg, (0, 0))
-        if anim_count + 1 >= 10:
+        if anim_count >= 9:
             anim_count = 0
         if right:
-            screen.blit(player.walk[anim_count // 3], (x, y))
+            screen.blit(player.walk_right[anim_count // 3], (x, y))
             anim_count += 1
-        if left:
-            pass
+        elif left:
+            screen.blit(player.walk_left[anim_count // 3], (x, y))
+            anim_count += 1
+        else:
+            screen.blit(player.stay, (x, y))
         pg.display.update()
 
     while running:
@@ -36,12 +39,12 @@ if __name__ == "__main__":
             if event.type == pg.QUIT:
                 running = False
             keys = pg.key.get_pressed()
-            if keys[pg.K_d] and x > 5:
+            if keys[pg.K_d]:
                 x += player.SPEED / FPS
                 right = True
                 left = False
-            elif keys[pg.K_a] and player.x < 500:
-                player.x -= player.SPEED / FPS
+            elif keys[pg.K_a]:
+                x -= player.SPEED / FPS
                 left = True
                 right = False
             else:
