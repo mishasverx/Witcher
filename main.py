@@ -25,10 +25,12 @@ if __name__ == "__main__":
         if keys[pg.K_d]:
             x += player.SPEED
             right = True
+            player.last_dir = True
             left = False
         elif keys[pg.K_a]:
             x -= player.SPEED
             left = True
+            player.last_dir = False
             right = False
         else:
             right = False
@@ -43,7 +45,11 @@ if __name__ == "__main__":
             screen.blit(player.walk_left[anim_count // 3], (x, y))
             anim_count += 1
         else:
-            screen.blit(player.stay, (x, y))
+            if player.last_dir:
+                screen.blit(player.stay_right, (x, y))
+            else:
+                screen.blit(player.stay_left, (x, y))
+
         pg.display.update()
 
 
