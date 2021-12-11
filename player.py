@@ -6,7 +6,7 @@ walk_right = [pg.image.load("source/player/right/1.png"), pg.image.load("source/
 walk_left = [pg.image.load("source/player/left/1.png"), pg.image.load("source/player/left/2.png"),
              pg.image.load("source/player/left/3.png")]
 stay = pg.image.load("source/player/stand/3.png")
-SPEED = 500
+SPEED = 700
 width = 300
 height = 300
 x, y = 0, 0
