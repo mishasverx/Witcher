@@ -40,11 +40,11 @@ if __name__ == "__main__":
                 running = False
             keys = pg.key.get_pressed()
             if keys[pg.K_d]:
-                x += player.SPEED / FPS
+                x += player.SPEED
                 right = True
                 left = False
             elif keys[pg.K_a]:
-                x -= player.SPEED / FPS
+                x -= player.SPEED
                 left = True
                 right = False
             else:
