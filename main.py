@@ -13,15 +13,27 @@ if __name__ == "__main__":
     running = True
     FPS = 60
     clock = pg.time.Clock()
-    left = False
-    right = False
     anim_count = 0
     bg = pg.image.load("source/background.png")
 
 
     def drawPlayer():
         global anim_count
+        global x, y
         screen.blit(bg, (0, 0))
+        keys = pg.key.get_pressed()
+        if keys[pg.K_d]:
+            x += player.SPEED
+            right = True
+            left = False
+        elif keys[pg.K_a]:
+            x -= player.SPEED
+            left = True
+            right = False
+        else:
+            right = False
+            left = False
+            anim_count = 0
         if anim_count >= 9:
             anim_count = 0
         if right:
@@ -34,23 +46,11 @@ if __name__ == "__main__":
             screen.blit(player.stay, (x, y))
         pg.display.update()
 
+
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
-            keys = pg.key.get_pressed()
-            if keys[pg.K_d]:
-                x += player.SPEED
-                right = True
-                left = False
-            elif keys[pg.K_a]:
-                x -= player.SPEED
-                left = True
-                right = False
-            else:
-                right = False
-                left = False
-                anim_count = 0
         drawPlayer()
         clock.tick(FPS)
         pg.display.flip()
