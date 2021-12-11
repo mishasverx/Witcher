@@ -8,6 +8,7 @@ if __name__ == "__main__":
 
     running = True
     FPS = 60
+    x, y = width // 2, height // 2
     clock = pg.time.Clock()
 
     while running:
