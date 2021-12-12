@@ -41,31 +41,29 @@ if __name__ == "__main__":
             left = False
             anim_count = 0
 
-        if anim_count >= 24:
+        if anim_count >= 23:
             anim_count = 0
 
         if right:
-            screen.blit(player.walk_right[anim_count // 6 - 1], (x, y))
+            screen.blit(player.walk_right[anim_count // 6], (x, y))
             anim_count += 1
-            picx, picy = player.walk_right[anim_count // 6 - 1].get_size()
+            picx, picy = player.walk_right[anim_count // 6].get_size()
             pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         elif left:
-
-            screen.blit(player.walk_left[anim_count // 6 - 1], (x, y))
+            screen.blit(player.walk_left[anim_count // 6], (x, y))
             anim_count += 1
-            picx, picy = player.walk_left[anim_count // 6 - 1].get_size()
+            picx, picy = player.walk_left[anim_count // 6].get_size()
             pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         else:
             if player.last_dir:
                 screen.blit(player.stay_right, (x, y))
-                picx, picy = player.walk_right[anim_count // 6 - 1].get_size()
+                picx, picy = player.walk_right[anim_count // 6].get_size()
                 pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
             else:
                 screen.blit(player.stay_left, (x, y))
-                picx, picy = player.walk_left[anim_count // 6 - 1].get_size()
+                picx, picy = player.walk_left[anim_count // 6].get_size()
                 pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         mouse = pg.mouse.get_pressed()
-
 
     while running:
         for event in pg.event.get():
