@@ -69,6 +69,8 @@ if __name__ == "__main__":
                 pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
             if anim_count2 > 10:
                 anim_count2 = 0
+        mouse_keys = pg.mouse.get_pressed()
+
 
         pg.display.update()
 
