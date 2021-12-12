@@ -11,7 +11,7 @@ if __name__ == "__main__":
     screen = pg.display.set_mode(size)
 
     running = True
-    right, left, left_hit, right_hit = False
+    right, left, left_hit, right_hit = False, False, False, False
     FPS = 60
     clock = pg.time.Clock()
     anim_count = 0
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     def drawPlayer():
         global anim_count, anim_count2
         global x, y
-        global right, left
+        global right, left, right_hit, left_hit
         screen.blit(bg, (0, 0))
         keys = pg.key.get_pressed()
         if keys[pg.K_d] and x < 1350 and y > 50:
@@ -61,12 +61,20 @@ if __name__ == "__main__":
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (right or player.last_dir):
                 right_hit = True
+                left_hit = False
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (left or not(player.last_dir)):
                 left_hit = True
-            if anim_count2 > 10:
-                anim_count2 = 0
-            if right_hit:
-
+                right_hit = False
+            # if anim_count2 > 10:
+                # anim_count2 = 0
+            # if right_hit:
+                # screen.blit(player.right_hit[anim_count2 // 5], (x, y))
+                # anim_count2 += 1
+                # pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+            # elif left_hit:
+                # screen.blit(player.left_hit[anim_count2 // 5], (x, y))
+                # anim_count2 += 1
+                # pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
 
         pg.display.update()
 
