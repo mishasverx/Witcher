@@ -6,7 +6,7 @@ if __name__ == "__main__":
     pg.display.set_caption("WITCHER")
     width = 1600
     height = 900
-    x, y = 150, 620
+    x, y = 150, 600
     size = width, height
     screen = pg.display.set_mode(size)
 
@@ -45,21 +45,25 @@ if __name__ == "__main__":
             anim_count = 0
 
         if right:
-            screen.blit(player.walk_right[anim_count // 6], (x, y))
+            screen.blit(player.walk_right[anim_count // 6 - 1], (x, y))
             anim_count += 1
-            pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+            picx, picy = player.walk_right[anim_count // 6 - 1].get_size()
+            pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         elif left:
 
-            screen.blit(player.walk_left[anim_count // 6], (x, y))
+            screen.blit(player.walk_left[anim_count // 6 - 1], (x, y))
             anim_count += 1
-            pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+            picx, picy = player.walk_left[anim_count // 6 - 1].get_size()
+            pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         else:
             if player.last_dir:
                 screen.blit(player.stay_right, (x, y))
-                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+                picx, picy = player.walk_right[anim_count // 6 - 1].get_size()
+                pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
             else:
                 screen.blit(player.stay_left, (x, y))
-                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+                picx, picy = player.walk_left[anim_count // 6 - 1].get_size()
+                pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
         mouse = pg.mouse.get_pressed()
 
 

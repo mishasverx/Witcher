@@ -14,6 +14,6 @@ left_hit = [pg.image.load("source/player/left_hit/1.png"), pg.image.load("source
             pg.image.load("source/player/left_hit/3.png"), pg.image.load("source/player/left_hit/4.png"),
             pg.image.load("source/player/left_hit/5.png")]
 last_dir = True
-SPEED = 10
+SPEED = 15
 width = 300
 height = 300
