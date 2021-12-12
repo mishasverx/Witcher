@@ -60,21 +60,15 @@ if __name__ == "__main__":
                 pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         for event in pg.event.get():
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (right or player.last_dir):
-                right_hit = True
-                left_hit = False
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (left or not(player.last_dir)):
-                left_hit = True
-                right_hit = False
-            # if anim_count2 > 10:
-                # anim_count2 = 0
-            # if right_hit:
-                # screen.blit(player.right_hit[anim_count2 // 5], (x, y))
-                # anim_count2 += 1
-                # pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
-            # elif left_hit:
-                # screen.blit(player.left_hit[anim_count2 // 5], (x, y))
-                # anim_count2 += 1
-                # pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+                screen.blit(player.right_hit[anim_count2 // 5], (x, y))
+                anim_count2 += 1
+                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (left or not player.last_dir):
+                screen.blit(player.left_hit[anim_count2 // 5], (x, y))
+                anim_count2 += 1
+                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
+            if anim_count2 > 10:
+                anim_count2 = 0
 
         pg.display.update()
 
