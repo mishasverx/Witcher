@@ -11,4 +11,3 @@ last_dir = True
 SPEED = 10
 width = 300
 height = 300
-x, y = 0, 0

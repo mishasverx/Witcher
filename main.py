@@ -22,12 +22,12 @@ if __name__ == "__main__":
         global x, y
         screen.blit(bg, (0, 0))
         keys = pg.key.get_pressed()
-        if keys[pg.K_d]:
+        if keys[pg.K_d] and x < 1350 and y > 50:
             x += player.SPEED
             right = True
             player.last_dir = True
             left = False
-        elif keys[pg.K_a]:
+        elif keys[pg.K_a] and x > 0 and y > 50:
             x -= player.SPEED
             left = True
             player.last_dir = False
