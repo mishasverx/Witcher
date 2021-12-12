@@ -14,6 +14,7 @@ if __name__ == "__main__":
     right, left, left_hit, right_hit = False, False, False, False
     FPS = 60
     clock = pg.time.Clock()
+    clock1 = pg.time.Clock()
     anim_count = 0
     anim_count2 = 0
     bg = pg.image.load("source/background.png")
@@ -40,15 +41,15 @@ if __name__ == "__main__":
             left = False
             anim_count = 0
 
-        if anim_count >= 12:
+        if anim_count >= 24:
             anim_count = 0
 
         if right:
-            screen.blit(player.walk_right[anim_count // 4], (x, y))
+            screen.blit(player.walk_right[anim_count // 6], (x, y))
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         elif left:
-            screen.blit(player.walk_left[anim_count // 4], (x, y))
+            screen.blit(player.walk_left[anim_count // 6], (x, y))
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         else:
@@ -58,21 +59,7 @@ if __name__ == "__main__":
             else:
                 screen.blit(player.stay_left, (x, y))
                 pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
-        for event in pg.event.get():
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (right or player.last_dir):
-                screen.blit(player.right_hit[anim_count2 // 5], (x, y))
-                anim_count2 += 1
-                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
-            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1 and (left or not player.last_dir):
-                screen.blit(player.left_hit[anim_count2 // 5], (x, y))
-                anim_count2 += 1
-                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
-            if anim_count2 > 10:
-                anim_count2 = 0
-        mouse_keys = pg.mouse.get_pressed()
-
-
-        pg.display.update()
+        mouse = pg.mouse.get_pressed()
 
 
     while running:
