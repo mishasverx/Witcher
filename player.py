@@ -1,10 +1,10 @@
 import pygame as pg
 import main
 
-walk_right = [pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/1.png"),
-              pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/3.png")]
-walk_left = [pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/1.png"),
-             pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/3.png")]
+walk_right = [pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/3.png"),
+              pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/1.png")]
+walk_left = [pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/3.png"),
+             pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/1.png")]
 stay_right = pg.image.load("source/player/stand/right.png")
 stay_left = pg.image.load("source/player/stand/left.png")
 right_hit = [pg.image.load("source/player/right_hit/1.png"), pg.image.load("source/player/right_hit/2.png"),
