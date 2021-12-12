@@ -6,7 +6,7 @@ if __name__ == "__main__":
     pg.display.set_caption("WITCHER")
     width = 1600
     height = 900
-    x, y = 150, 670
+    x, y = 150, 620
     size = width, height
     screen = pg.display.set_mode(size)
 
@@ -49,6 +49,7 @@ if __name__ == "__main__":
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         elif left:
+
             screen.blit(player.walk_left[anim_count // 6], (x, y))
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
