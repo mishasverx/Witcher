@@ -40,15 +40,15 @@ if __name__ == "__main__":
             left = False
             anim_count = 0
 
-        if anim_count >= 9:
+        if anim_count >= 12:
             anim_count = 0
 
         if right:
-            screen.blit(player.walk_right[anim_count // 3], (x, y))
+            screen.blit(player.walk_right[anim_count // 4], (x, y))
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         elif left:
-            screen.blit(player.walk_left[anim_count // 3], (x, y))
+            screen.blit(player.walk_left[anim_count // 4], (x, y))
             anim_count += 1
             pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         else:
