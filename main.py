@@ -41,14 +41,18 @@ if __name__ == "__main__":
         if right:
             screen.blit(player.walk_right[anim_count // 3], (x, y))
             anim_count += 1
+            pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         elif left:
             screen.blit(player.walk_left[anim_count // 3], (x, y))
             anim_count += 1
+            pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
         else:
             if player.last_dir:
                 screen.blit(player.stay_right, (x, y))
+                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
             else:
                 screen.blit(player.stay_left, (x, y))
+                pg.draw.rect(screen, (255, 255, 255), (x, y, 300, 300), 1)
 
         pg.display.update()
 
