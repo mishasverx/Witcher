@@ -26,7 +26,7 @@ if __name__ == "__main__":
         global right, left, right_hit, left_hit
         screen.blit(bg, (0, 0))
         keys = pg.key.get_pressed()
-        if keys[pg.K_d] and x < 1350 and y > 50:
+        if keys[pg.K_d] and x < 1400 and y > 50:
             x += player.SPEED
             right = True
             player.last_dir = True
