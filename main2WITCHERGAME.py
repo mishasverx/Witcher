@@ -20,7 +20,4 @@ def load_image(name, colorkey=None):
     return image
 
 class Map:
-
-class Witcher:
-
-
+ pass
