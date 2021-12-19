@@ -17,14 +17,14 @@ if __name__ == "__main__":
     clock1 = pg.time.Clock()
     anim_count = 0
     anim_count2 = 0
-    bg = pg.image.load("source/background.png")
+    bg = pg.transform.scale2x(pg.image.load("source/background.png"))
 
 
     def drawPlayer():
         global anim_count, anim_count2
         global x, y
         global right, left, right_hit, left_hit
-        screen.blit(bg, (0, 0))
+        screen.blit(bg, (0, -850))
         keys = pg.key.get_pressed()
         if keys[pg.K_d] and x < 1400 and y > 50:
             x += player.SPEED
