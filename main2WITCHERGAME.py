@@ -19,5 +19,30 @@ def load_image(name, colorkey=None):
         image = image.convert_alpha()
     return image
 
+
+pg.init()
+pg.display.set_caption("WITCHER")
+width = 1600
+height = 900
+x, y = 150, 600
+size = width, height
+screen = pg.display.set_mode(size)
+
+running = True
+FPS = 60
+clock = pg.time.Clock()
+bg = pg.transform.scale2x(pg.image.load("source/background.png"))
+screen.blit(bg, (0, -850))
+
+
 class Map:
- pass
+    pass
+
+
+while running:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
+            running = False
+        clock.tick(FPS)
+        pg.display.flip()
+pg.quit()
