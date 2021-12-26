@@ -25,22 +25,29 @@ width = 1600
 height = 900
 size = width, height
 screen = pg.display.set_mode(size)
+all_sprites = pg.sprite.Group()
 tile_group = pg.sprite.Group()
 tile_images = {
-    'floor': load_image('source\\tile\\floour1.jpg')
-    # 'empty': load_image('grass.png')
+    'floor': load_image('source\\tile\\floour1.jpg'),
+    'plat': load_image('source\\tile\\plat.jpg')
 }
 floor_width, floor_height = 80, 50
+plat_width, plat_height = 80, 40
 running = True
 FPS = 60
 clock = pg.time.Clock()
 
 
-class Tile:
+class Tile(pg.sprite.Sprite):
     def __init__(self, type, x, y):
+        super().__init__(tile_group, all_sprites)
         self.image = tile_images[type]
-        self.rect = self.image.get_rect().move(
-            floor_width + x, floor_height + y)
+        if type == "floor":
+            self.rect = self.image.get_rect().move(
+                floor_width * x, floor_height * y)
+        elif type == "plat":
+            self.rect = self.image.get_rect().move(
+                plat_width * x, plat_height * y)
 
 
 def load_level(filename):
@@ -53,11 +60,13 @@ def load_level(filename):
 
 
 def generate_level(level):
-    x, y = 80, 50
+    x, y, count = None, None, 0
     for y in range(len(level)):
         for x in range(len(level[y])):
             if level[y][x] == '@':
                 Tile('floor', x, y)
+            elif level[y][x] == "#":
+                Tile('plat', x, y)
     return x, y
 
 
@@ -80,7 +89,8 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-
+        all_sprites.draw(screen)
+        tile_group.draw(screen)
         clock.tick(FPS)
         pg.display.flip()
 pg.quit()
