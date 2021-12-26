@@ -2,7 +2,7 @@ import pygame as pg
 import pygame.sprite
 import os
 import sys
-from main2WITCHERGAME import *
+
 
 last_dir = True
 SPEED = 15
