@@ -1,5 +1,5 @@
 import pygame as pg
-import player
+from player import Withcer
 import os
 import sys
 
@@ -33,7 +33,7 @@ FPS = 60
 clock = pg.time.Clock()
 bg = pg.transform.scale2x(pg.image.load("source/background.png"))
 screen.blit(bg, (0, -850))
-
+w = Withcer()
 
 class Map:
     pass
@@ -43,6 +43,7 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        w.moving()
         clock.tick(FPS)
         pg.display.flip()
 pg.quit()

@@ -79,3 +79,6 @@ class Withcer(pg.sprite.Sprite):
             self.right = False
             self.left = False
         if self.right:
+            Withcer.animate(self.right, "walk_right")
+        if self.left:
+            Withcer.animate(self.right, "walk_right")
