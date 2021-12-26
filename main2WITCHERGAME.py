@@ -68,6 +68,7 @@ class Witcher(pg.sprite.Sprite):
             self.image = witcher_images["walk_left"][self.count // 6]
             self.count += 1
 
+
 class Tile(pg.sprite.Sprite):
     def __init__(self, type, x, y):
         super().__init__(tile_group, all_sprites)
