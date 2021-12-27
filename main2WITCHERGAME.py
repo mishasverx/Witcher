@@ -7,15 +7,19 @@ pg.display.set_caption("WITCHER")
 width, height = 1600, 900
 size = width, height
 screen = pg.display.set_mode(size)
-all_sprites = pg.sprite.Group()
-witcher_sprites = pg.sprite.Group()
-tile_group = pg.sprite.Group()
-floor_width, floor_height = 80, 50
-plat_width, plat_height = 80, 50
+# ---------------------------------
+all_sprites = pg.sprite.Group()      # группа всех спрайтов
+witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
+tile_group = pg.sprite.Group()       # группа спрайтов объектов
+# ---------------------------------
 running = True
 FPS = 60
-x, y = 100, 100
+x_player, y_player = 100, 100
 clock = pg.time.Clock()
+# -------------------------------
+floor_width, floor_height = 80, 50  # размеры пола
+plat_width, plat_height = 80, 50    # размеры платформ
+# -------------------------------
 
 
 def load_image(name, colorkey=None):
@@ -34,10 +38,14 @@ def load_image(name, colorkey=None):
     return image
 
 
+# 🡫🡫🡫🡫🡫🡫🡫🡫 изображения объектов
 tile_images = {
     'floor': load_image('source\\tile\\floour1.jpg'),
     'plat': load_image('source\\tile\\plat.jpg')
 }
+# 🡩🡩🡩🡩🡩🡩🡩🡩 изображения объектов
+
+# 🡫🡫🡫🡫🡫🡫🡫🡫 изображения ведьмака
 witcher_images = {
     "walk_right": [load_image("source/player/right/2.png"), load_image("source/player/right/3.png"),
                    load_image("source/player/right/2.png"), load_image("source/player/right/1.png")],
@@ -50,37 +58,39 @@ witcher_images = {
                    load_image("source/player/stand_left/3.png"), load_image("source/player/stand_left/4.png"),
                    load_image("source/player/stand_left/5.png")]
 }
+# 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
 
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
         super().__init__(witcher_sprites, all_sprites)
-        self.image = witcher_images[type]
-        self.x, self.y = x, y
-        self.count = 0
-        self.count2 = 0
+        self.image = None
+        # self.x, self.y = x, y
+        self.rect = self.image.get_rect().move(x, y)
+        # ------------------
+        self.count_walk = 0   # cчетчик анимации ходьбы
+        self.count_stand = 0  # cчетчик анимации стойки
+        # ------------------
 
     def walk(self, pos):
-        if self.count >= 24:
-            self.count = 0
-        if self.count2 >= 25:
-            self.count2 = 0
+        if self.count_walk >= 24:
+            self.count_walk = 0
         if pos == "right":
-            self.image = witcher_images["walk_right"][self.count // 6]
-            self.count += 1
-        elif pos == "left" and self.count > 0:
-            self.image = witcher_images["walk_left"][self.count // 6]
-            self.count += 1
+            self.image = witcher_images["walk_right"][self.count_walk // 6]
+            self.count_walk += 1
+        elif pos == "left" and self.count_walk > 0:
+            self.image = witcher_images["walk_left"][self.count_walk // 6]
+            self.count_walk += 1
 
     def stand(self, pos):
-        if self.count2 >= 30:
-            self.count2 = 0
+        if self.count_stand >= 30:
+            self.count_stand = 0
         if pos == "right":
-            self.image = witcher_images["stand_right"][self.count // 5]
-            self.count2 += 1
+            self.image = witcher_images["stand_right"][self.count_stand // 5]
+            self.count_stand += 1
         elif pos == "left":
-            self.image = witcher_images["stand_left"][self.count // 5]
-            self.count2 += 1
+            self.image = witcher_images["stand_left"][self.count_stand // 5]
+            self.count_stand += 1
 
 
 class Tile(pg.sprite.Sprite):
