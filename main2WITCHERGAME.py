@@ -64,36 +64,13 @@ witcher_images = {
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
         super().__init__(witcher_sprites, all_sprites)
-        self.image = None
-        self.rect = None
-        # self.x, self.y = x, y
+        self.image = pg.image.load("source/player/stand_right/1.png")
+        self.rect = self.image.get_rect()
+        self.x, self.y = x, y
         # ------------------
         self.count_walk = 0   # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
         # ------------------
-
-    def walk(self, pos):
-        if self.count_walk >= 24:
-            self.count_walk = 0
-        if pos == "right":
-            self.image = witcher_images["walk_right"][self.count_walk // 6]
-            self.count_walk += 1
-
-        elif pos == "left" and self.count_walk > 0:
-            self.image = witcher_images["walk_left"][self.count_walk // 6]
-            self.count_walk += 1
-
-
-    def stand(self, pos):
-        if self.count_stand >= 30:
-            self.count_stand = 0
-        if pos == "stand_right":
-            self.image = witcher_images["stand_right"][self.count_stand // 5]
-            self.count_stand += 1
-
-        elif pos == "stand_left":
-            self.image = witcher_images["stand_left"][self.count_stand // 5]
-            self.count_stand += 1
 
 
 
