@@ -2,15 +2,17 @@ import pygame as pg
 import os
 import sys
 
+import player
+
 pg.init()
 pg.display.set_caption("WITCHER")
 width, height = 1600, 900
 size = width, height
 screen = pg.display.set_mode(size)
 # ---------------------------------
-all_sprites = pg.sprite.Group()      # группа всех спрайтов
+all_sprites = pg.sprite.Group()  # группа всех спрайтов
 witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
-tile_group = pg.sprite.Group()       # группа спрайтов объектов
+tile_group = pg.sprite.Group()  # группа спрайтов объектов
 # ---------------------------------
 running = True
 FPS = 60
@@ -18,7 +20,9 @@ x_player, y_player = 100, 100
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
-plat_width, plat_height = 80, 50    # размеры платформ
+plat_width, plat_height = 80, 50  # размеры платформ
+
+
 # -------------------------------
 
 
@@ -58,7 +62,16 @@ witcher_images = {
                    load_image("source/player/stand_left/3.png"), load_image("source/player/stand_left/4.png"),
                    load_image("source/player/stand_left/5.png")]
 }
+
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
+
+
+def move(hero):
+    keys = pg.key.get_pressed()
+    if keys[pg.K_d]:
+        hero.rect.x += player.SPEED
+    if keys[pg.K_a]:
+        hero.rect.x -= player.SPEED
 
 
 class Witcher(pg.sprite.Sprite):
@@ -66,9 +79,10 @@ class Witcher(pg.sprite.Sprite):
         super().__init__(witcher_sprites, all_sprites)
         self.image = pg.image.load("source/player/stand_right/1.png")
         self.rect = self.image.get_rect()
-        self.x, self.y = x, y
+        self.rect.x, self.rect.y = x, y
+        self.pos = x, y
         # ------------------
-        self.count_walk = 0   # cчетчик анимации ходьбы
+        self.count_walk = 0  # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
         # ------------------
 
@@ -124,6 +138,8 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        keys = pg.key.get_pressed()
+        move(w)
         # all_sprites.draw(screen)
         tile_group.draw(screen)
         witcher_sprites.draw(screen)

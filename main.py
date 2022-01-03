@@ -8,7 +8,8 @@ if __name__ == "__main__":
     height = 900
     x, y = 150, 600
     size = width, height
-    screen = pg.display.set_mode(size)
+    infoObject = pg.display.Info()
+    screen = pg.display.set_mode((infoObject.current_w, infoObject.current_h))
 
     running = True
     right, left, left_hit, right_hit = False, False, False, False
@@ -17,7 +18,9 @@ if __name__ == "__main__":
     clock1 = pg.time.Clock()
     anim_count = 0
     anim_count2 = 0
-    bg = pg.transform.scale2x(pg.image.load("source/background.png"))
+    bg = pg.image.load("source/background.png")
+    bg = pg.transform.scale2x(bg)
+
 
 
     def drawPlayer():
