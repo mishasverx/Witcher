@@ -16,6 +16,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 # ---------------------------------
 running = True
 FPS = 60
+speed = 10
 x_player, y_player = 100, 100
 clock = pg.time.Clock()
 # -------------------------------
@@ -69,9 +70,9 @@ witcher_images = {
 def move(hero):
     keys = pg.key.get_pressed()
     if keys[pg.K_d]:
-        hero.rect.x += player.SPEED
+        hero.rect.x += speed
     if keys[pg.K_a]:
-        hero.rect.x -= player.SPEED
+        hero.rect.x -= speed
 
 
 class Witcher(pg.sprite.Sprite):
@@ -131,7 +132,7 @@ class Map:
             screen.blit(backg, (x, y))
             x += a[0]
 
-
+backg = backg = pg.image.load("source/background.png")
 map_ = Map("source/background.png", 2)
 w = Witcher("stand_left", x_player, y_player)
 while running:
@@ -140,6 +141,8 @@ while running:
             running = False
         keys = pg.key.get_pressed()
         move(w)
+        screen.blit(backg, (0, 0))
+        pg.display.flip()
         # all_sprites.draw(screen)
         tile_group.draw(screen)
         witcher_sprites.draw(screen)
