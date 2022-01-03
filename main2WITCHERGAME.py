@@ -142,7 +142,6 @@ while running:
         keys = pg.key.get_pressed()
         move(w)
         screen.blit(backg, (0, 0))
-        pg.display.flip()
         # all_sprites.draw(screen)
         tile_group.draw(screen)
         witcher_sprites.draw(screen)
