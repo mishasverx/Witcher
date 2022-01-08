@@ -17,13 +17,11 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 running = True
 FPS = 60
 speed = 10
-x_player, y_player = 100, 100
+x_player, y_player = 100, 550
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
 plat_width, plat_height = 80, 50  # размеры платформ
-
-
 # -------------------------------
 
 
@@ -64,15 +62,8 @@ witcher_images = {
                    load_image("source/player/stand_left/5.png")]
 }
 
+
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
-
-
-def move(hero):
-    keys = pg.key.get_pressed()
-    if keys[pg.K_d]:
-        hero.rect.x += speed
-    if keys[pg.K_a]:
-        hero.rect.x -= speed
 
 
 class Witcher(pg.sprite.Sprite):
@@ -83,10 +74,39 @@ class Witcher(pg.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.pos = x, y
         # ------------------
-        self.count_walk = 0  # cчетчик анимации ходьбы
+        self.count_walk_right = 0  # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
+        self.count_walk_left = 0
         # ------------------
 
+
+def move(hero):
+    keys = pg.key.get_pressed()
+    last_dir = True
+    right = False
+    left = False
+    if hero.count_walk_right >= 24:
+        hero.count_walk_right = 0
+    if hero.count_walk_left >= 24:
+        hero.count_walk_left = 0
+    if hero.count_stand >= 45:
+        hero.count_stand = 0
+    if keys[pg.K_d]:
+        hero.rect.x += speed
+        hero.image = witcher_images["walk_right"][hero.count_walk_right // 6]
+        hero.count_walk_right += 1
+        last_dir = 0
+    elif last_dir == 0:
+        hero.image = witcher_images["stand_right"][hero.count_stand // 9]
+        hero.count_stand += 1
+    elif keys[pg.K_a]:
+        hero.rect.x -= speed
+        hero.image = witcher_images["walk_left"][hero.count_walk_left // 6]
+        hero.count_walk_left += 1
+        last_dir = 1
+    elif last_dir == 1:
+        hero.image = witcher_images["stand_left"][hero.count_stand // 9]
+        hero.count_stand += 1
 
 
 class Tile(pg.sprite.Sprite):
@@ -132,6 +152,7 @@ class Map:
             screen.blit(backg, (x, y))
             x += a[0]
 
+
 backg = backg = pg.image.load("source/background.png")
 map_ = Map("source/background.png", 2)
 w = Witcher("stand_left", x_player, y_player)
@@ -139,7 +160,6 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-        keys = pg.key.get_pressed()
         move(w)
         screen.blit(backg, (0, 0))
         # all_sprites.draw(screen)
