@@ -77,6 +77,7 @@ class Witcher(pg.sprite.Sprite):
         self.count_walk_right = 0  # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
         self.count_walk_left = 0
+        self.last_dir = True
         # ------------------
 
 
@@ -95,28 +96,37 @@ def move(hero):
         hero.rect.x += speed
         right = True
         left = False
-        last_dir = 0
-    elif last_dir == 0:
-        witcher_sprites.draw(screen)
-        hero.image = witcher_images["stand_right"][hero.count_stand // 9]
-        hero.count_stand += 1
+        hero.last_dir = True
     elif keys[pg.K_a]:
         right = False
         left = True
         hero.rect.x -= speed
-        last_dir = 1
-    elif last_dir == 1:
-        witcher_sprites.draw(screen)
-        hero.image = witcher_images["stand_left"][hero.count_stand // 9]
-        hero.count_stand += 1
+        hero.last_dir = False
+    else:
+        right = False
+        left = False
+        hero.count_walk_left = 0
+        hero.count_walk_right = 0
     if right:
         witcher_sprites.draw(screen)
         hero.image = witcher_images["walk_right"][hero.count_walk_right // 6]
         hero.count_walk_right += 1
-    if left:
+    elif left:
         witcher_sprites.draw(screen)
         hero.image = witcher_images["walk_left"][hero.count_walk_left // 6]
         hero.count_walk_left += 1
+    else:
+        if hero.last_dir:
+            witcher_sprites.draw(screen)
+            hero.image = witcher_images["stand_right"][hero.count_stand // 9]
+            hero.count_stand += 1
+        else:
+            witcher_sprites.draw(screen)
+            hero.image = witcher_images["stand_left"][hero.count_stand // 9]
+            hero.count_stand += 1
+
+
+
 
 
 
