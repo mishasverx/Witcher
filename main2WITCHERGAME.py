@@ -22,6 +22,8 @@ clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
 plat_width, plat_height = 80, 50  # размеры платформ
+
+
 # -------------------------------
 
 
@@ -59,7 +61,13 @@ witcher_images = {
                     load_image("source/player/stand_right/5.png")],
     "stand_left": [load_image("source/player/stand_left/1.png"), load_image("source/player/stand_left/2.png"),
                    load_image("source/player/stand_left/3.png"), load_image("source/player/stand_left/4.png"),
-                   load_image("source/player/stand_left/5.png")]
+                   load_image("source/player/stand_left/5.png")],
+    "right_hit": [load_image("source/player/right_hit/1.png"), load_image("source/player/right_hit/2.png"),
+                  load_image("source/player/right_hit/3.png"), load_image("source/player/right_hit/4.png"),
+                  load_image("source/player/right_hit/5.png")],
+    "left_hit": [load_image("source/player/left_hit/1.png"), load_image("source/player/left_hit/2.png"),
+                 load_image("source/player/left_hit/3.png"), load_image("source/player/left_hit/4.png"),
+                 load_image("source/player/left_hit/5.png")]
 }
 
 
@@ -124,10 +132,6 @@ def move(hero):
             witcher_sprites.draw(screen)
             hero.image = witcher_images["stand_left"][hero.count_stand // 9]
             hero.count_stand += 1
-
-
-
-
 
 
 class Tile(pg.sprite.Sprite):
