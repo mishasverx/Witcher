@@ -171,11 +171,11 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-        move(w)
-        screen.blit(backg, (0, 0))
-        # all_sprites.draw(screen)
-        tile_group.draw(screen)
-        witcher_sprites.draw(screen)
-        clock.tick(FPS)
-        pg.display.flip()
+    screen.blit(backg, (0, 0))
+    # all_sprites.draw(screen)
+    tile_group.draw(screen)
+    witcher_sprites.draw(screen)
+    clock.tick(FPS)
+    pg.display.flip()
+    move(w)
 pg.quit()
