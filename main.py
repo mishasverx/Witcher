@@ -66,7 +66,6 @@ if __name__ == "__main__":
                 screen.blit(player.stay_left, (x, y))
                 picx, picy = player.walk_left[anim_count // 6 - 1].get_size()
                 pg.draw.rect(screen, (255, 255, 255), (x, y, picx, picy), 1)
-        mouse = pg.mouse.get_pressed()
 
     while running:
         for event in pg.event.get():

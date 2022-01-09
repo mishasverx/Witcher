@@ -93,20 +93,31 @@ def move(hero):
         hero.count_stand = 0
     if keys[pg.K_d]:
         hero.rect.x += speed
-        hero.image = witcher_images["walk_right"][hero.count_walk_right // 6]
-        hero.count_walk_right += 1
+        right = True
+        left = False
         last_dir = 0
     elif last_dir == 0:
+        witcher_sprites.draw(screen)
         hero.image = witcher_images["stand_right"][hero.count_stand // 9]
         hero.count_stand += 1
     elif keys[pg.K_a]:
+        right = False
+        left = True
         hero.rect.x -= speed
-        hero.image = witcher_images["walk_left"][hero.count_walk_left // 6]
-        hero.count_walk_left += 1
         last_dir = 1
     elif last_dir == 1:
+        witcher_sprites.draw(screen)
         hero.image = witcher_images["stand_left"][hero.count_stand // 9]
         hero.count_stand += 1
+    if right:
+        witcher_sprites.draw(screen)
+        hero.image = witcher_images["walk_right"][hero.count_walk_right // 6]
+        hero.count_walk_right += 1
+    if left:
+        witcher_sprites.draw(screen)
+        hero.image = witcher_images["walk_left"][hero.count_walk_left // 6]
+        hero.count_walk_left += 1
+
 
 
 class Tile(pg.sprite.Sprite):

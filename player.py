@@ -3,13 +3,24 @@ import pygame.sprite
 import os
 import sys
 
-
 last_dir = True
 SPEED = 15
 right_walk_sprites = pygame.sprite.Group()
 left_walk_sprites = pygame.sprite.Group()
 sprite_walk_right = pygame.sprite.Sprite()
 sprite_walk_left = pygame.sprite.Sprite()
+
+walk_right = [pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/3.png"),
+                   pg.image.load("source/player/right/2.png"), pg.image.load("source/player/right/1.png")]
+walk_left = [pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/3.png"),
+                  pg.image.load("source/player/left/2.png"), pg.image.load("source/player/left/1.png")]
+stay_right = pg.image.load("source/player/stand_right/1.png")
+stay_left = pg.image.load("source/player/stand_left/1.png")
+right_hit = [pg.image.load("source/player/right_hit/1.png"),
+                  pg.image.load("source/player/right_hit/2.png"),
+                  pg.image.load("source/player/right_hit/3.png"),
+                  pg.image.load("source/player/right_hit/4.png"),
+                  pg.image.load("source/player/right_hit/5.png")]
 
 
 class Withcer(pg.sprite.Sprite):
