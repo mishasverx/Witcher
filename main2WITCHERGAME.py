@@ -138,19 +138,19 @@ def move(hero):
             hero.image = witcher_images["stand_left"][hero.count_stand // 9]
             hero.count_stand += 1
 def attack(hero):
-    for event in pg.event.get():
-        if event.type == pg.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if hero.stay:
-                    if hero.last_dir:
-                        for i in range(5):
-                            witcher_sprites.draw(screen)
-                            hero.image = witcher_images["right_hit"][i]
-                    else:
-                        for i in range(5):
-                            witcher_sprites.draw(screen)
-                            hero.image = witcher_images["left_hit"][i]
-
+    keys = pg.mouse.get_pressed()
+    if hero.count_hit >= 30:
+        hero.count_hit = 0
+    if keys[0]:
+        if hero.stay:
+            if hero.last_dir:
+                witcher_sprites.draw(screen)
+                hero.image = witcher_images["right_hit"][hero.count_hit // 6]
+                hero.count_hit += 1
+            else:
+                witcher_sprites.draw(screen)
+                hero.image = witcher_images["left_hit"][hero.count_hit // 6]
+                hero.count_hit += 1
 
 
 
