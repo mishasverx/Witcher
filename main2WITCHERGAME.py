@@ -85,7 +85,9 @@ class Witcher(pg.sprite.Sprite):
         self.count_walk_right = 0  # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
         self.count_walk_left = 0
+        self.count_hit = 0
         self.last_dir = True
+        self.stay = True
         # ------------------
 
 
@@ -104,15 +106,18 @@ def move(hero):
         hero.rect.x += speed
         right = True
         left = False
+        hero.stay = False
         hero.last_dir = True
     elif keys[pg.K_a]:
         right = False
         left = True
+        hero.stay = False
         hero.rect.x -= speed
         hero.last_dir = False
     else:
         right = False
         left = False
+        hero.stay = True
         hero.count_walk_left = 0
         hero.count_walk_right = 0
     if right:
@@ -132,6 +137,22 @@ def move(hero):
             witcher_sprites.draw(screen)
             hero.image = witcher_images["stand_left"][hero.count_stand // 9]
             hero.count_stand += 1
+def attack(hero):
+    for event in pg.event.get():
+        if event.type == pg.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if hero.stay:
+                    if hero.last_dir:
+                        for i in range(5):
+                            witcher_sprites.draw(screen)
+                            hero.image = witcher_images["right_hit"][i]
+                    else:
+                        for i in range(5):
+                            witcher_sprites.draw(screen)
+                            hero.image = witcher_images["left_hit"][i]
+
+
+
 
 
 class Tile(pg.sprite.Sprite):
@@ -192,4 +213,5 @@ while running:
     clock.tick(FPS)
     pg.display.flip()
     move(w)
+    attack(w)
 pg.quit()
