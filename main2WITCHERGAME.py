@@ -17,7 +17,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 running = True
 FPS = 60
 speed = 10
-x_player, y_player = 100, 550
+x_player, y_player = 100, 100
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
@@ -143,11 +143,12 @@ def attack(hero):
         if hero.stay:
             if hero.last_dir:
                 witcher_sprites.draw(screen)
-                hero.image = witcher_images["right_hit"][hero.count_hit // 6]
+                hero.image = pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6], [400, 300])
                 hero.count_hit += 1
             else:
                 witcher_sprites.draw(screen)
-                hero.image = witcher_images["left_hit"][hero.count_hit // 6]
+                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6],
+                                                                  [400, 300]), True, False)
                 hero.count_hit += 1
 
 
