@@ -2,8 +2,6 @@ import pygame as pg
 import os
 import sys
 
-import player
-
 pg.init()
 pg.display.set_caption("WITCHER")
 width, height = 1600, 900
@@ -22,6 +20,8 @@ clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
 plat_width, plat_height = 80, 50  # размеры платформ
+
+
 # -------------------------------
 
 
@@ -69,20 +69,21 @@ witcher_images = {
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
-        super().__init__(witcher_sprites, all_sprites)
+        super().__init__(witcher_sprites)
         self.image = pg.image.load("source/player/stand_right/1.png")
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
-        self.pos = x, y
+        self.mask = pg.mask.from_surface(self.image)
+        self.rectmask = self.mask.get_rect()
+        self.rectmask.x, self.rectmask.y = x, y
         # ------------------
         self.count_walk_right = 0  # cчетчик анимации ходьбы
         self.count_stand = 0  # cчетчик анимации стойки
         self.count_walk_left = 0
         self.count_hit = 0
         self.count_hit_2 = 0
-        self.last_dir = True
-        self.stay = True
         # ------------------
+        self.last_dir = True
 
 
 def move(hero):
@@ -133,6 +134,8 @@ def move(hero):
             hero.image = pg.transform.flip(pg.transform.scale(witcher_images["stand_right"][hero.count_stand // 9],
                                                               [500, 300]), True, False)
             hero.count_stand += 1
+
+
 def attack(hero):
     # for event in pg.event.get():
     #     if event.type == pg.QUIT:
@@ -178,8 +181,6 @@ def attack(hero):
                 hero.image = pg.transform.flip(pg.transform.scale(witcher_images["left_hit"][hero.count_hit_2 // 6],
                                                                   [500, 300]), True, False)
                 hero.count_hit_2 += 1
-
-
 
 
 class Tile(pg.sprite.Sprite):
@@ -234,7 +235,7 @@ while running:
         if event.type == pg.QUIT:
             running = False
     screen.blit(backg, (0, 0))
-    # all_sprites.draw(screen)
+    all_sprites.draw(screen)
     tile_group.draw(screen)
     witcher_sprites.draw(screen)
     clock.tick(FPS)
