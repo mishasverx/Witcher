@@ -17,7 +17,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 running = True
 FPS = 60
 speed = 10
-x_player, y_player = 100, 570
+x_player, y_player = 100, 500
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
@@ -52,14 +52,9 @@ tile_images = {
 witcher_images = {
     "walk_right": [load_image("source/player/right/2.png"), load_image("source/player/right/3.png"),
                    load_image("source/player/right/2.png"), load_image("source/player/right/1.png")],
-    "walk_left": [load_image("source/player/left/2.png"), load_image("source/player/left/3.png"),
-                  load_image("source/player/left/2.png"), load_image("source/player/left/1.png")],
     "stand_right": [load_image("source/player/stand_right/1.png"), load_image("source/player/stand_right/2.png"),
                     load_image("source/player/stand_right/3.png"), load_image("source/player/stand_right/4.png"),
                     load_image("source/player/stand_right/5.png")],
-    "stand_left": [load_image("source/player/stand_left/1.png"), load_image("source/player/stand_left/2.png"),
-                   load_image("source/player/stand_left/3.png"), load_image("source/player/stand_left/4.png"),
-                   load_image("source/player/stand_left/5.png")],
     "right_hit": [load_image("source/player/right_hit/1.png"), load_image("source/player/right_hit/2.png"),
                   load_image("source/player/right_hit/3.png"), load_image("source/player/right_hit/4.png"),
                   load_image("source/player/right_hit/5.png")],
@@ -84,6 +79,7 @@ class Witcher(pg.sprite.Sprite):
         self.count_stand = 0  # cчетчик анимации стойки
         self.count_walk_left = 0
         self.count_hit = 0
+        self.count_hit_2 = 0
         self.last_dir = True
         self.stay = True
         # ------------------
@@ -155,8 +151,11 @@ def attack(hero):
     #                                                               [400, 300]), True, False)
 
     keys = pg.mouse.get_pressed()
+    keys_1 = pg.key.get_pressed()
     if hero.count_hit >= 30:
         hero.count_hit = 0
+    if hero.count_hit_2 >= 30:
+        hero.count_hit_2 = 0
     if keys[0]:
         if hero.stay:
             if hero.last_dir:
@@ -165,9 +164,20 @@ def attack(hero):
                 hero.count_hit += 1
             else:
                 witcher_sprites.draw(screen)
-                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["left_hit"][hero.count_hit // 6],
+                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6],
                                                                   [500, 300]), True, False)
                 hero.count_hit += 1
+    if keys[0] and keys_1[pg.K_LSHIFT]:
+        if hero.stay:
+            if hero.last_dir:
+                witcher_sprites.draw(screen)
+                hero.image = pg.transform.scale(witcher_images["left_hit"][hero.count_hit_2 // 6], [500, 300])
+                hero.count_hit_2 += 1
+            else:
+                witcher_sprites.draw(screen)
+                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["left_hit"][hero.count_hit_2 // 6],
+                                                                  [500, 300]), True, False)
+                hero.count_hit_2 += 1
 
 
 
@@ -216,8 +226,8 @@ class Map:
             x += a[0]
 
 
-backg = pg.image.load("source/background.png")
-map_ = Map("source/background.png", 2)
+backg = pg.image.load("source/background_2.png")
+map_ = Map("source/background_2.png", 2)
 w = Witcher("stand_left", x_player, y_player)
 while running:
     for event in pg.event.get():
