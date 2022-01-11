@@ -17,7 +17,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 running = True
 FPS = 60
 speed = 10
-x_player, y_player = 100, 100
+x_player, y_player = 100, 570
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
@@ -94,9 +94,9 @@ def move(hero):
     last_dir = True
     right = False
     left = False
-    if hero.count_walk_right >= 24:
+    if hero.count_walk_right >= 36:
         hero.count_walk_right = 0
-    if hero.count_walk_left >= 24:
+    if hero.count_walk_left >= 36:
         hero.count_walk_left = 0
     if hero.count_stand >= 45:
         hero.count_stand = 0
@@ -120,20 +120,22 @@ def move(hero):
         hero.count_walk_right = 0
     if right:
         witcher_sprites.draw(screen)
-        hero.image = witcher_images["walk_right"][hero.count_walk_right // 6]
+        hero.image = pg.transform.scale(witcher_images["walk_right"][hero.count_walk_right // 9], [500, 300])
         hero.count_walk_right += 1
     elif left:
         witcher_sprites.draw(screen)
-        hero.image = witcher_images["walk_left"][hero.count_walk_left // 6]
+        hero.image = pg.transform.flip(pg.transform.scale(witcher_images["walk_right"][hero.count_walk_left // 9],
+                                                          [500, 300]), True, False)
         hero.count_walk_left += 1
     else:
         if hero.last_dir:
             witcher_sprites.draw(screen)
-            hero.image = witcher_images["stand_right"][hero.count_stand // 9]
+            hero.image = pg.transform.scale(witcher_images["stand_right"][hero.count_stand // 9], [500, 300])
             hero.count_stand += 1
         else:
             witcher_sprites.draw(screen)
-            hero.image = witcher_images["stand_left"][hero.count_stand // 9]
+            hero.image = pg.transform.flip(pg.transform.scale(witcher_images["stand_right"][hero.count_stand // 9],
+                                                              [500, 300]), True, False)
             hero.count_stand += 1
 def attack(hero):
     keys = pg.mouse.get_pressed()
@@ -143,12 +145,12 @@ def attack(hero):
         if hero.stay:
             if hero.last_dir:
                 witcher_sprites.draw(screen)
-                hero.image = pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6], [400, 300])
+                hero.image = pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6], [500, 300])
                 hero.count_hit += 1
             else:
                 witcher_sprites.draw(screen)
-                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][hero.count_hit // 6],
-                                                                  [400, 300]), True, False)
+                hero.image = pg.transform.flip(pg.transform.scale(witcher_images["left_hit"][hero.count_hit // 6],
+                                                                  [500, 300]), True, False)
                 hero.count_hit += 1
 
 
