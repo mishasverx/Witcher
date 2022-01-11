@@ -138,6 +138,22 @@ def move(hero):
                                                               [500, 300]), True, False)
             hero.count_stand += 1
 def attack(hero):
+    # for event in pg.event.get():
+    #     if event.type == pg.QUIT:
+    #         pg.quit()
+    #     if event.type == pg.MOUSEBUTTONDOWN:
+    #         if event.button == 1:
+    #             if hero.stay:
+    #                 if hero.last_dir:
+    #                     for i in range(45):
+    #                         witcher_sprites.draw(screen)
+    #                         hero.image = pg.transform.scale(witcher_images["right_hit"][i // 9], [400, 300])
+    #                 else:
+    #                     for i in range(45):
+    #                         witcher_sprites.draw(screen)
+    #                         hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][i // 9],
+    #                                                               [400, 300]), True, False)
+
     keys = pg.mouse.get_pressed()
     if hero.count_hit >= 30:
         hero.count_hit = 0
@@ -200,7 +216,7 @@ class Map:
             x += a[0]
 
 
-backg = backg = pg.image.load("source/background.png")
+backg = pg.image.load("source/background.png")
 map_ = Map("source/background.png", 2)
 w = Witcher("stand_left", x_player, y_player)
 while running:
