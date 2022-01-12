@@ -1,2 +1,2 @@
 # Witcher
-ГЛАВНЫЙ ФАЙЛ mainWITCHERGAME.py
+ГЛАВНЫЙ ФАЙЛ main2WITCHERGAME.py
