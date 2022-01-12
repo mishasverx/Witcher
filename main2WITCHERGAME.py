@@ -20,8 +20,6 @@ clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
 plat_width, plat_height = 80, 50  # размеры платформ
-
-
 # -------------------------------
 
 
@@ -112,7 +110,7 @@ def move(hero):
         hero.count_walk_right = 0
     if hero.count_walk_left >= 36:
         hero.count_walk_left = 0
-    if hero.count_stand >= 45:
+    if hero.count_stand >= 75:
         hero.count_stand = 0
     if keys[pg.K_d]:
         hero.rect.x += speed
@@ -147,13 +145,13 @@ def move(hero):
     else:
         if hero.last_dir:
             witcher_sprites.draw(screen)
-            hero.image = witcher_images["stand_right"][hero.count_stand // 9]
+            hero.image = witcher_images["stand_right"][hero.count_stand // 15]
             hero.mask = pg.mask.from_surface(hero.image)
 
             hero.count_stand += 1
         else:
             witcher_sprites.draw(screen)
-            hero.image = pg.transform.flip(witcher_images["stand_right"][hero.count_stand // 9], True, False)
+            hero.image = pg.transform.flip(witcher_images["stand_right"][hero.count_stand // 15], True, False)
             hero.mask = pg.mask.from_surface(hero.image)
             hero.count_stand += 1
 
