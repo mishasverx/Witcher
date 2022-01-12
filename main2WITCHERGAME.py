@@ -11,6 +11,7 @@ screen = pg.display.set_mode(size)
 all_sprites = pg.sprite.Group()  # группа всех спрайтов
 witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
 tile_group = pg.sprite.Group()  # группа спрайтов объектов
+mouse_group = pg.sprite.Group()  # группа спрайтов мыши
 # ---------------------------------
 running = True
 FPS = 60
@@ -20,6 +21,8 @@ clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
 plat_width, plat_height = 80, 50  # размеры платформ
+
+
 # -------------------------------
 
 
@@ -60,9 +63,15 @@ witcher_images = {
                  load_image("source/player/left_hit/3.png"), load_image("source/player/left_hit/4.png"),
                  load_image("source/player/left_hit/5.png")]
 }
-
-
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
+mouse_images = {
+    "fly": [load_image("source/mobs/mouse/1.png"), load_image("source/mobs/mouse/2.png"),
+            load_image("source/mobs/mouse/3.png"), load_image("source/mobs/mouse/4.png"),
+            load_image("source/mobs/mouse/5.png"), load_image("source/mobs/mouse/6.png"),
+            load_image("source/mobs/mouse/7.png")]
+}
+
+
 class Wall(pg.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(all_sprites)
@@ -72,8 +81,6 @@ class Wall(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
 
 
-t = Wall(1000, 700)
-t1 = Wall(500, 700)
 
 
 class Witcher(pg.sprite.Sprite):
@@ -93,6 +100,7 @@ class Witcher(pg.sprite.Sprite):
         # ------------------
         self.last_dir = True
         self.stay = False
+
     def update(self):
         if pg.sprite.collide_mask(self, t):
             self.rect.x -= 10
@@ -100,6 +108,7 @@ class Witcher(pg.sprite.Sprite):
     def update2(self):
         if pg.sprite.collide_mask(self, t1):
             self.rect.x += 10
+
 
 def move(hero):
     keys = pg.key.get_pressed()
@@ -205,6 +214,45 @@ def attack(hero):
                 hero.count_hit_2 += 1
 
 
+class Mouse(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__(mouse_group)
+        self.fly_count1 = 0
+        self.fly_count2 = 0
+        self.image = pg.transform.scale(mouse_images["fly"][2], [230, 230])
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 1, 100
+        self.mask = pg.mask.from_surface(self.image)
+
+
+def fly(mouse):
+    fl = False
+    if mouse.fly_count1 >= 28:
+        mouse.fly_count1 = 0
+
+    if mouse.fly_count2 >= 28:
+        mouse.fly_count2 = 0
+
+    if mouse.rect.x == 1300:
+        fl = True
+    if mouse.rect.x == 0:
+        fl = False
+
+    if not fl:
+        mouse_group.draw(screen)
+        mouse.image = pg.transform.flip(pg.transform.scale(mouse_images["fly"][mouse.fly_count1 // 4], [230, 230]),
+                                        True, False)
+        mouse.mask = pg.mask.from_surface(mouse.image)
+        mouse.rect.x += 10
+        mouse.fly_count1 += 1
+
+    else:
+        mouse_group.draw(screen)
+        mouse.image = pg.transform.scale(mouse_images["fly"][mouse.fly_count2 // 4], [230, 230])
+        mouse.rect.x -= 20
+        mouse.fly_count2 += 1
+
+
 class Tile(pg.sprite.Sprite):
     def __init__(self, type, x, y):
         super().__init__(tile_group, all_sprites)
@@ -253,6 +301,7 @@ class Map:
 backg = pg.image.load("source/background_2.png")
 map_ = Map("source/background_2.png", 2)
 w = Witcher("stand_left", x_player, y_player)
+m = Mouse()
 while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -261,10 +310,10 @@ while running:
     all_sprites.draw(screen)
     tile_group.draw(screen)
     witcher_sprites.draw(screen)
+    mouse_group.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
     move(w)
-    w.update()
-    w.update2()
+    fly(m)
     attack(w)
 pg.quit()
