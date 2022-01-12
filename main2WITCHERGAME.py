@@ -15,7 +15,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 running = True
 FPS = 60
 speed = 10
-x_player, y_player = 100, 500
+x_player, y_player = 700, 500
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
@@ -94,7 +94,7 @@ class Witcher(pg.sprite.Sprite):
         self.count_hit_2 = 0
         # ------------------
         self.last_dir = True
-
+        self.stay = False
     def update(self):
         if pg.sprite.collide_mask(self, t):
             self.rect.x -= 10
