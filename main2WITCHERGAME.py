@@ -61,7 +61,9 @@ witcher_images = {
                   load_image("source/player/right_hit/5.png")],
     "left_hit": [load_image("source/player/left_hit/1.png"), load_image("source/player/left_hit/2.png"),
                  load_image("source/player/left_hit/3.png"), load_image("source/player/left_hit/4.png"),
-                 load_image("source/player/left_hit/5.png")]
+                 load_image("source/player/left_hit/5.png")],
+    "run": [load_image("source/player/run/1.png"), load_image("source/player/run/2.png"),
+            load_image("source/player/run/3.png"), load_image("source/player/run/4.png")]
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
 mouse_images = {
@@ -95,6 +97,10 @@ class Witcher(pg.sprite.Sprite):
         self.count_walk_left = 0
         self.count_hit = 0
         self.count_hit_2 = 0
+        self.count_run_right = 0
+        self.count_hit_strong_1 = 0
+        self.count_hit_strong_2 = 0
+        self.count_run_left = 0
         # ------------------
         self.last_dir = True
         self.stay = False
@@ -113,6 +119,7 @@ def move(hero):
     last_dir = True
     right = False
     left = False
+
     if hero.count_walk_right >= 36:
         hero.count_walk_right = 0
     if hero.count_walk_left >= 36:
@@ -163,6 +170,7 @@ def move(hero):
             hero.count_stand += 1
 
 
+
 def attack(hero):
     # for event in pg.event.get():
     #     if event.type == pg.QUIT:
@@ -186,6 +194,11 @@ def attack(hero):
         hero.count_hit = 0
     if hero.count_hit_2 >= 30:
         hero.count_hit_2 = 0
+    if hero.count_hit_strong_1 >= 30:
+        hero.count_hit_strong_1 = 0
+    if hero.count_hit_strong_2 >= 30:
+        hero.count_hit_strong_2 = 0
+
     if keys[0]:
         if hero.stay:
             if hero.last_dir:
@@ -202,14 +215,14 @@ def attack(hero):
         if hero.stay:
             if hero.last_dir:
                 witcher_sprites.draw(screen)
-                hero.image = witcher_images["left_hit"][hero.count_hit_2 // 6]
+                hero.image = witcher_images["left_hit"][hero.count_hit_strong_1 // 6]
                 hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit_2 += 1
+                hero.count_hit_strong_1 += 1
             else:
                 witcher_sprites.draw(screen)
-                hero.image = pg.transform.flip(witcher_images["left_hit"][hero.count_hit_2 // 6], True, False)
+                hero.image = pg.transform.flip(witcher_images["left_hit"][hero.count_hit_strong_2  // 6], True, False)
                 hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit_2 += 1
+                hero.count_hit_strong_2 += 1
 
 
 class Mouse(pg.sprite.Sprite):
