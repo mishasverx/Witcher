@@ -81,8 +81,6 @@ class Wall(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
 
 
-
-
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
         super().__init__(witcher_sprites)
@@ -221,24 +219,23 @@ class Mouse(pg.sprite.Sprite):
         self.fly_count2 = 0
         self.image = pg.transform.scale(mouse_images["fly"][2], [230, 230])
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 1, 100
+        self.rect.x, self.rect.y = 1, 350
         self.mask = pg.mask.from_surface(self.image)
 
 
 def fly(mouse):
-    fl = False
+    a = 2
     if mouse.fly_count1 >= 28:
         mouse.fly_count1 = 0
 
     if mouse.fly_count2 >= 28:
         mouse.fly_count2 = 0
+    if mouse.rect.x == 1200:
+        a += 1
+    if mouse.rect.x == 300:
+        a += 1
 
-    if mouse.rect.x == 1300:
-        fl = True
-    if mouse.rect.x == 0:
-        fl = False
-
-    if not fl:
+    if a % 2 == 0:
         mouse_group.draw(screen)
         mouse.image = pg.transform.flip(pg.transform.scale(mouse_images["fly"][mouse.fly_count1 // 4], [230, 230]),
                                         True, False)
