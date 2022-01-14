@@ -14,6 +14,7 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 mouse_group = pg.sprite.Group()  # группа спрайтов мыши
 # ---------------------------------
 running = True
+jump = False
 FPS = 60
 speed = 10
 x_player, y_player = 700, 500
@@ -44,7 +45,7 @@ def load_image(name, colorkey=None):
 
 # 🡫🡫🡫🡫🡫🡫🡫🡫 изображения объектов
 tile_images = {
-    'floor': load_image('source\\tile\\floour1.jpg'),
+    'floor': load_image('source\\tile\\floor1.jpg'),
     'plat': load_image('source\\tile\\plat.jpg')
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения объектов
@@ -77,7 +78,7 @@ mouse_images = {
 class Wall(pg.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(all_sprites)
-        self.image = tile_images["plat"]
+        self.image = tile_images["floor"]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
@@ -104,6 +105,7 @@ class Witcher(pg.sprite.Sprite):
         # ------------------
         self.last_dir = True
         self.stay = False
+        self.jump_count = 10
 
     def update(self):
         if pg.sprite.collide_mask(self, t):
@@ -119,13 +121,14 @@ def move(hero):
     last_dir = True
     right = False
     left = False
-
     if hero.count_walk_right >= 36:
         hero.count_walk_right = 0
     if hero.count_walk_left >= 36:
         hero.count_walk_left = 0
     if hero.count_stand >= 75:
         hero.count_stand = 0
+    if hero.rect.y > 500:
+        hero.rect.y = 500
     if keys[pg.K_d]:
         hero.rect.x += speed
         right = True
@@ -144,6 +147,7 @@ def move(hero):
         hero.stay = True
         hero.count_walk_left = 0
         hero.count_walk_right = 0
+
     if right:
         witcher_sprites.draw(screen)
         hero.image = witcher_images["walk_right"][hero.count_walk_right // 9]
@@ -156,6 +160,7 @@ def move(hero):
         hero.mask = pg.mask.from_surface(hero.image)
 
         hero.count_walk_left += 1
+
     else:
         if hero.last_dir:
             witcher_sprites.draw(screen)
@@ -169,7 +174,14 @@ def move(hero):
             hero.mask = pg.mask.from_surface(hero.image)
             hero.count_stand += 1
 
-
+def jump(hero):
+    if hero.rect.y == 500:
+        if hero.jump_count >= -10:
+            hero.rect.y -= int((hero.jump_count * abs(hero.jump_count)) * 0.5)
+            hero.jump_count -= 1
+        else:
+            hero.jump_count = 10
+            jump = False
 
 def attack(hero):
     # for event in pg.event.get():
@@ -312,10 +324,14 @@ backg = pg.image.load("source/background_2.png")
 map_ = Map("source/background_2.png", 2)
 w = Witcher("stand_left", x_player, y_player)
 m = Mouse()
+t = Wall(0, 789)
 while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        elif event.type == pg.KEYUP:
+            if event.key == pg.K_SPACE:
+                jump(w)
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
