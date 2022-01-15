@@ -96,32 +96,59 @@ class Mage(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count_walk_right = 0
         self.count_walk_left = 0
+        self.count_hit_left = 0
+        self.count_hit_right = 0
 
     def walk(self, x_w):
         right = False
         left = False
+        right_hit = False
+        last = False
+        left_hit = False
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
         if self.count_walk_left >= 35:
             self.count_walk_left = 0
-        if self.rect.x  < x_w.rect.x:
+        if self.count_hit_right >= 100:
+            self.count_hit_right = 0
+        if self.count_hit_left >= 100:
+            self.count_hit_left = 0
+        if self.rect.x  < x_w.rect.x - 100:
             right = True
             left = False
+            last = True
             self.rect.x += self.s
         elif self.rect.x > x_w.rect.x + 300:
             left = True
             right = False
+            last = False
             self.rect.x -= self.s
+        if self.rect.x == x_w.rect.x + 300 and not(last):
+            right_hit = False
+            left_hit = True
+        if self.rect.x  == x_w.rect.x - 100:
+            right_hit = True
+            left_hit = False
 
         if right:
             self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
-                                                              True, False), [175, 195])
+                                                              True, False), [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_right += 1
         elif left:
-            self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [175, 195])
+            self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_left += 1
+
+        if right_hit:
+            self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
+                                                              True, False), [315, 355])
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_hit_right += 1
+        elif left_hit:
+            self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_hit_left += 1
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -325,8 +352,7 @@ level_x, level_y = generate_level(level)
 
 backg = pg.image.load("source/background_2.png")
 w = Witcher("stand_left", x_player, y_player)
-m = Mage(700, 595, 5)
-mg = Mage(1300, 595, 2)
+m = Mage(700, 440, 5)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
@@ -344,7 +370,6 @@ while running:
     pg.display.flip()
     w.move()
     m.walk(w)
-    mg.walk(w)
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
