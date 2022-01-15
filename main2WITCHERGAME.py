@@ -20,12 +20,7 @@ FPS = 60
 speed = 10
 x_player, y_player = 0, 500
 clock = pg.time.Clock()
-# -------------------------------
-floor_width, floor_height = 80, 50  # размеры пола
-plat_width, plat_height = 80, 50  # размеры платформ
-
-
-# -------------------------------
+# -------------------------------d
 
 
 def load_image(name, colorkey=None):
@@ -74,7 +69,12 @@ mobs_images = {
               load_image("source/mobs/mouse/5.png"), load_image("source/mobs/mouse/6.png"),
               load_image("source/mobs/mouse/7.png")],
     "mage_walk": [load_image("source/mobs/mage/walk/1.png"), load_image("source/mobs/mage/walk/2.png"),
-                  load_image("source/mobs/mage/walk/3.png"), load_image("source/mobs/mage/walk/2.png")]
+                  load_image("source/mobs/mage/walk/3.png"), load_image("source/mobs/mage/walk/2.png")],
+    "mage_hit": [load_image("source/mobs/mage/hit/1.png"), load_image("source/mobs/mage/hit/2.png"),
+                  load_image("source/mobs/mage/hit/3.png"), load_image("source/mobs/mage/hit/4.png"),
+                  load_image("source/mobs/mage/hit/5.png"), load_image("source/mobs/mage/hit/6.png"),
+                  load_image("source/mobs/mage/hit/7.png"), load_image("source/mobs/mage/hit/8.png"),
+                  load_image("source/mobs/mage/hit/9.png"), load_image("source/mobs/mage/hit/10.png")]
 }
 
 
@@ -88,11 +88,11 @@ class Wall(pg.sprite.Sprite):
 
 
 class Mage(pg.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, s):
         super().__init__(mage_group)
         self.image = mobs_images['mage_walk'][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
+        self.rect.x, self.rect.y, self.s = x, y, s
         self.mask = pg.mask.from_surface(self.image)
         self.count_walk_right = 0
         self.count_walk_left = 0
@@ -102,16 +102,16 @@ class Mage(pg.sprite.Sprite):
         left = False
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
-        if self.count_walk_left >= 36:
+        if self.count_walk_left >= 35:
             self.count_walk_left = 0
         if self.rect.x  < x_w.rect.x:
             right = True
             left = False
-            self.rect.x += 5
+            self.rect.x += self.s
         elif self.rect.x > x_w.rect.x + 300:
             left = True
             right = False
-            self.rect.x -= 5
+            self.rect.x -= self.s
 
         if right:
             self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
@@ -325,7 +325,8 @@ level_x, level_y = generate_level(level)
 
 backg = pg.image.load("source/background_2.png")
 w = Witcher("stand_left", x_player, y_player)
-m = Mage(700, 595)
+m = Mage(700, 595, 5)
+mg = Mage(1300, 595, 2)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
@@ -343,6 +344,7 @@ while running:
     pg.display.flip()
     w.move()
     m.walk(w)
+    mg.walk(w)
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
