@@ -12,12 +12,13 @@ all_sprites = pg.sprite.Group()  # группа всех спрайтов
 witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
 tile_group = pg.sprite.Group()  # группа спрайтов объектов
 mouse_group = pg.sprite.Group()  # группа спрайтов мыши
+mage_group = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
 FPS = 60
 speed = 10
-x_player, y_player = 700, 500
+x_player, y_player = 0, 500
 clock = pg.time.Clock()
 # -------------------------------
 floor_width, floor_height = 80, 50  # размеры пола
@@ -67,11 +68,13 @@ witcher_images = {
             load_image("source/player/run/3.png"), load_image("source/player/run/4.png")]
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
-mouse_images = {
-    "fly": [load_image("source/mobs/mouse/1.png"), load_image("source/mobs/mouse/2.png"),
-            load_image("source/mobs/mouse/3.png"), load_image("source/mobs/mouse/4.png"),
-            load_image("source/mobs/mouse/5.png"), load_image("source/mobs/mouse/6.png"),
-            load_image("source/mobs/mouse/7.png")]
+mobs_images = {
+    "mouse": [load_image("source/mobs/mouse/1.png"), load_image("source/mobs/mouse/2.png"),
+              load_image("source/mobs/mouse/3.png"), load_image("source/mobs/mouse/4.png"),
+              load_image("source/mobs/mouse/5.png"), load_image("source/mobs/mouse/6.png"),
+              load_image("source/mobs/mouse/7.png")],
+    "mage_walk": [load_image("source/mobs/mage/walk/1.png"), load_image("source/mobs/mage/walk/2.png"),
+                  load_image("source/mobs/mage/walk/3.png"), load_image("source/mobs/mage/walk/2.png")]
 }
 
 
@@ -83,6 +86,42 @@ class Wall(pg.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
 
+
+class Mage(pg.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(mage_group)
+        self.image = mobs_images['mage_walk'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_walk_right = 0
+        self.count_walk_left = 0
+
+    def walk(self, x_w):
+        right = False
+        left = False
+        if self.count_walk_right >= 36:
+            self.count_walk_right = 0
+        if self.count_walk_left >= 36:
+            self.count_walk_left = 0
+        if self.rect.x  < x_w.rect.x:
+            right = True
+            left = False
+            self.rect.x += 5
+        elif self.rect.x > x_w.rect.x + 300:
+            left = True
+            right = False
+            self.rect.x -= 5
+
+        if right:
+            self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
+                                                              True, False), [175, 195])
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_walk_right += 1
+        elif left:
+            self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [175, 195])
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_walk_left += 1
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -115,164 +154,139 @@ class Witcher(pg.sprite.Sprite):
         if pg.sprite.collide_mask(self, t1):
             self.rect.x += 10
 
-
-def move(hero):
-    keys = pg.key.get_pressed()
-    last_dir = True
-    right = False
-    left = False
-    if hero.count_walk_right >= 36:
-        hero.count_walk_right = 0
-    if hero.count_walk_left >= 36:
-        hero.count_walk_left = 0
-    if hero.count_stand >= 75:
-        hero.count_stand = 0
-    if hero.rect.y > 500:
-        hero.rect.y = 500
-    if keys[pg.K_d]:
-        hero.rect.x += speed
-        right = True
-        left = False
-        hero.stay = False
-        hero.last_dir = True
-    elif keys[pg.K_a]:
-        right = False
-        left = True
-        hero.stay = False
-        hero.rect.x -= speed
-        hero.last_dir = False
-    else:
+    def move(self):
+        keys = pg.key.get_pressed()
+        last_dir = True
         right = False
         left = False
-        hero.stay = True
-        hero.count_walk_left = 0
-        hero.count_walk_right = 0
-
-    if right:
-        witcher_sprites.draw(screen)
-        hero.image = witcher_images["walk_right"][hero.count_walk_right // 9]
-        hero.mask = pg.mask.from_surface(hero.image)
-
-        hero.count_walk_right += 1
-    elif left:
-        witcher_sprites.draw(screen)
-        hero.image = pg.transform.flip(witcher_images["walk_right"][hero.count_walk_left // 9], True, False)
-        hero.mask = pg.mask.from_surface(hero.image)
-
-        hero.count_walk_left += 1
-
-    else:
-        if hero.last_dir:
-            witcher_sprites.draw(screen)
-            hero.image = witcher_images["stand_right"][hero.count_stand // 15]
-            hero.mask = pg.mask.from_surface(hero.image)
-
-            hero.count_stand += 1
+        if self.count_walk_right >= 36:
+            self.count_walk_right = 0
+        if self.count_walk_left >= 36:
+            self.count_walk_left = 0
+        if self.count_stand >= 75:
+            self.count_stand = 0
+        if self.rect.y > 500:
+            self.rect.y = 500
+        if keys[pg.K_d]:
+            self.rect.x += speed
+            right = True
+            left = False
+            self.stay = False
+            self.last_dir = True
+        elif keys[pg.K_a]:
+            right = False
+            left = True
+            self.stay = False
+            self.rect.x -= speed
+            self.last_dir = False
         else:
-            witcher_sprites.draw(screen)
-            hero.image = pg.transform.flip(witcher_images["stand_right"][hero.count_stand // 15], True, False)
-            hero.mask = pg.mask.from_surface(hero.image)
-            hero.count_stand += 1
+            right = False
+            left = False
+            self.stay = True
+            self.count_walk_left = 0
+            self.count_walk_right = 0
 
-def jump(hero):
-    if hero.rect.y == 500:
-        if hero.jump_count >= -10:
-            hero.rect.y -= int((hero.jump_count * abs(hero.jump_count)) * 0.5)
-            hero.jump_count -= 1
+        if right:
+            self.image = witcher_images["walk_right"][self.count_walk_right // 9]
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_walk_right += 1
+        elif left:
+            self.image = pg.transform.flip(witcher_images["walk_right"][self.count_walk_left // 9], True, False)
+            self.mask = pg.mask.from_surface(self.image)
+
+            self.count_walk_left += 1
+
         else:
-            hero.jump_count = 10
-            jump = False
+            if self.last_dir:
+                self.image = witcher_images["stand_right"][self.count_stand // 15]
+                self.mask = pg.mask.from_surface(self.image)
 
-def attack(hero):
-    # for event in pg.event.get():
-    #     if event.type == pg.QUIT:
-    #         pg.quit()
-    #     if event.type == pg.MOUSEBUTTONDOWN:
-    #         if event.button == 1:
-    #             if hero.stay:
-    #                 if hero.last_dir:
-    #                     for i in range(45):
-    #                         witcher_sprites.draw(screen)
-    #                         hero.image = pg.transform.scale(witcher_images["right_hit"][i // 9], [400, 300])
-    #                 else:
-    #                     for i in range(45):
-    #                         witcher_sprites.draw(screen)
-    #                         hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][i // 9],
-    #                                                               [400, 300]), True, False)
-
-    keys = pg.mouse.get_pressed()
-    keys_1 = pg.key.get_pressed()
-    if hero.count_hit >= 30:
-        hero.count_hit = 0
-    if hero.count_hit_2 >= 30:
-        hero.count_hit_2 = 0
-    if hero.count_hit_strong_1 >= 30:
-        hero.count_hit_strong_1 = 0
-    if hero.count_hit_strong_2 >= 30:
-        hero.count_hit_strong_2 = 0
-
-    if keys[0]:
-        if hero.stay:
-            if hero.last_dir:
-                witcher_sprites.draw(screen)
-                hero.image = witcher_images["right_hit"][hero.count_hit // 6]
-                hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit += 1
+                self.count_stand += 1
             else:
-                witcher_sprites.draw(screen)
-                hero.image = pg.transform.flip(witcher_images["right_hit"][hero.count_hit // 6], True, False)
-                hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit += 1
-    if keys[0] and keys_1[pg.K_LSHIFT]:
-        if hero.stay:
-            if hero.last_dir:
-                witcher_sprites.draw(screen)
-                hero.image = witcher_images["left_hit"][hero.count_hit_strong_1 // 6]
-                hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit_strong_1 += 1
-            else:
-                witcher_sprites.draw(screen)
-                hero.image = pg.transform.flip(witcher_images["left_hit"][hero.count_hit_strong_2  // 6], True, False)
-                hero.mask = pg.mask.from_surface(hero.image)
-                hero.count_hit_strong_2 += 1
+                self.image = pg.transform.flip(witcher_images["stand_right"][self.count_stand // 15], True, False)
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_stand += 1
+
+    def attack(self):
+        # for event in pg.event.get():
+        #     if event.type == pg.QUIT:
+        #         pg.quit()
+        #     if event.type == pg.MOUSEBUTTONDOWN:
+        #         if event.button == 1:
+        #             if hero.stay:
+        #                 if hero.last_dir:
+        #                     for i in range(45):
+        #                         witcher_sprites.draw(screen)
+        #                         hero.image = pg.transform.scale(witcher_images["right_hit"][i // 9], [400, 300])
+        #                 else:
+        #                     for i in range(45):
+        #                         witcher_sprites.draw(screen)
+        #                         hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][i // 9],
+        #                                                               [400, 300]), True, False)
+
+        keys = pg.mouse.get_pressed()
+        keys_1 = pg.key.get_pressed()
+        if self.count_hit >= 30:
+            self.count_hit = 0
+        if self.count_hit_2 >= 30:
+            self.count_hit_2 = 0
+        if self.count_hit_strong_1 >= 30:
+            self.count_hit_strong_1 = 0
+        if self.count_hit_strong_2 >= 30:
+            self.count_hit_strong_2 = 0
+
+        if keys[0]:
+            if self.stay:
+                if self.last_dir:
+                    self.image = witcher_images["right_hit"][self.count_hit // 6]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit += 1
+                else:
+                    self.image = pg.transform.flip(witcher_images["right_hit"][self.count_hit // 6], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit += 1
+        if keys[0] and keys_1[pg.K_LSHIFT]:
+            if self.stay:
+                if self.last_dir:
+                    self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_strong_1 += 1
+                else:
+                    self.image = pg.transform.flip(witcher_images["left_hit"][self.count_hit_strong_2 // 6], True,
+                                                   False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_strong_2 += 1
 
 
 class Mouse(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, h, w, x, y, s):
         super().__init__(mouse_group)
         self.fly_count1 = 0
         self.fly_count2 = 0
-        self.image = pg.transform.scale(mouse_images["fly"][2], [230, 230])
+        self.h, self.w, self.s = h, w, s
+        self.image = pg.transform.scale(mobs_images["mouse"][2], [self.h, self.w])
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 1, 350
+        self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
 
+    def fly_right(self):
+        if self.fly_count2 >= 28:
+            self.fly_count2 = 0
+        self.image = pg.transform.flip(pg.transform.scale(mobs_images["mouse"][self.fly_count2 // 4], [self.h, self.w]),
+                                       True, False)
+        self.rect.x += self.s
+        self.fly_count2 += 1
+        if self.rect.x > 1600:
+            self.rect.x = -300
 
-def fly(mouse):
-    a = 2
-    if mouse.fly_count1 >= 28:
-        mouse.fly_count1 = 0
-
-    if mouse.fly_count2 >= 28:
-        mouse.fly_count2 = 0
-    if mouse.rect.x == 1200:
-        a += 1
-    if mouse.rect.x == 300:
-        a += 1
-
-    if a % 2 == 0:
-        mouse_group.draw(screen)
-        mouse.image = pg.transform.flip(pg.transform.scale(mouse_images["fly"][mouse.fly_count1 // 4], [230, 230]),
-                                        True, False)
-        mouse.mask = pg.mask.from_surface(mouse.image)
-        mouse.rect.x += 10
-        mouse.fly_count1 += 1
-
-    else:
-        mouse_group.draw(screen)
-        mouse.image = pg.transform.scale(mouse_images["fly"][mouse.fly_count2 // 4], [230, 230])
-        mouse.rect.x -= 20
-        mouse.fly_count2 += 1
+    def fly_left(self):
+        if self.fly_count1 >= 28:
+            self.fly_count1 = 0
+        self.image = pg.transform.scale(mobs_images["mouse"][self.fly_count1 // 4], [self.h, self.w])
+        self.rect.x -= self.s
+        self.fly_count1 += 1
+        if self.rect.x < -300:
+            self.rect.x = 1600 + 300
 
 
 class Tile(pg.sprite.Sprite):
@@ -309,37 +323,28 @@ def load_level(filename):
 level = load_level('map_1.txt')
 level_x, level_y = generate_level(level)
 
-
-class Map:
-    def __init__(self, bg, count):
-        x, y = 0, 0
-        backg = pg.image.load(bg)
-        a = backg.get_size()
-        for i in range(count):
-            screen.blit(backg, (x, y))
-            x += a[0]
-
-
 backg = pg.image.load("source/background_2.png")
-map_ = Map("source/background_2.png", 2)
 w = Witcher("stand_left", x_player, y_player)
-m = Mouse()
-t = Wall(0, 789)
+m = Mage(700, 595)
+m1 = Mouse(230, 230, 0, 350, 7)
+m2 = Mouse(115, 115, 1600 - 115, 500, 15)
+m3 = Mouse(300, 300, 1300, 200, 10)
 while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
-        elif event.type == pg.KEYUP:
-            if event.key == pg.K_SPACE:
-                jump(w)
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
+    mage_group.draw(screen)
     witcher_sprites.draw(screen)
     mouse_group.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
-    move(w)
-    fly(m)
-    attack(w)
+    w.move()
+    m.walk(w)
+    m1.fly_right()
+    m2.fly_left()
+    m3.fly_left()
+    w.attack()
 pg.quit()
