@@ -20,6 +20,8 @@ FPS = 60
 speed = 10
 x_player, y_player = 0, 500
 clock = pg.time.Clock()
+
+
 # -------------------------------d
 
 
@@ -71,10 +73,10 @@ mobs_images = {
     "mage_walk": [load_image("source/mobs/mage/walk/1.png"), load_image("source/mobs/mage/walk/2.png"),
                   load_image("source/mobs/mage/walk/3.png"), load_image("source/mobs/mage/walk/2.png")],
     "mage_hit": [load_image("source/mobs/mage/hit/1.png"), load_image("source/mobs/mage/hit/2.png"),
-                  load_image("source/mobs/mage/hit/3.png"), load_image("source/mobs/mage/hit/4.png"),
-                  load_image("source/mobs/mage/hit/5.png"), load_image("source/mobs/mage/hit/6.png"),
-                  load_image("source/mobs/mage/hit/7.png"), load_image("source/mobs/mage/hit/8.png"),
-                  load_image("source/mobs/mage/hit/9.png"), load_image("source/mobs/mage/hit/10.png")]
+                 load_image("source/mobs/mage/hit/3.png"), load_image("source/mobs/mage/hit/4.png"),
+                 load_image("source/mobs/mage/hit/5.png"), load_image("source/mobs/mage/hit/6.png"),
+                 load_image("source/mobs/mage/hit/7.png"), load_image("source/mobs/mage/hit/8.png"),
+                 load_image("source/mobs/mage/hit/9.png"), load_image("source/mobs/mage/hit/10.png")]
 }
 
 
@@ -113,7 +115,7 @@ class Mage(pg.sprite.Sprite):
             self.count_hit_right = 0
         if self.count_hit_left >= 100:
             self.count_hit_left = 0
-        if self.rect.x  < x_w.rect.x - 100:
+        if self.rect.x < x_w.rect.x - 100:
             right = True
             left = False
             last = True
@@ -123,10 +125,10 @@ class Mage(pg.sprite.Sprite):
             right = False
             last = False
             self.rect.x -= self.s
-        if self.rect.x == x_w.rect.x + 300 and not(last):
+        if self.rect.x == x_w.rect.x + 300 and not (last):
             right_hit = False
             left_hit = True
-        if self.rect.x  == x_w.rect.x - 100:
+        if self.rect.x == x_w.rect.x - 100:
             right_hit = True
             left_hit = False
 
@@ -149,6 +151,7 @@ class Mage(pg.sprite.Sprite):
             self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_hit_left += 1
+
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -249,37 +252,57 @@ class Witcher(pg.sprite.Sprite):
                 self.jump_count = 20
                 self.is_jump = False
 
-
-
     def attack(self):
-        # for event in pg.event.get():
-        #     if event.type == pg.QUIT:
-        #         pg.quit()
-        #     if event.type == pg.MOUSEBUTTONDOWN:
-        #         if event.button == 1:
-        #             if hero.stay:
-        #                 if hero.last_dir:
-        #                     for i in range(45):
-        #                         witcher_sprites.draw(screen)
-        #                         hero.image = pg.transform.scale(witcher_images["right_hit"][i // 9], [400, 300])
-        #                 else:
-        #                     for i in range(45):
-        #                         witcher_sprites.draw(screen)
-        #                         hero.image = pg.transform.flip(pg.transform.scale(witcher_images["right_hit"][i // 9],
-        #                                                               [400, 300]), True, False)
-
+        # keys = pg.mouse.get_pressed()
+        # keys_1 = pg.key.get_pressed()
+        # if self.count_hit >= 30:
+        #     self.count_hit = 0
+        # if self.count_hit_2 >= 30:
+        #     self.count_hit_2 = 0
+        # if self.count_hit_strong_1 >= 30:
+        #     self.count_hit_strong_1 = 0
+        # if self.count_hit_strong_2 >= 30:
+        #     self.count_hit_strong_2 = 0
+        #
+        # if keys[0]:
+        #     if self.stay:
+        #         if self.last_dir:
+        #             self.image = witcher_images["right_hit"][self.count_hit // 6]
+        #             self.mask = pg.mask.from_surface(self.image)
+        #             self.count_hit += 1
+        #         else:
+        #             self.image = pg.transform.flip(witcher_images["right_hit"][self.count_hit // 6], True, False)
+        #             self.mask = pg.mask.from_surface(self.image)
+        #             self.count_hit += 1
+        # if keys[0] and keys_1[pg.K_LSHIFT]:
+        #     if self.stay:
+        #         if self.last_dir:
+        #             self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
+        #             self.mask = pg.mask.from_surface(self.image)
+        #             self.count_hit_strong_1 += 1
+        #         else:
+        #             self.image = pg.transform.flip(witcher_images["left_hit"][self.count_hit_strong_2 // 6], True,
+        #                                            False)
+        #             self.mask = pg.mask.from_surface(self.image)
+        #             self.count_hit_strong_2 += 1
         keys = pg.mouse.get_pressed()
         keys_1 = pg.key.get_pressed()
         if self.count_hit >= 30:
             self.count_hit = 0
+            self.is_hit = False
         if self.count_hit_2 >= 30:
             self.count_hit_2 = 0
+            self.is_hit = False
         if self.count_hit_strong_1 >= 30:
             self.count_hit_strong_1 = 0
+            self.is_strong_hit = False
         if self.count_hit_strong_2 >= 30:
+            self.is_strong_hit = False
             self.count_hit_strong_2 = 0
 
         if keys[0]:
+            self.is_hit = True
+        if self.is_hit:
             if self.stay:
                 if self.last_dir:
                     self.image = witcher_images["right_hit"][self.count_hit // 6]
@@ -290,6 +313,8 @@ class Witcher(pg.sprite.Sprite):
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit += 1
         if keys[0] and keys_1[pg.K_LSHIFT]:
+            self.is_strong_hit = True
+        if self.is_strong_hit:
             if self.stay:
                 if self.last_dir:
                     self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
