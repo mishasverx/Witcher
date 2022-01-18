@@ -62,7 +62,10 @@ witcher_images = {
                  load_image("source/player/left_hit/3.png"), load_image("source/player/left_hit/4.png"),
                  load_image("source/player/left_hit/5.png")],
     "run": [load_image("source/player/run/1.png"), load_image("source/player/run/2.png"),
-            load_image("source/player/run/3.png"), load_image("source/player/run/4.png")]
+            load_image("source/player/run/3.png"), load_image("source/player/run/4.png")],
+    "jump": [load_image("source/player/jump/1.png"), load_image("source/player/jump/2.png"),
+             load_image("source/player/jump/3.png"), load_image("source/player/jump/4.png"),
+             load_image("source/player/jump/5.png")]
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
 mobs_images = {
@@ -248,6 +251,12 @@ class Witcher(pg.sprite.Sprite):
             if self.jump_count >= -20:
                 self.rect.y -= self.jump_count
                 self.jump_count -= 1
+                if self.last_dir:
+                    self.image = witcher_images["jump"][self.jump_count // 5]
+                else:
+                    self.image = pg.transform.flip(witcher_images["jump"][self.jump_count // 5], True, False)
+
+
             else:
                 self.jump_count = 20
                 self.is_jump = False
