@@ -181,6 +181,7 @@ class Witcher(pg.sprite.Sprite):
         self.is_hit = False
         self.is_strong_hit = False
         self.jump_count = 20
+        self.anim_jump_count = 0
 
     def update(self):
         if pg.sprite.collide_mask(self, t):
@@ -251,14 +252,14 @@ class Witcher(pg.sprite.Sprite):
             if self.jump_count >= -20:
                 self.rect.y -= self.jump_count
                 self.jump_count -= 1
+                self.anim_jump_count += 1
                 if self.last_dir:
-                    self.image = witcher_images["jump"][self.jump_count // 5]
+                    self.image = witcher_images["jump"][self.anim_jump_count // 9]
                 else:
-                    self.image = pg.transform.flip(witcher_images["jump"][self.jump_count // 5], True, False)
-
-
+                    self.image = pg.transform.flip(witcher_images["jump"][self.anim_jump_count // 9], True, False)
             else:
                 self.jump_count = 20
+                self.anim_jump_count = 0
                 self.is_jump = False
 
     def attack(self):
