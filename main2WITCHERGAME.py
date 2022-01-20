@@ -13,6 +13,7 @@ witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьм�
 tile_group = pg.sprite.Group()  # группа спрайтов объектов
 mouse_group = pg.sprite.Group()  # группа спрайтов мыши
 mage_group = pg.sprite.Group()
+light_group = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
@@ -79,7 +80,14 @@ mobs_images = {
                  load_image("source/mobs/mage/hit/3.png"), load_image("source/mobs/mage/hit/4.png"),
                  load_image("source/mobs/mage/hit/5.png"), load_image("source/mobs/mage/hit/6.png"),
                  load_image("source/mobs/mage/hit/7.png"), load_image("source/mobs/mage/hit/8.png"),
-                 load_image("source/mobs/mage/hit/9.png"), load_image("source/mobs/mage/hit/10.png")]
+                 load_image("source/mobs/mage/hit/9.png"), load_image("source/mobs/mage/hit/10.png")],
+    "mage_hit_light": [load_image("source/mobs/mage/hit_mage/1.png"), load_image("source/mobs/mage/hit_mage/2.png"),
+                       load_image("source/mobs/mage/hit_mage/3.png"), load_image("source/mobs/mage/hit_mage/4.png"),
+                       load_image("source/mobs/mage/hit_mage/5.png"), load_image("source/mobs/mage/hit_mage/6.png"),
+                       load_image("source/mobs/mage/hit_mage/7.png"), load_image("source/mobs/mage/hit_mage/8.png"),
+                       load_image("source/mobs/mage/hit_mage/9.png"), load_image("source/mobs/mage/hit_mage/10.png"),
+                       load_image("source/mobs/mage/hit_mage/11.png"), load_image("source/mobs/mage/hit_mage/12.png"),
+                       load_image("source/mobs/mage/hit_mage/13.png"), load_image("source/mobs/mage/hit_mage/14.png")]
 }
 
 
@@ -92,6 +100,24 @@ class Wall(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
 
 
+class Light(pg.sprite.Sprite):
+    def __init__(self, x, y, f):
+        super().__init__(light_group)
+        self.image = mobs_images['mage_hit_light'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+        self.f = f
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_hit = 0
+
+    def hit(self):
+        if self.count_hit >= 70:
+            self.count_hit = 0
+        self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_hit += 1
+
+
 class Mage(pg.sprite.Sprite):
     def __init__(self, x, y, s):
         super().__init__(mage_group)
@@ -101,6 +127,7 @@ class Mage(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count_walk_right = 0
         self.count_walk_left = 0
+        self.hp = 10
         self.count_hit_left = 0
         self.count_hit_right = 0
 
@@ -140,21 +167,28 @@ class Mage(pg.sprite.Sprite):
                                                               True, False), [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_right += 1
+            self.count_hit_right = 0
         elif left:
             self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_left += 1
+            self.count_hit_left = 0
 
         if right_hit:
             self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
                                                               True, False), [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_hit_right += 1
-        elif left_hit:
+        if left_hit:
             self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
             self.mask = pg.mask.from_surface(self.image)
             self.count_hit_left += 1
 
+
+    def hp1(self):
+        if self.hp <= 0:
+            self.rect.x = -1000
+            self.hp = 4
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -177,19 +211,17 @@ class Witcher(pg.sprite.Sprite):
         # ------------------
         self.last_dir = True
         self.stay = False
+        self.hp = 16
         self.is_jump = False
         self.is_hit = False
         self.is_strong_hit = False
         self.jump_count = 20
         self.anim_jump_count = 0
 
-    def update(self):
-        if pg.sprite.collide_mask(self, t):
-            self.rect.x -= 10
-
-    def update2(self):
-        if pg.sprite.collide_mask(self, t1):
-            self.rect.x += 10
+    def update(self, t):
+        if self.is_hit:
+            if pg.sprite.collide_mask(self, t):
+                    t.hp -= 0.1
 
     def move(self):
         keys = pg.key.get_pressed()
@@ -403,6 +435,7 @@ level = load_level('map_1.txt')
 level_x, level_y = generate_level(level)
 
 backg = pg.image.load("source/background_2.png")
+# l = Light(100, -20, True)
 w = Witcher("stand_left", x_player, y_player)
 m = Mage(700, 440, 5)
 m1 = Mouse(230, 230, 0, 350, 7)
@@ -416,15 +449,20 @@ while running:
     all_sprites.draw(screen)
     tile_group.draw(screen)
     mage_group.draw(screen)
-    witcher_sprites.draw(screen)
     mouse_group.draw(screen)
+    witcher_sprites.draw(screen)
+    light_group.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
-    w.move()
-    w.jump()
-    m.walk(w)
+   # l.hit()
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
+    m.walk(w)
+    m.hp1()
+    w.move()
+    w.update(m)
+    w.jump()
     w.attack()
+    print(m.hp)
 pg.quit()
