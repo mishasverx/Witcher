@@ -188,7 +188,7 @@ class Mage(pg.sprite.Sprite):
     def hp1(self):
         if self.hp <= 0:
             self.rect.x = -1000
-            self.hp = 4
+            self.hp = 10
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
