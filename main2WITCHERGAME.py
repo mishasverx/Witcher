@@ -14,6 +14,9 @@ tile_group = pg.sprite.Group()  # группа спрайтов объектов
 mouse_group = pg.sprite.Group()  # группа спрайтов мыши
 mage_group = pg.sprite.Group()
 light_group = pg.sprite.Group()
+int_group = pg.sprite.Group()
+hp_group = pg.sprite.Group()
+mp_gpoup = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
@@ -90,6 +93,25 @@ mobs_images = {
                        load_image("source/mobs/mage/hit_mage/9.png"), load_image("source/mobs/mage/hit_mage/10.png"),
                        load_image("source/mobs/mage/hit_mage/11.png"), load_image("source/mobs/mage/hit_mage/12.png"),
                        load_image("source/mobs/mage/hit_mage/13.png"), load_image("source/mobs/mage/hit_mage/14.png")]
+}
+gui_images = {
+    "INT": [load_image("source/GUI/int/1.png"), load_image("source/GUI/int/2.png"),
+            load_image("source/GUI/int/3.png"), load_image("source/GUI/int/4.png"),
+            load_image("source/GUI/int/5.png"), load_image("source/GUI/int/6.png"),
+            load_image("source/GUI/int/7.png"), load_image("source/GUI/int/8.png"),
+            load_image("source/GUI/int/9.png"), load_image("source/GUI/int/10.png"),
+            load_image("source/GUI/int/11.png")],
+    "HP": [load_image("source/GUI/hp/0.png"), load_image("source/GUI/hp/1.png"), load_image("source/GUI/hp/2.png"),
+            load_image("source/GUI/hp/3.png"), load_image("source/GUI/hp/4.png"),
+            load_image("source/GUI/hp/5.png"), load_image("source/GUI/hp/6.png"),
+            load_image("source/GUI/hp/7.png"), load_image("source/GUI/hp/8.png"),
+            load_image("source/GUI/hp/9.png"), load_image("source/GUI/hp/10.png"),
+            load_image("source/GUI/hp/11.png"), load_image("source/GUI/hp/12.png"), load_image("source/GUI/hp/13.png"),
+            load_image("source/GUI/hp/14.png"), load_image("source/GUI/hp/15.png"), load_image("source/GUI/hp/16.png")],
+    "MP": [load_image("source/GUI/mp/0.png"), load_image("source/GUI/mp/1.png"), load_image("source/GUI/mp/2.png"),
+            load_image("source/GUI/mp/3.png"), load_image("source/GUI/mp/4.png"),
+            load_image("source/GUI/mp/5.png"), load_image("source/GUI/mp/6.png"),
+            load_image("source/GUI/mp/7.png")]
 }
 
 
@@ -186,11 +208,11 @@ class Mage(pg.sprite.Sprite):
             self.mask = pg.mask.from_surface(self.image)
             self.count_hit_left += 1
 
-
     def hp1(self):
         if self.hp <= 0:
             self.rect.x = -1000
             self.hp = 10
+
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -226,7 +248,7 @@ class Witcher(pg.sprite.Sprite):
     def update(self, t):
         if self.is_hit:
             if pg.sprite.collide_mask(self, t):
-                    t.hp -= 0.1
+                t.hp -= 0.1
 
     def move(self):
         keys = pg.key.get_pressed()
@@ -391,6 +413,8 @@ class Witcher(pg.sprite.Sprite):
                     self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
+
+
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
         super().__init__(mouse_group)
@@ -435,6 +459,35 @@ class Tile(pg.sprite.Sprite):
                 plat_width * x, plat_height * y)
 
 
+class Int(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__(int_group)
+        self.image = gui_images["INT"][0]
+        self.count = 0
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 25, 35
+    def inter(self):
+        fl = True
+        if self.count >= 110:
+            self.count = 0
+        if fl:
+            self.image = gui_images["INT"][self.count // 10]
+            self.count += 1
+
+class HP(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__(hp_group)
+        self.image = gui_images["HP"][9]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 25, 35
+
+class MP(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__(mp_gpoup)
+        self.image = gui_images["MP"][4]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 25, 35
+
 def generate_level(level):
     x, y, count = None, None, 0
     for y in range(len(level)):
@@ -458,6 +511,9 @@ level_x, level_y = generate_level(level)
 
 backg = pg.image.load("source/background_2.png")
 # l = Light(100, -20, True)
+i = Int()
+hp = HP()
+mp = MP()
 w = Witcher("stand_left", x_player, y_player)
 m = Mage(700, 440, 5)
 m1 = Mouse(230, 230, 0, 350, 7)
@@ -472,19 +528,22 @@ while running:
     tile_group.draw(screen)
     mage_group.draw(screen)
     mouse_group.draw(screen)
+    int_group.draw(screen)
+    hp_group.draw(screen)
+    mp_gpoup.draw(screen)
     witcher_sprites.draw(screen)
     light_group.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
-   # l.hit()
+    # l.hit()
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
     m.walk(w)
     m.hp1()
     w.move()
+    i.inter()
     w.update(m)
     w.jump()
     w.attack()
-    print(m.hp)
 pg.quit()
