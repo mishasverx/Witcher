@@ -66,7 +66,9 @@ witcher_images = {
             load_image("source/player/run/3.png"), load_image("source/player/run/4.png")],
     "jump": [load_image("source/player/jump/1.png"), load_image("source/player/jump/2.png"),
              load_image("source/player/jump/3.png"), load_image("source/player/jump/4.png"),
-             load_image("source/player/jump/5.png")]
+             load_image("source/player/jump/5.png")],
+    "cast": [load_image("source/player/cast/1.png"), load_image("source/player/cast/2.png"),
+             load_image("source/player/cast/3.png")]
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
 mobs_images = {
@@ -208,12 +210,15 @@ class Witcher(pg.sprite.Sprite):
         self.count_hit_strong_1 = 0
         self.count_hit_strong_2 = 0
         self.count_run_left = 0
+        self.count_cast_1 = 0
+        self.count_cast_2 = 0
         # ------------------
         self.last_dir = True
         self.stay = False
         self.hp = 16
         self.is_jump = False
         self.is_hit = False
+        self.is_cast = False
         self.is_strong_hit = False
         self.jump_count = 20
         self.anim_jump_count = 0
@@ -332,6 +337,12 @@ class Witcher(pg.sprite.Sprite):
         if self.count_hit >= 30:
             self.count_hit = 0
             self.is_hit = False
+        if self.count_cast_1 >= 30:
+            self.count_cast_1 = 0
+            self.is_cast = False
+        if self.count_cast_2 >= 30:
+            self.count_cast_2 = 0
+            self.is_cast = False
         if self.count_hit_2 >= 30:
             self.count_hit_2 = 0
             self.is_hit = False
@@ -368,7 +379,18 @@ class Witcher(pg.sprite.Sprite):
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_strong_2 += 1
 
-
+        if keys[2]:
+            self.is_cast = True
+        if self.is_cast:
+            if self.stay:
+                if self.last_dir:
+                    self.image = witcher_images["cast"][self.count_cast_1 // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_cast_1 += 1
+                else:
+                    self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_cast_2 += 1
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
         super().__init__(mouse_group)
