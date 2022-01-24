@@ -18,6 +18,7 @@ light_group = pg.sprite.Group()
 int_group = pg.sprite.Group()
 hp_group = pg.sprite.Group()
 mp_gpoup = pg.sprite.Group()
+drowner_gpoup = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
@@ -91,7 +92,13 @@ mobs_images = {
                        load_image("source/mobs/mage/hit_mage/7.png"), load_image("source/mobs/mage/hit_mage/8.png"),
                        load_image("source/mobs/mage/hit_mage/9.png"), load_image("source/mobs/mage/hit_mage/10.png"),
                        load_image("source/mobs/mage/hit_mage/11.png"), load_image("source/mobs/mage/hit_mage/12.png"),
-                       load_image("source/mobs/mage/hit_mage/13.png"), load_image("source/mobs/mage/hit_mage/14.png")]
+                       load_image("source/mobs/mage/hit_mage/13.png"), load_image("source/mobs/mage/hit_mage/14.png")],
+    "drowner": [load_image("source/mobs/drowner/walk/1.png"), load_image("source/mobs/drowner/walk/2.png"),
+                load_image("source/mobs/drowner/walk/3.png"), load_image("source/mobs/drowner/walk/4.png")],
+    "drowner_hit": [load_image("source/mobs/drowner/hit/1.png"), load_image("source/mobs/drowner/hit/2.png"),
+                    load_image("source/mobs/drowner/hit/3.png"), load_image("source/mobs/drowner/hit/4.png"),
+                    load_image("source/mobs/drowner/hit/5.png"), load_image("source/mobs/drowner/hit/6.png"),
+                    load_image("source/mobs/drowner/hit/7.png")]
 }
 gui_images = {
     "INT": [load_image("source/GUI/int/1.png"), load_image("source/GUI/int/2.png"),
@@ -112,16 +119,38 @@ gui_images = {
            load_image("source/GUI/mp/5.png"), load_image("source/GUI/mp/6.png"),
            load_image("source/GUI/mp/7.png")]
 }
+obj_images = {
+    "portal_b": [load_image("source/obj/portal_blue/1.png"), load_image("source/obj/portal_blue/2.png"),
+                 load_image("source/obj/portal_blue/3.png"),
+                load_image("source/obj/portal_blue/4.png"), load_image("source/obj/portal_blue/5.png"),
+                load_image("source/obj/portal_blue/6.png"), load_image("source/obj/portal_blue/7.png"),
+                load_image("source/obj/portal_blue/8.png"), load_image("source/obj/portal_blue/9.png")]
+}
 
-
-class Wall(pg.sprite.Sprite):
-    def __init__(self, x, y):
+class Portal(pg.sprite.Sprite):
+    def __init__(self, pos):
         super().__init__(all_sprites)
-        self.image = tile_images["floor"]
+        self.image = obj_images['portal_b'][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
+        self.rect.x, self.rect.y = 0, 0
         self.mask = pg.mask.from_surface(self.image)
-
+        self.count = 0
+        self.pos = pos
+    def go(self, x, y):
+        if self.pos:
+            self.rect.x, self.rect.y = x, y
+            if self.count >= 90:
+                self.count = 0
+            self.image = obj_images["portal_b"][self.count // 10]
+            self.mask = pg.mask.from_surface(self.image)
+            self.count += 1
+        else:
+            self.rect.x, self.rect.y = x, y
+            if self.count >= 90:
+                self.count = 0
+            self.image = pg.transform.flip(obj_images["portal_b"][self.count // 10], True, False)
+            self.mask = pg.mask.from_surface(self.image)
+            self.count += 1
 
 class Fire(pg.sprite.Sprite):
     def __init__(self):
@@ -157,6 +186,62 @@ class Light(pg.sprite.Sprite):
         self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit += 1
+
+
+class Drowner(pg.sprite.Sprite):
+    def __init__(self, x, y, s):
+        super().__init__(drowner_gpoup)
+        self.image = mobs_images['drowner'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y, self.s = x, y, s
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_walk_right = 0
+        self.count_walk_left = 0
+        self.hp = 10
+        self.count_hit_left = 0
+        self.count_hit_right = 0
+
+        self.last_dir = True
+        self.is_moving = True
+
+    def walk(self, hero):
+        if self.count_walk_right >= 40:
+            self.count_walk_right = 0
+        if self.count_walk_left >= 40:
+            self.count_walk_left = 0
+        if self.count_hit_right >= 70:
+            self.count_hit_right = 0
+        if self.count_hit_left >= 70:
+            self.count_hit_left = 0
+        if self.rect.x < hero.rect.x:
+            self.last_dir = True
+        else:
+            self.last_dir = False
+
+        if abs(self.rect.x - hero.rect.x) > 285:
+            if self.last_dir:
+                self.rect.x += self.s
+                self.image = pg.transform.scale(pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
+                                                                  True, False), [285, 295])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_walk_right += 1
+
+            else:
+                self.rect.x -= self.s
+                self.image = pg.transform.scale(mobs_images["drowner"][self.count_walk_left // 10], [285, 295])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_walk_left += 1
+        else:
+            if self.last_dir:
+                self.image = pg.transform.scale(
+                    pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
+                                      True, False), [285, 295])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_hit_right += 1
+            else:
+                self.mask = pg.mask.from_surface(self.image)
+                self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
+                self.count_hit_left += 1
 
 
 class Mage(pg.sprite.Sprite):
@@ -233,7 +318,7 @@ class Mage(pg.sprite.Sprite):
         #     self.mask = pg.mask.from_surface(self.image)
         #     self.count_hit_left += 1
 
-        if abs(self.rect.x - hero.rect.x) > 600:
+        if abs(self.rect.x - hero.rect.x) > 300:
             if self.last_dir:
                 self.rect.x += self.s
                 self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
@@ -259,7 +344,7 @@ class Mage(pg.sprite.Sprite):
 
     def hp1(self):
         if self.hp <= 0:
-            self.rect.x = -1000
+            self.rect.x = -100
             self.hp = 10
 
 
@@ -474,13 +559,14 @@ class Witcher(pg.sprite.Sprite):
                     self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
-            if self.image == witcher_images["cast"][2] or \
-                self.image == witcher_images["cast"][3]:
-                self.fire = True
-            if self.fire:
-                f = Fire()
-                f.hit(self.fx, 660)
-                self.fx -= 10
+            # if self.image == witcher_images["cast"][2] or \
+            # self.image == witcher_images["cast"][3]:
+            # self.fire = True
+            # if self.fire:
+            # f = Fire()
+            # f.hit(self.fx, 660)
+            # self.fx -= 10
+
 
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
@@ -552,8 +638,10 @@ backg = pg.image.load("source/background_2.png")
 i = Int()
 hp = HP()
 mp = MP()
-w = Witcher("stand_left", x_player, y_player)
-m = Mage(700, 440, 5)
+w = Witcher("stand_left", 500, 500)
+m = Mage(-200, 440, 5)
+d = Drowner(1500, 500, 7)
+p1, p2 = Portal(False), Portal(True)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
@@ -572,6 +660,7 @@ while running:
     fire_group.draw(screen)
     witcher_sprites.draw(screen)
     light_group.draw(screen)
+    drowner_gpoup.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
     # l.hit()
@@ -580,6 +669,9 @@ while running:
     m3.fly_left()
     m.walk(w)
     m.hp1()
+    p1.go(-120 , 450)
+    p2.go(1320, 450)
+    d.walk(w)
     w.move()
     i.inter()
     w.update(m)
