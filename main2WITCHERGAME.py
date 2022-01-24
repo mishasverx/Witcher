@@ -276,9 +276,10 @@ class Witcher(pg.sprite.Sprite):
         self.is_strong_hit = False
         self.jump_count = 20
         self.anim_jump_count = 0
+        self.can_attack = False
 
     def update(self, t):
-        if self.is_hit:
+        if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.1
 
@@ -339,6 +340,8 @@ class Witcher(pg.sprite.Sprite):
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
             self.is_jump = True
+            self.stay = False
+
         if self.is_jump:
             if self.jump_count >= -20:
                 self.rect.y -= self.jump_count
@@ -352,6 +355,7 @@ class Witcher(pg.sprite.Sprite):
                 self.jump_count = 20
                 self.anim_jump_count = 0
                 self.is_jump = False
+                self.stay = True
 
     def attack(self):
         # keys = pg.mouse.get_pressed()
@@ -391,6 +395,7 @@ class Witcher(pg.sprite.Sprite):
         if self.count_hit >= 30:
             self.count_hit = 0
             self.is_hit = False
+            self.can_attack = False
         if self.count_cast_1 >= 30:
             self.count_cast_1 = 0
             self.is_cast = False
@@ -400,17 +405,21 @@ class Witcher(pg.sprite.Sprite):
         if self.count_hit_2 >= 30:
             self.count_hit_2 = 0
             self.is_hit = False
+            self.can_attack = False
         if self.count_hit_strong_1 >= 30:
             self.count_hit_strong_1 = 0
             self.is_strong_hit = False
+            self.can_attack = False
         if self.count_hit_strong_2 >= 30:
             self.is_strong_hit = False
             self.count_hit_strong_2 = 0
+            self.can_attack = False
 
         if keys[0]:
             self.is_hit = True
         if self.is_hit:
             if self.stay:
+                self.can_attack = True
                 if self.last_dir:
                     self.image = witcher_images["right_hit"][self.count_hit // 6]
                     self.mask = pg.mask.from_surface(self.image)
@@ -423,6 +432,7 @@ class Witcher(pg.sprite.Sprite):
             self.is_strong_hit = True
         if self.is_strong_hit:
             if self.stay:
+                self.can_attack = True
                 if self.last_dir:
                     self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
