@@ -102,16 +102,16 @@ gui_images = {
             load_image("source/GUI/int/9.png"), load_image("source/GUI/int/10.png"),
             load_image("source/GUI/int/11.png")],
     "HP": [load_image("source/GUI/hp/0.png"), load_image("source/GUI/hp/1.png"), load_image("source/GUI/hp/2.png"),
-            load_image("source/GUI/hp/3.png"), load_image("source/GUI/hp/4.png"),
-            load_image("source/GUI/hp/5.png"), load_image("source/GUI/hp/6.png"),
-            load_image("source/GUI/hp/7.png"), load_image("source/GUI/hp/8.png"),
-            load_image("source/GUI/hp/9.png"), load_image("source/GUI/hp/10.png"),
-            load_image("source/GUI/hp/11.png"), load_image("source/GUI/hp/12.png"), load_image("source/GUI/hp/13.png"),
-            load_image("source/GUI/hp/14.png"), load_image("source/GUI/hp/15.png"), load_image("source/GUI/hp/16.png")],
+           load_image("source/GUI/hp/3.png"), load_image("source/GUI/hp/4.png"),
+           load_image("source/GUI/hp/5.png"), load_image("source/GUI/hp/6.png"),
+           load_image("source/GUI/hp/7.png"), load_image("source/GUI/hp/8.png"),
+           load_image("source/GUI/hp/9.png"), load_image("source/GUI/hp/10.png"),
+           load_image("source/GUI/hp/11.png"), load_image("source/GUI/hp/12.png"), load_image("source/GUI/hp/13.png"),
+           load_image("source/GUI/hp/14.png"), load_image("source/GUI/hp/15.png"), load_image("source/GUI/hp/16.png")],
     "MP": [load_image("source/GUI/mp/0.png"), load_image("source/GUI/mp/1.png"), load_image("source/GUI/mp/2.png"),
-            load_image("source/GUI/mp/3.png"), load_image("source/GUI/mp/4.png"),
-            load_image("source/GUI/mp/5.png"), load_image("source/GUI/mp/6.png"),
-            load_image("source/GUI/mp/7.png")]
+           load_image("source/GUI/mp/3.png"), load_image("source/GUI/mp/4.png"),
+           load_image("source/GUI/mp/5.png"), load_image("source/GUI/mp/6.png"),
+           load_image("source/GUI/mp/7.png")]
 }
 
 
@@ -155,12 +155,15 @@ class Mage(pg.sprite.Sprite):
         self.count_hit_left = 0
         self.count_hit_right = 0
 
-    def walk(self, x_w):
-        right = False
-        left = False
-        right_hit = False
-        last = False
-        left_hit = False
+        self.last_dir = True
+        self.is_moving = True
+
+    def walk(self, hero):
+        # right = False
+        # left = False
+        # right_hit = False
+        # last = False
+        # left_hit = False
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
         if self.count_walk_left >= 35:
@@ -169,44 +172,73 @@ class Mage(pg.sprite.Sprite):
             self.count_hit_right = 0
         if self.count_hit_left >= 100:
             self.count_hit_left = 0
-        if self.rect.x < x_w.rect.x - 100:
-            right = True
-            left = False
-            last = True
-            self.rect.x += self.s
-        elif self.rect.x > x_w.rect.x + 300:
-            left = True
-            right = False
-            last = False
-            self.rect.x -= self.s
-        if self.rect.x == x_w.rect.x + 300 and not (last):
-            right_hit = False
-            left_hit = True
-        if self.rect.x == x_w.rect.x - 100:
-            right_hit = True
-            left_hit = False
+        if self.rect.x < hero.rect.x:
+            self.last_dir = True
+        else:
+            self.last_dir = False
 
-        if right:
-            self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
-                                                              True, False), [315, 355])
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_walk_right += 1
-            self.count_hit_right = 0
-        elif left:
-            self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_walk_left += 1
-            self.count_hit_left = 0
+        # if self.rect.x < hero.rect.x - 100:
+        #     right = True
+        #     left = False
+        #     last = True
+        #     self.rect.x += self.s
+        # elif self.rect.x > hero.rect.x + 300:
+        #     left = True
+        #     right = False
+        #     last = False
+        #     self.rect.x -= self.s
+        # if self.rect.x == hero.rect.x + 300 and not (last):
+        #     right_hit = False
+        #     left_hit = True
+        # if self.rect.x == hero.rect.x - 100:
+        #     right_hit = True
+        #     left_hit = False
+        #
+        # if right:
+        #     self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
+        #                                                       True, False), [315, 355])
+        #     self.mask = pg.mask.from_surface(self.image)
+        #     self.count_walk_right += 1
+        #     self.count_hit_right = 0
+        # elif left:
+        #     self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
+        #     self.mask = pg.mask.from_surface(self.image)
+        #     self.count_walk_left += 1
+        #     self.count_hit_left = 0
+        #
+        # if right_hit:
+        #     self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
+        #                                                       True, False), [315, 355])
+        #     self.mask = pg.mask.from_surface(self.image)
+        #     self.count_hit_right += 1
+        # if left_hit:
+        #     self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
+        #     self.mask = pg.mask.from_surface(self.image)
+        #     self.count_hit_left += 1
 
-        if right_hit:
-            self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
-                                                              True, False), [315, 355])
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_hit_right += 1
-        if left_hit:
-            self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_hit_left += 1
+        if abs(self.rect.x - hero.rect.x) > 600:
+            if self.last_dir:
+                self.rect.x += self.s
+                self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
+                                                                  True, False), [315, 355])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_walk_right += 1
+
+            else:
+                self.rect.x -= self.s
+                self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_walk_left += 1
+        else:
+            if self.last_dir:
+                self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
+                                                                  True, False), [315, 355])
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_hit_right += 1
+            else:
+                self.mask = pg.mask.from_surface(self.image)
+                self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
+                self.count_hit_left += 1
 
     def hp1(self):
         if self.hp <= 0:
@@ -418,6 +450,7 @@ class Witcher(pg.sprite.Sprite):
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
         super().__init__(mouse_group)
+
         self.fly_count1 = 0
         self.fly_count2 = 0
         self.h, self.w, self.s = h, w, s
@@ -466,6 +499,7 @@ class Int(pg.sprite.Sprite):
         self.count = 0
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
+
     def inter(self):
         fl = True
         if self.count >= 110:
@@ -474,6 +508,7 @@ class Int(pg.sprite.Sprite):
             self.image = gui_images["INT"][self.count // 10]
             self.count += 1
 
+
 class HP(pg.sprite.Sprite):
     def __init__(self):
         super().__init__(hp_group)
@@ -481,12 +516,14 @@ class HP(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
 
+
 class MP(pg.sprite.Sprite):
     def __init__(self):
         super().__init__(mp_gpoup)
         self.image = gui_images["MP"][4]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
+
 
 def generate_level(level):
     x, y, count = None, None, 0
