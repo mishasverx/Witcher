@@ -13,6 +13,7 @@ witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьм�
 tile_group = pg.sprite.Group()  # группа спрайтов объектов
 mouse_group = pg.sprite.Group()  # группа спрайтов мыши
 mage_group = pg.sprite.Group()
+fire_group = pg.sprite.Group()
 light_group = pg.sprite.Group()
 int_group = pg.sprite.Group()
 hp_group = pg.sprite.Group()
@@ -45,13 +46,6 @@ def load_image(name, colorkey=None):
     return image
 
 
-# 🡫🡫🡫🡫🡫🡫🡫🡫 изображения объектов
-tile_images = {
-    'floor': load_image('source\\tile\\floor1.jpg'),
-    'plat': load_image('source\\tile\\plat.jpg')
-}
-# 🡩🡩🡩🡩🡩🡩🡩🡩 изображения объектов
-
 # 🡫🡫🡫🡫🡫🡫🡫🡫 изображения ведьмака
 witcher_images = {
     "walk_right": [load_image("source/player/right/2.png"), load_image("source/player/right/3.png"),
@@ -71,7 +65,12 @@ witcher_images = {
              load_image("source/player/jump/3.png"), load_image("source/player/jump/4.png"),
              load_image("source/player/jump/5.png")],
     "cast": [load_image("source/player/cast/1.png"), load_image("source/player/cast/2.png"),
-             load_image("source/player/cast/3.png")]
+             load_image("source/player/cast/3.png"), load_image("source/player/cast/3.png")],
+    "fire": [load_image("source/player/magic/fire/1.png"), load_image("source/player/magic/fire/2.png"),
+             load_image("source/player/magic/fire/3.png"), load_image("source/player/magic/fire/4.png"),
+             load_image("source/player/magic/fire/5.png"), load_image("source/player/magic/fire/6.png"),
+             load_image("source/player/magic/fire/7.png"), load_image("source/player/magic/fire/8.png"),
+             load_image("source/player/magic/fire/9.png"), load_image("source/player/magic/fire/10.png")]
 }
 # 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
 mobs_images = {
@@ -122,6 +121,24 @@ class Wall(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
+
+
+class Fire(pg.sprite.Sprite):
+    def __init__(self):
+        super().__init__(fire_group)
+        self.image = witcher_images['fire'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 0, 0
+        self.mask = pg.mask.from_surface(self.image)
+        self.count = 0
+
+    def hit(self, x, y):
+        if self.count >= 100:
+            self.count = 0
+        self.rect.x, self.rect.y = x, y
+        self.image = witcher_images["fire"][self.count // 10]
+        self.mask = pg.mask.from_surface(self.image)
+        self.count += 1
 
 
 class Light(pg.sprite.Sprite):
@@ -272,7 +289,9 @@ class Witcher(pg.sprite.Sprite):
         self.hp = 16
         self.is_jump = False
         self.is_hit = False
+        self.fire = False
         self.is_cast = False
+        self.fx = 1000
         self.is_strong_hit = False
         self.jump_count = 20
         self.anim_jump_count = 0
@@ -396,10 +415,10 @@ class Witcher(pg.sprite.Sprite):
             self.count_hit = 0
             self.is_hit = False
             self.can_attack = False
-        if self.count_cast_1 >= 30:
+        if self.count_cast_1 >= 40:
             self.count_cast_1 = 0
             self.is_cast = False
-        if self.count_cast_2 >= 30:
+        if self.count_cast_2 >= 40:
             self.count_cast_2 = 0
             self.is_cast = False
         if self.count_hit_2 >= 30:
@@ -455,7 +474,13 @@ class Witcher(pg.sprite.Sprite):
                     self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
-
+            if self.image == witcher_images["cast"][2] or \
+                self.image == witcher_images["cast"][3]:
+                self.fire = True
+            if self.fire:
+                f = Fire()
+                f.hit(self.fx, 660)
+                self.fx -= 10
 
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
@@ -489,19 +514,6 @@ class Mouse(pg.sprite.Sprite):
             self.rect.x = 1600 + 300
 
 
-class Tile(pg.sprite.Sprite):
-    def __init__(self, type, x, y):
-        super().__init__(tile_group, all_sprites)
-        self.image = tile_images[type]
-        self.mask = pg.mask.from_surface(self.image)
-        if type == "floor":
-            self.rect = self.image.get_rect().move(
-                floor_width * x, floor_height * y)
-        elif type == "plat":
-            self.rect = self.image.get_rect().move(
-                plat_width * x, plat_height * y)
-
-
 class Int(pg.sprite.Sprite):
     def __init__(self):
         super().__init__(int_group)
@@ -530,31 +542,10 @@ class HP(pg.sprite.Sprite):
 class MP(pg.sprite.Sprite):
     def __init__(self):
         super().__init__(mp_gpoup)
-        self.image = gui_images["MP"][4]
+        self.image = gui_images["MP"][7]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
 
-
-def generate_level(level):
-    x, y, count = None, None, 0
-    for y in range(len(level)):
-        for x in range(len(level[y])):
-            if level[y][x] == '@':
-                Tile('floor', x, y)
-            elif level[y][x] == "#":
-                Tile('plat', x, y)
-    return x, y
-
-
-def load_level(filename):
-    with open(filename, 'r') as mapFile:
-        level_map = [line.strip() for line in mapFile]
-    max_width = max(map(len, level_map))
-    return list(map(lambda x: list(x.ljust(max_width, '.')), level_map))
-
-
-level = load_level('map_1.txt')
-level_x, level_y = generate_level(level)
 
 backg = pg.image.load("source/background_2.png")
 # l = Light(100, -20, True)
@@ -578,6 +569,7 @@ while running:
     int_group.draw(screen)
     hp_group.draw(screen)
     mp_gpoup.draw(screen)
+    fire_group.draw(screen)
     witcher_sprites.draw(screen)
     light_group.draw(screen)
     clock.tick(FPS)
@@ -591,6 +583,7 @@ while running:
     w.move()
     i.inter()
     w.update(m)
+    print(m.hp)
     w.jump()
     w.attack()
 pg.quit()
