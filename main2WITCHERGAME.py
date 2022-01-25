@@ -243,6 +243,10 @@ class Drowner(pg.sprite.Sprite):
                 self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
                 self.count_hit_left += 1
 
+    def hp1(self):
+        if self.hp <= 0:
+            self.rect.x = 2100
+            self.hp = 10
 
 class Mage(pg.sprite.Sprite):
     def __init__(self, x, y, s):
@@ -344,7 +348,7 @@ class Mage(pg.sprite.Sprite):
 
     def hp1(self):
         if self.hp <= 0:
-            self.rect.x = -100
+            self.rect.x = -500
             self.hp = 10
 
 
@@ -669,12 +673,14 @@ while running:
     m3.fly_left()
     m.walk(w)
     m.hp1()
-    p1.go(-120 , 450)
-    p2.go(1320, 450)
+    d.hp1()
+    p1.go(-160 , 450)
+    p2.go(1360, 450)
     d.walk(w)
     w.move()
     i.inter()
     w.update(m)
+    w.update(d)
     print(m.hp)
     w.jump()
     w.attack()
