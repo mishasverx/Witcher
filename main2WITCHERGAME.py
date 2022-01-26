@@ -1,6 +1,7 @@
 import pygame as pg
 import os
 import sys
+from math import  floor
 
 pg.init()
 pg.display.set_caption("WITCHER")
@@ -122,10 +123,11 @@ gui_images = {
 obj_images = {
     "portal_b": [load_image("source/obj/portal_blue/1.png"), load_image("source/obj/portal_blue/2.png"),
                  load_image("source/obj/portal_blue/3.png"),
-                load_image("source/obj/portal_blue/4.png"), load_image("source/obj/portal_blue/5.png"),
-                load_image("source/obj/portal_blue/6.png"), load_image("source/obj/portal_blue/7.png"),
-                load_image("source/obj/portal_blue/8.png"), load_image("source/obj/portal_blue/9.png")]
+                 load_image("source/obj/portal_blue/4.png"), load_image("source/obj/portal_blue/5.png"),
+                 load_image("source/obj/portal_blue/6.png"), load_image("source/obj/portal_blue/7.png"),
+                 load_image("source/obj/portal_blue/8.png"), load_image("source/obj/portal_blue/9.png")]
 }
+
 
 class Portal(pg.sprite.Sprite):
     def __init__(self, pos):
@@ -136,6 +138,7 @@ class Portal(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count = 0
         self.pos = pos
+
     def go(self, x, y):
         if self.pos:
             self.rect.x, self.rect.y = x, y
@@ -151,6 +154,7 @@ class Portal(pg.sprite.Sprite):
             self.image = pg.transform.flip(obj_images["portal_b"][self.count // 10], True, False)
             self.mask = pg.mask.from_surface(self.image)
             self.count += 1
+
 
 class Fire(pg.sprite.Sprite):
     def __init__(self):
@@ -203,6 +207,7 @@ class Drowner(pg.sprite.Sprite):
 
         self.last_dir = True
         self.is_moving = True
+        self.can_attack = True
 
     def walk(self, hero):
         if self.count_walk_right >= 40:
@@ -247,6 +252,12 @@ class Drowner(pg.sprite.Sprite):
         if self.hp <= 0:
             self.rect.x = 2100
             self.hp = 10
+
+    def update(self, t):
+        if self.can_attack:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 0.03
+
 
 class Mage(pg.sprite.Sprite):
     def __init__(self, x, y, s):
@@ -322,7 +333,7 @@ class Mage(pg.sprite.Sprite):
         #     self.mask = pg.mask.from_surface(self.image)
         #     self.count_hit_left += 1
 
-        if abs(self.rect.x - hero.rect.x) > 300:
+        if abs(self.rect.x - hero.rect.x) > 600:
             if self.last_dir:
                 self.rect.x += self.s
                 self.image = pg.transform.scale(pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
@@ -389,7 +400,7 @@ class Witcher(pg.sprite.Sprite):
     def update(self, t):
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.1
+                t.hp -= 0.3
 
     def move(self):
         keys = pg.key.get_pressed()
@@ -624,9 +635,16 @@ class Int(pg.sprite.Sprite):
 class HP(pg.sprite.Sprite):
     def __init__(self):
         super().__init__(hp_group)
-        self.image = gui_images["HP"][9]
+        self.image = gui_images["HP"][16]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
+        self.fl = True
+
+    def udpate(self, tr):
+        if self.fl:
+            self.image = gui_images["HP"][floor(tr.hp)]
+            if floor(tr.hp) == -1:
+                pg.quit()
 
 
 class MP(pg.sprite.Sprite):
@@ -637,7 +655,7 @@ class MP(pg.sprite.Sprite):
         self.rect.x, self.rect.y = 25, 35
 
 
-backg = pg.image.load("source/background_2.png")
+backg = pg.image.load("source/background_3.png")
 # l = Light(100, -20, True)
 i = Int()
 hp = HP()
@@ -673,12 +691,14 @@ while running:
     m3.fly_left()
     d.walk(w)
     m.walk(w)
+    hp.udpate(w)
     m.hp1()
     d.hp1()
-    p1.go(-160 , 450)
+    p1.go(-160, 450)
     p2.go(1360, 450)
     w.move()
     i.inter()
+    d.update(w)
     w.update(m)
     w.update(d)
     w.jump()
