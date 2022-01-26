@@ -508,7 +508,7 @@ class Witcher(pg.sprite.Sprite):
 
     def attack(self):
 
-        # keys = pg.mouse.get_pressed()
+        # keys = pg.mouse.get_pressed)
         # keys_1 = pg.key.get_pressed()
         # if self.count_hit >= 30:
         #     self.count_hit = 0
