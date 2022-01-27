@@ -192,6 +192,9 @@ class Light(pg.sprite.Sprite):
         self.count_hit += 1
 
 
+l = Light(100, -20, True)
+
+
 class Drowner(pg.sprite.Sprite):
     def __init__(self, x, y, s):
         super().__init__(drowner_gpoup)
@@ -223,30 +226,58 @@ class Drowner(pg.sprite.Sprite):
         else:
             self.last_dir = False
 
-        if abs(self.rect.x - hero.rect.x) > 205:
-            if self.last_dir:
-                self.rect.x += self.s
-                self.image = pg.transform.scale(pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
-                                                                  True, False), [285, 295])
-                self.mask = pg.mask.from_surface(self.image)
-                self.count_walk_right += 1
+        if self.rect.x > hero.rect.x:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > -250:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = pg.transform.scale(
+                        pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
+                                          True, False), [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
 
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.scale(mobs_images["drowner"][self.count_walk_left // 10], [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
             else:
-                self.rect.x -= self.s
-                self.image = pg.transform.scale(mobs_images["drowner"][self.count_walk_left // 10], [285, 295])
-                self.mask = pg.mask.from_surface(self.image)
-                self.count_walk_left += 1
+                if self.last_dir:
+                    self.image = pg.transform.scale(
+                        pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
+                                          True, False), [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
+                    self.count_hit_left += 1
         else:
-            if self.last_dir:
-                self.image = pg.transform.scale(
-                    pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
-                                      True, False), [285, 295])
-                self.mask = pg.mask.from_surface(self.image)
-                self.count_hit_right += 1
+            if hero.rect.x - (self.rect.x + self.rect.width) > -520:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = pg.transform.scale(
+                        pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
+                                          True, False), [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
+
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.scale(mobs_images["drowner"][self.count_walk_left // 10], [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
             else:
-                self.mask = pg.mask.from_surface(self.image)
-                self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
-                self.count_hit_left += 1
+                if self.last_dir:
+                    self.image = pg.transform.scale(
+                        pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
+                                          True, False), [285, 295])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
+                    self.count_hit_left += 1
 
     def hp1(self):
         if self.hp <= 0:
@@ -271,7 +302,7 @@ class Mage(pg.sprite.Sprite):
         self.hp = 10
         self.count_hit_left = 0
         self.count_hit_right = 0
-
+        self.can_attack = True
         self.last_dir = True
         self.is_moving = True
 
@@ -334,7 +365,6 @@ class Mage(pg.sprite.Sprite):
         #     self.count_hit_left += 1
         if self.rect.x > hero.rect.x:
             if self.rect.x - (hero.rect.x + hero.rect.width) > 300:
-                print(self.rect.x - (hero.rect.x + hero.rect.width))
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.scale(
@@ -361,7 +391,6 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
         else:
             if hero.rect.x - (self.rect.x + self.rect.width) > 300:
-                print(hero.rect.x - (self.rect.x + self.rect.width))
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.scale(
@@ -392,6 +421,11 @@ class Mage(pg.sprite.Sprite):
             self.rect.x = -500
             self.hp = 10
 
+    def update(self, t):
+        if self.can_attack:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 0.04
+
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, type, x, y):
@@ -413,6 +447,9 @@ class Witcher(pg.sprite.Sprite):
         self.count_run_left = 0
         self.count_cast_1 = 0
         self.count_cast_2 = 0
+        self.jump_count = 20
+        self.anim_jump_count = 0
+        self.count_click = 7
         # ------------------
         self.last_dir = True
         self.stay = False
@@ -423,8 +460,7 @@ class Witcher(pg.sprite.Sprite):
         self.is_cast = False
         self.fx = 1000
         self.is_strong_hit = False
-        self.jump_count = 20
-        self.anim_jump_count = 0
+
         self.can_attack = False
 
     def update(self, t):
@@ -507,39 +543,6 @@ class Witcher(pg.sprite.Sprite):
                 self.stay = True
 
     def attack(self):
-
-        # keys = pg.mouse.get_pressed)
-        # keys_1 = pg.key.get_pressed()
-        # if self.count_hit >= 30:
-        #     self.count_hit = 0
-        # if self.count_hit_2 >= 30:
-        #     self.count_hit_2 = 0
-        # if self.count_hit_strong_1 >= 30:
-        #     self.count_hit_strong_1 = 0
-        # if self.count_hit_strong_2 >= 30:
-        #     self.count_hit_strong_2 = 0
-        #
-        # if keys[0]:
-        #     if self.stay:
-        #         if self.last_dir:
-        #             self.image = witcher_images["right_hit"][self.count_hit // 6]
-        #             self.mask = pg.mask.from_surface(self.image)
-        #             self.count_hit += 1
-        #         else:
-        #             self.image = pg.transform.flip(witcher_images["right_hit"][self.count_hit // 6], True, False)
-        #             self.mask = pg.mask.from_surface(self.image)
-        #             self.count_hit += 1
-        # if keys[0] and keys_1[pg.K_LSHIFT]:
-        #     if self.stay:
-        #         if self.last_dir:
-        #             self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
-        #             self.mask = pg.mask.from_surface(self.image)
-        #             self.count_hit_strong_1 += 1
-        #         else:
-        #             self.image = pg.transform.flip(witcher_images["left_hit"][self.count_hit_strong_2 // 6], True,
-        #                                            False)
-        #             self.mask = pg.mask.from_surface(self.image)
-        #             self.count_hit_strong_2 += 1
         keys = pg.mouse.get_pressed()
         keys_1 = pg.key.get_pressed()
         if self.count_hit >= 30:
@@ -599,6 +602,9 @@ class Witcher(pg.sprite.Sprite):
 
         if keys[2]:
             self.is_cast = True
+            self.count_click -= 0.2
+            if self.count_click <= 1:
+                self.count_click = 7
         if self.is_cast:
             if self.stay:
                 if self.last_dir:
@@ -609,13 +615,6 @@ class Witcher(pg.sprite.Sprite):
                     self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
-            # if self.image == witcher_images["cast"][2] or \
-            # self.image == witcher_images["cast"][3]:
-            # self.fire = True
-            # if self.fire:
-            # f = Fire()
-            # f.hit(self.fx, 660)
-            # self.fx -= 10
 
 
 class Mouse(pg.sprite.Sprite):
@@ -678,7 +677,7 @@ class HP(pg.sprite.Sprite):
     def udpate(self, tr):
         if self.fl:
             self.image = gui_images["HP"][floor(tr.hp)]
-            if floor(tr.hp) == -1:
+            if floor(tr.hp) <= 0.5:
                 pg.quit()
 
 
@@ -688,10 +687,14 @@ class MP(pg.sprite.Sprite):
         self.image = gui_images["MP"][7]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 25, 35
+        self.fl = True
+
+    def udpate(self, tr):
+        if self.fl:
+            self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/background_3.png")
-# l = Light(100, -20, True)
+backg = pg.image.load("source/background_2.png")
 i = Int()
 hp = HP()
 mp = MP()
@@ -711,30 +714,32 @@ while running:
     tile_group.draw(screen)
     mage_group.draw(screen)
     mouse_group.draw(screen)
-    int_group.draw(screen)
-    hp_group.draw(screen)
-    mp_gpoup.draw(screen)
     fire_group.draw(screen)
     drowner_gpoup.draw(screen)
     witcher_sprites.draw(screen)
     light_group.draw(screen)
+    int_group.draw(screen)
+    hp_group.draw(screen)
+    mp_gpoup.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
-    # l.hit()
+    l.hit()
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
     d.walk(w)
     m.walk(w)
     hp.udpate(w)
+    mp.udpate(w)
     m.hp1()
     d.hp1()
     p1.go(-160, 450)
     p2.go(1360, 450)
     w.move()
     i.inter()
-    d.update(w)
+    # d.update(w)
     w.update(m)
+    # m.update(w)
     w.update(d)
     w.jump()
     w.attack()
