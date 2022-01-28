@@ -183,6 +183,7 @@ class Light(pg.sprite.Sprite):
         self.f = f
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit = 0
+        self.count = 0
 
     def hit(self):
         if self.count_hit >= 70:
@@ -190,6 +191,8 @@ class Light(pg.sprite.Sprite):
         self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit += 1
+
+
 
 
 class Drowner(pg.sprite.Sprite):
@@ -361,7 +364,7 @@ class Mage(pg.sprite.Sprite):
         #     self.mask = pg.mask.from_surface(self.image)
         #     self.count_hit_left += 1
         if self.rect.x > hero.rect.x:
-            if self.rect.x - (hero.rect.x + hero.rect.width) > 300:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > 500:
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.scale(
@@ -391,7 +394,7 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
                     self.can_attack = True
         else:
-            if hero.rect.x - (self.rect.x + self.rect.width) > 300:
+            if hero.rect.x - (self.rect.x + self.rect.width) > 600:
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.scale(
@@ -426,15 +429,15 @@ class Mage(pg.sprite.Sprite):
             self.hp = 10
 
     def update(self, t, l):
-        if self.can_attack:
+        if self.rect.x >= -100 and self.rect.x < 1600:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.04
-            l.rect.x  = t.rect.x + 50
+            if l.count_hit - 1 == 0:
+                l.rect.x = t.rect.x + 50
             l.hit()
         else:
-            l.f = False
-            l.rect.x = 100000
-            l.count_hit = 0
+            l.rect.x = -1000
+
 
 
 class Witcher(pg.sprite.Sprite):
@@ -747,7 +750,7 @@ while running:
     p2.go(1360, 450)
     w.move()
     i.inter()
-    # d.update(w)
+    d.update(w)
     w.update(m)
     m.update(w, l)
     w.update(d)
