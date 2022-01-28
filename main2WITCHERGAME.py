@@ -192,9 +192,6 @@ class Light(pg.sprite.Sprite):
         self.count_hit += 1
 
 
-l = Light(100, -20, True)
-
-
 class Drowner(pg.sprite.Sprite):
     def __init__(self, x, y, s):
         super().__init__(drowner_gpoup)
@@ -372,12 +369,14 @@ class Mage(pg.sprite.Sprite):
                                           True, False), [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
+                    self.can_attack = False
 
                 else:
                     self.rect.x -= self.s
                     self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_left += 1
+                    self.can_attack = False
             else:
                 if self.last_dir:
                     self.image = pg.transform.scale(
@@ -385,10 +384,12 @@ class Mage(pg.sprite.Sprite):
                                           True, False), [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
+                    self.can_attack = True
                 else:
                     self.mask = pg.mask.from_surface(self.image)
                     self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
                     self.count_hit_left += 1
+                    self.can_attack = True
         else:
             if hero.rect.x - (self.rect.x + self.rect.width) > 300:
                 if self.last_dir:
@@ -398,12 +399,13 @@ class Mage(pg.sprite.Sprite):
                                           True, False), [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
-
+                    self.can_attack = False
                 else:
                     self.rect.x -= self.s
                     self.image = pg.transform.scale(mobs_images["mage_walk"][self.count_walk_left // 9], [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_left += 1
+                    self.can_attack = False
             else:
                 if self.last_dir:
                     self.image = pg.transform.scale(
@@ -411,20 +413,28 @@ class Mage(pg.sprite.Sprite):
                                           True, False), [315, 355])
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
+                    self.can_attack = True
                 else:
                     self.mask = pg.mask.from_surface(self.image)
                     self.image = pg.transform.scale(mobs_images["mage_hit"][self.count_hit_left // 10], [315, 355])
                     self.count_hit_left += 1
+                    self.can_attack = True
 
     def hp1(self):
         if self.hp <= 0:
             self.rect.x = -500
             self.hp = 10
 
-    def update(self, t):
+    def update(self, t, l):
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.04
+            l.rect.x  = t.rect.x + 50
+            l.hit()
+        else:
+            l.f = False
+            l.rect.x = 100000
+            l.count_hit = 0
 
 
 class Witcher(pg.sprite.Sprite):
@@ -702,6 +712,7 @@ w = Witcher("stand_left", 500, 500)
 m = Mage(-200, 440, 5)
 d = Drowner(1500, 500, 7)
 p1, p2 = Portal(False), Portal(True)
+l = Light(1000000, -20, True)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
@@ -723,7 +734,6 @@ while running:
     mp_gpoup.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
-    l.hit()
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
@@ -739,7 +749,7 @@ while running:
     i.inter()
     # d.update(w)
     w.update(m)
-    # m.update(w)
+    m.update(w, l)
     w.update(d)
     w.jump()
     w.attack()
