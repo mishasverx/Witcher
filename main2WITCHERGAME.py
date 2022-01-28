@@ -20,6 +20,7 @@ int_group = pg.sprite.Group()
 hp_group = pg.sprite.Group()
 mp_gpoup = pg.sprite.Group()
 drowner_gpoup = pg.sprite.Group()
+skeleton_group = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
@@ -99,7 +100,15 @@ mobs_images = {
     "drowner_hit": [load_image("source/mobs/drowner/hit/1.png"), load_image("source/mobs/drowner/hit/2.png"),
                     load_image("source/mobs/drowner/hit/3.png"), load_image("source/mobs/drowner/hit/4.png"),
                     load_image("source/mobs/drowner/hit/5.png"), load_image("source/mobs/drowner/hit/6.png"),
-                    load_image("source/mobs/drowner/hit/7.png")]
+                    load_image("source/mobs/drowner/hit/7.png")],
+    "skeleton": [load_image("source/mobs/skeleton/walk/1.png"), load_image("source/mobs/skeleton/walk/2.png"),
+                 load_image("source/mobs/skeleton/walk/3.png"), load_image("source/mobs/skeleton/walk/4.png"),
+                 load_image("source/mobs/skeleton/walk/5.png"), load_image("source/mobs/skeleton/walk/6.png"),
+                 load_image("source/mobs/skeleton/walk/7.png")],
+    "skeleton_hit": [load_image("source/mobs/skeleton/hit/1.png"), load_image("source/mobs/skeleton/hit/2.png"),
+                     load_image("source/mobs/skeleton/hit/3.png"), load_image("source/mobs/skeleton/hit/4.png"),
+                     load_image("source/mobs/skeleton/hit/5.png"), load_image("source/mobs/skeleton/hit/6.png"),
+                     load_image("source/mobs/skeleton/hit/7.png"), load_image("source/mobs/skeleton/hit/8.png")]
 }
 gui_images = {
     "INT": [load_image("source/GUI/int/1.png"), load_image("source/GUI/int/2.png"),
@@ -193,6 +202,91 @@ class Light(pg.sprite.Sprite):
         self.count_hit += 1
 
 
+class Skeleton(pg.sprite.Sprite):
+    def __init__(self, x, y, s):
+        super().__init__(drowner_gpoup)
+        self.image = mobs_images['skeleton'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y, self.s = x, y, s
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_walk_right = 0
+        self.count_walk_left = 0
+        self.hp = 10
+        self.count_hit_left = 0
+        self.count_hit_right = 0
+
+        self.last_dir = True
+        self.is_moving = True
+        self.can_attack = True
+
+    def walk(self, hero):
+        if self.count_walk_right >= 70:
+            self.count_walk_right = 0
+        if self.count_walk_left >= 70:
+            self.count_walk_left = 0
+        if self.count_hit_right >= 80:
+            self.count_hit_right = 0
+        if self.count_hit_left >= 80:
+            self.count_hit_left = 0
+        if self.rect.x < hero.rect.x:
+            self.last_dir = True
+        else:
+            self.last_dir = False
+
+        if self.rect.x > hero.rect.x:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > -400:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = mobs_images["skeleton"][self.count_walk_left // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
+
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.flip(mobs_images["skeleton"][self.count_walk_left // 10], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
+            else:
+                if self.last_dir:
+                    self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_right // 10])
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_left // 10], True, False)
+                    self.count_hit_left += 1
+        else:
+            if hero.rect.x - (self.rect.x + self.rect.width) > -400:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = mobs_images["skeleton"][self.count_walk_right // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
+
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.flip(mobs_images["skeleton"][self.count_walk_left // 10], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
+            else:
+                if self.last_dir:
+                    self.image = mobs_images["skeleton_hit"][self.count_hit_right // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_left // 10], True, False)
+                    self.count_hit_left += 1
+
+    def hp1(self):
+        if self.hp <= 0:
+            self.rect.x = 2100
+            self.hp = 10
+
+    def update(self, t):
+        if self.can_attack:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 0.03
 
 
 class Drowner(pg.sprite.Sprite):
@@ -279,12 +373,11 @@ class Drowner(pg.sprite.Sprite):
                     self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
                     self.count_hit_left += 1
 
-    def hp1(self):
+
+    def update(self, t):
         if self.hp <= 0:
             self.rect.x = 2100
             self.hp = 10
-
-    def update(self, t):
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.03
@@ -299,7 +392,7 @@ class Mage(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count_walk_right = 0
         self.count_walk_left = 0
-        self.hp = 10
+        self.hp = 20
         self.count_hit_left = 0
         self.count_hit_right = 0
         self.can_attack = True
@@ -423,12 +516,11 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
                     self.can_attack = True
 
-    def hp1(self):
-        if self.hp <= 0:
-            self.rect.x = -500
-            self.hp = 10
 
     def update(self, t, l):
+        if self.hp <= 0:
+            self.rect.x = -1000
+            self.hp = 20
         if self.rect.x >= -100 and self.rect.x < 1600:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.04
@@ -437,7 +529,6 @@ class Mage(pg.sprite.Sprite):
             l.hit()
         else:
             l.rect.x = -1000
-
 
 
 class Witcher(pg.sprite.Sprite):
@@ -714,6 +805,8 @@ mp = MP()
 w = Witcher("stand_left", 500, 500)
 m = Mage(-200, 440, 5)
 d = Drowner(1500, 500, 7)
+d1 = Drowner(-500, 500, 4)
+s = Skeleton(1500, 400, 3)
 p1, p2 = Portal(False), Portal(True)
 l = Light(1000000, -20, True)
 m1 = Mouse(230, 230, 0, 350, 7)
@@ -730,6 +823,7 @@ while running:
     mouse_group.draw(screen)
     fire_group.draw(screen)
     drowner_gpoup.draw(screen)
+    skeleton_group.draw(screen)
     witcher_sprites.draw(screen)
     light_group.draw(screen)
     int_group.draw(screen)
@@ -741,19 +835,24 @@ while running:
     m2.fly_left()
     m3.fly_left()
     d.walk(w)
+    d.update(w)
+    d1.walk(w)
+    d1.update(w)
     m.walk(w)
+    m.update(w, l)
+    s.walk(w)
+    s.update(w)
+    s.hp1()
     hp.udpate(w)
     mp.udpate(w)
-    m.hp1()
-    d.hp1()
     p1.go(-160, 450)
     p2.go(1360, 450)
     w.move()
-    i.inter()
-    d.update(w)
     w.update(m)
-    m.update(w, l)
     w.update(d)
+    w.update(d1)
+    w.update(s)
     w.jump()
     w.attack()
+    i.inter()
 pg.quit()
