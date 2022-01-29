@@ -166,21 +166,33 @@ class Portal(pg.sprite.Sprite):
 
 
 class Fire(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, x, y, dir):
         super().__init__(fire_group)
-        self.image = witcher_images['fire'][0]
+        self.dir = dir
+        if self.dir:
+            self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
+        else:
+            self.image = witcher_images["fire"][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = 0, 0
+        self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
         self.count = 0
+        self.doing = True
 
-    def hit(self, x, y):
+    def move(self):
         if self.count >= 100:
-            self.count = 0
-        self.rect.x, self.rect.y = x, y
-        self.image = witcher_images["fire"][self.count // 10]
-        self.mask = pg.mask.from_surface(self.image)
-        self.count += 1
+            self.doing = False
+        if self.doing:
+            if self.dir:
+                self.rect.x -= 10
+                self.image = witcher_images["fire"][self.count // 10]
+                self.mask = pg.mask.from_surface(self.image)
+                self.count += 1
+            else:
+                self.rect.x += 10
+                self.image = pg.transform.flip(witcher_images["fire"][self.count // 10], True, False)
+                self.mask = pg.mask.from_surface(self.image)
+                self.count += 1
 
 
 class Light(pg.sprite.Sprite):
@@ -373,7 +385,6 @@ class Drowner(pg.sprite.Sprite):
                     self.image = pg.transform.scale(mobs_images["drowner_hit"][self.count_hit_left // 10], [285, 295])
                     self.count_hit_left += 1
 
-
     def update(self, t):
         if self.hp <= 0:
             self.rect.x = 2100
@@ -516,7 +527,6 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
                     self.can_attack = True
 
-
     def update(self, t, l):
         if self.hp <= 0:
             self.rect.x = -1000
@@ -566,6 +576,9 @@ class Witcher(pg.sprite.Sprite):
         self.is_strong_hit = False
 
         self.can_attack = False
+
+        self.magic = False
+        self.magic_count = 0
 
     def update(self, t):
         if self.is_hit:
@@ -720,6 +733,47 @@ class Witcher(pg.sprite.Sprite):
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
 
+    def magic_attack(self):
+        keys = pg.mouse.get_pressed()
+        if keys[2]:
+            self.magic = True
+        if self.magic:
+            if self.stay:
+                f = Fire(self.rect.x, self.rect.y, self.last_dir)
+                while
+                self.magic = False
+                del f
+
+
+class Fire(pg.sprite.Sprite):
+    def __init__(self, x, y, dir):
+        super().__init__(fire_group)
+        self.dir = dir
+        if self.dir:
+            self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
+        else:
+            self.image = witcher_images["fire"][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+        self.mask = pg.mask.from_surface(self.image)
+        self.count = 0
+        self.doing = True
+
+    def move(self):
+        if self.count >= 100:
+            self.doing = False
+        if self.doing:
+            if self.dir:
+                self.rect.x -= 10
+                self.image = witcher_images["fire"][self.count // 10]
+                self.mask = pg.mask.from_surface(self.image)
+                self.count += 1
+            else:
+                self.rect.x += 10
+                self.image = pg.transform.flip(witcher_images["fire"][self.count // 10], True, False)
+                self.mask = pg.mask.from_surface(self.image)
+                self.count += 1
+
 
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
@@ -855,5 +909,6 @@ while running:
     w.jump()
     w.attack()
     i.inter()
-pg.quit()
+    w.magic_attack()
 
+pg.quit()
