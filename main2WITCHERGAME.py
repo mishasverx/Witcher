@@ -136,11 +136,11 @@ gui_images = {
            load_image("source/GUI/mp/7.png")]
 }
 obj_images = {
-    "portal_b": [load_image("source/obj/portal_blue/1.png"), load_image("source/obj/portal_blue/2.png"),
-                 load_image("source/obj/portal_blue/3.png"),
-                 load_image("source/obj/portal_blue/4.png"), load_image("source/obj/portal_blue/5.png"),
-                 load_image("source/obj/portal_blue/6.png"), load_image("source/obj/portal_blue/7.png"),
-                 load_image("source/obj/portal_blue/8.png"), load_image("source/obj/portal_blue/9.png")]
+    "portal_b": [load_image("source/obj/portal_b/1.png"), load_image("source/obj/portal_b/2.png"),
+                 load_image("source/obj/portal_b/3.png"),
+                 load_image("source/obj/portal_b/4.png"), load_image("source/obj/portal_b/5.png"),
+                 load_image("source/obj/portal_b/6.png"), load_image("source/obj/portal_b/7.png"),
+                 load_image("source/obj/portal_b/8.png"), load_image("source/obj/portal_b/9.png")]
 }
 
 
@@ -426,7 +426,7 @@ class Mage(pg.sprite.Sprite):
         else:
             self.last_dir = False
         if self.rect.x > hero.rect.x:
-            if self.rect.x - (hero.rect.x + hero.rect.width) > 300:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > 200:
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
@@ -454,7 +454,7 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
                     self.can_attack = True
         else:
-            if hero.rect.x - (self.rect.x + self.rect.width) > 300:
+            if hero.rect.x - (self.rect.x + self.rect.width) > 200:
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
@@ -806,7 +806,7 @@ class MP(pg.sprite.Sprite):
             self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/background_3.png")
+backg = pg.image.load("source/background_2.png")
 i = Int()
 hp = HP()
 mp = MP()
@@ -826,9 +826,9 @@ while running:
         if event.type == pg.MOUSEMOTION:
             mouse.rect.topleft = event.pos
         if event.type == pg.MOUSEBUTTONDOWN:
-            mouse.image = load_image("source/arrow.png")
-        elif event.type == pg.MOUSEBUTTONUP:
             mouse.image = load_image("source/arrow2.png")
+        elif event.type == pg.MOUSEBUTTONUP:
+            mouse.image = load_image("source/arrow.png")
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
