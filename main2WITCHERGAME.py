@@ -49,6 +49,12 @@ def load_image(name, colorkey=None):
     return image
 
 
+mouse_s = pg.sprite.Group()
+mouse = pg.sprite.Sprite()
+mouse.image = load_image("source/arrow.png")
+mouse.rect = mouse.image.get_rect()
+mouse_s.add(mouse)
+pg.mouse.set_visible(False)
 # 🡫🡫🡫🡫🡫🡫🡫🡫 изображения ведьмака
 witcher_images = {
     "walk_right": [load_image("source/player/right/2.png"), load_image("source/player/right/3.png"),
@@ -337,7 +343,7 @@ class Drowner(pg.sprite.Sprite):
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
 
@@ -349,7 +355,7 @@ class Drowner(pg.sprite.Sprite):
             else:
                 if self.last_dir:
                     self.image = pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
                 else:
@@ -361,7 +367,7 @@ class Drowner(pg.sprite.Sprite):
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.flip(mobs_images["drowner"][self.count_walk_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
 
@@ -373,7 +379,7 @@ class Drowner(pg.sprite.Sprite):
             else:
                 if self.last_dir:
                     self.image = pg.transform.flip(mobs_images["drowner_hit"][self.count_hit_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
                 else:
@@ -420,11 +426,11 @@ class Mage(pg.sprite.Sprite):
         else:
             self.last_dir = False
         if self.rect.x > hero.rect.x:
-            if self.rect.x - (hero.rect.x + hero.rect.width) > 500:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > 300:
                 if self.last_dir:
                     self.rect.x += self.s
                     self.image = pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
                     self.can_attack = False
@@ -438,7 +444,7 @@ class Mage(pg.sprite.Sprite):
             else:
                 if self.last_dir:
                     self.image = pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
                     self.can_attack = True
@@ -448,11 +454,11 @@ class Mage(pg.sprite.Sprite):
                     self.count_hit_left += 1
                     self.can_attack = True
         else:
-            if hero.rect.x - (self.rect.x + self.rect.width) > 600:
+            if hero.rect.x - (self.rect.x + self.rect.width) > 300:
                 if self.last_dir:
                     self.rect.x += self.s
-                    self.image =pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
-                                          True, False)
+                    self.image = pg.transform.flip(mobs_images["mage_walk"][self.count_walk_right // 9],
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_walk_right += 1
                     self.can_attack = False
@@ -465,7 +471,7 @@ class Mage(pg.sprite.Sprite):
             else:
                 if self.last_dir:
                     self.image = pg.transform.flip(mobs_images["mage_hit"][self.count_hit_right // 10],
-                                          True, False)
+                                                   True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
                     self.can_attack = True
@@ -689,8 +695,8 @@ class Witcher(pg.sprite.Sprite):
             if self.stay:
                 f = Fire(self.rect.x, self.rect.y, self.last_dir)
                 # while:
-                    # self.magic = False
-                    # del f
+                # self.magic = False
+                # del f
 
 
 class Fire(pg.sprite.Sprite):
@@ -817,6 +823,12 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        if event.type == pg.MOUSEMOTION:
+            mouse.rect.topleft = event.pos
+        if event.type == pg.MOUSEBUTTONDOWN:
+            mouse.image = load_image("source/arrow2.png")
+        elif event.type == pg.MOUSEBUTTONUP:
+            mouse.image = load_image("source/arrow.png")
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
@@ -830,17 +842,19 @@ while running:
     int_group.draw(screen)
     hp_group.draw(screen)
     mp_gpoup.draw(screen)
+    if pg.mouse.get_focused():
+        mouse_s.draw(screen)
     clock.tick(FPS)
     pg.display.flip()
     m1.fly_right()
     m2.fly_left()
     m3.fly_left()
     d.walk(w)
-    d.update(w)
+    # d.update(w)
     m.walk(w)
     m.update(w, l)
     s.walk(w)
-    s.update(w)
+    # s.update(w)
     s.hp1()
     hp.udpate(w)
     mp.udpate(w)
