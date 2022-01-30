@@ -826,9 +826,9 @@ while running:
         if event.type == pg.MOUSEMOTION:
             mouse.rect.topleft = event.pos
         if event.type == pg.MOUSEBUTTONDOWN:
-            mouse.image = load_image("source/arrow2.png")
-        elif event.type == pg.MOUSEBUTTONUP:
             mouse.image = load_image("source/arrow.png")
+        elif event.type == pg.MOUSEBUTTONUP:
+            mouse.image = load_image("source/arrow2.png")
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
