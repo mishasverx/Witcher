@@ -806,7 +806,7 @@ class MP(pg.sprite.Sprite):
             self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/background_2.png")
+backg = pg.image.load("source/background_3.png")
 i = Int()
 hp = HP()
 mp = MP()
