@@ -146,6 +146,32 @@ obj_images = {
 }
 
 
+# class Camera:
+#     # зададим начальный сдвиг камеры
+#     def __init__(self, camera_func, width, height):
+#         self.camera_func = camera_func
+#         self.state = pg.Rect(0, 0, width, height)
+#
+#     # сдвинуть объект obj на смещение камеры
+#     def apply(self, target):
+#         return target.rect.move(self.state.topleft)
+#
+#     # позиционировать камеру на объекте target
+#     def update(self, target):
+#         self.state = self.camera_func(self.state, target.rect)
+#
+#
+# def camera_func(camera, target_rect):
+#     l = -target_rect.x + 800
+#     t = -target_rect.y + 450
+#     w, h = camera.width, camera.height
+#
+#     l = min(0, l)
+#     l = max(-(camera.width - 1600), l)
+#     t = max(-(camera.height - 900), t)
+#     t = min(0, t)
+
+
 class Portal(pg.sprite.Sprite):
     def __init__(self, pos):
         super().__init__(all_sprites)
@@ -192,7 +218,6 @@ class Light(pg.sprite.Sprite):
         self.count_hit += 1
         if pg.sprite.collide_mask(self, t):
             t.hp -= 0.02
-
 
 
 class Skeleton(pg.sprite.Sprite):
@@ -480,6 +505,8 @@ class Mage(pg.sprite.Sprite):
             l.rect.x = -1000
 
 
+fireballs = []
+
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, x, y):
@@ -679,28 +706,19 @@ class Witcher(pg.sprite.Sprite):
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
 
-    def magic_attack(self):
-        keys = pg.mouse.get_pressed()
-        if keys[2]:
-            self.magic = True
-        if self.magic:
-            if self.stay:
-                f = Fire(self.rect.x, self.rect.y, self.last_dir)
-                # while:
-                # self.magic = False
-                # del f
-
 
 class Fire(pg.sprite.Sprite):
     def __init__(self, x, y, dir):
         super().__init__(fire_group)
         self.dir = dir
-        if self.dir:
+        if not self.dir:
             self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
+            self.rect = self.image.get_rect()
+            self.rect.x, self.rect.y = x + 150, y + 150
         else:
             self.image = witcher_images["fire"][0]
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
+            self.rect = self.image.get_rect()
+            self.rect.x, self.rect.y = x + 200, y + 150
         self.mask = pg.mask.from_surface(self.image)
         self.count = 0
         self.doing = True
@@ -709,7 +727,7 @@ class Fire(pg.sprite.Sprite):
         if self.count >= 100:
             self.doing = False
         if self.doing:
-            if self.dir:
+            if not self.dir:
                 self.rect.x -= 10
                 self.image = witcher_images["fire"][self.count // 10]
                 self.mask = pg.mask.from_surface(self.image)
@@ -719,6 +737,9 @@ class Fire(pg.sprite.Sprite):
                 self.image = pg.transform.flip(witcher_images["fire"][self.count // 10], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
+        else:
+            fire_group.remove(self)
+            del self
 
 
 class Mouse(pg.sprite.Sprite):
@@ -812,7 +833,11 @@ l = Light(1000000, -20, True)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
+# camera = Camera(camera_func, 3200, 900)
 while running:
+    # camera.update(w)
+    # for sprite in all_sprites:
+    #     screen.blit(sprite.image, camera.apply(sprite))
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
@@ -822,6 +847,13 @@ while running:
             mouse.image = load_image("source/arrow2.png")
         elif event.type == pg.MOUSEBUTTONUP:
             mouse.image = load_image("source/arrow.png")
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
+            if w.stay:
+                f = Fire(w.rect.x, w.rect.y, w.last_dir)
+                fireballs.append(f)
+
+    for elem in fireballs:
+        elem.move()
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
