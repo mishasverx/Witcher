@@ -714,29 +714,33 @@ class Fire(pg.sprite.Sprite):
         if not self.dir:
             self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
             self.rect = self.image.get_rect()
-            self.rect.x, self.rect.y = x + 150, y + 150
+            self.rect.x, self.rect.y = x + 160, y + 150
         else:
             self.image = witcher_images["fire"][0]
             self.rect = self.image.get_rect()
-            self.rect.x, self.rect.y = x + 200, y + 150
+            self.rect.x, self.rect.y = x + 210, y + 150
         self.mask = pg.mask.from_surface(self.image)
         self.count = 0
         self.doing = True
 
     def move(self):
         if self.count >= 70:
-            self.doing = False
+            self.count = 0
         if self.doing:
             if not self.dir:
                 self.rect.x -= 10
                 self.image = witcher_images["fire"][self.count // 7]
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
+                if self.rect.x < -100:
+                    self.doing = False
             else:
                 self.rect.x += 10
                 self.image = pg.transform.flip(witcher_images["fire"][self.count // 7], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
+                if self.rect.x > 1600:
+                    self.doing = False
         else:
             fire_group.remove(self)
             del self
