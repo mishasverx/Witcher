@@ -21,6 +21,7 @@ int_group = pg.sprite.Group()
 hp_group = pg.sprite.Group()
 mp_gpoup = pg.sprite.Group()
 drowner_gpoup = pg.sprite.Group()
+effect_group = pg.sprite.Group()
 skeleton_group = pg.sprite.Group()
 mobs_sprites = pg.sprite.Group()
 # ---------------------------------
@@ -145,6 +146,11 @@ obj_images = {
                  load_image("source/obj/portal_b/8.png"), load_image("source/obj/portal_b/9.png")]
 }
 
+effects_images = {
+    'hp': [load_image("source/effects/hp/1.png"), load_image("source/effects/hp/2.png"),
+           load_image("source/effects/hp/3.png")]
+}
+
 
 # class Camera:
 #     # зададим начальный сдвиг камеры
@@ -170,6 +176,7 @@ obj_images = {
 #     l = max(-(camera.width - 1600), l)
 #     t = max(-(camera.height - 900), t)
 #     t = min(0, t)
+
 
 
 class Portal(pg.sprite.Sprite):
@@ -723,24 +730,28 @@ class Fire(pg.sprite.Sprite):
         self.count = 0
         self.doing = True
 
-    def move(self):
+    def move(self, t):
         if self.count >= 70:
             self.count = 0
         if self.doing:
             if not self.dir:
-                self.rect.x -= 10
+                self.rect.x -= 1
                 self.image = witcher_images["fire"][self.count // 7]
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
                 if self.rect.x < -100:
                     self.doing = False
             else:
-                self.rect.x += 10
+                self.rect.x += 1
                 self.image = pg.transform.flip(witcher_images["fire"][self.count // 7], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
                 if self.rect.x > 1600:
                     self.doing = False
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 3
+                fire_group.remove(self)
+                del self
         else:
             fire_group.remove(self)
             del self
@@ -856,8 +867,7 @@ while running:
                 f = Fire(w.rect.x, w.rect.y, w.last_dir)
                 fireballs.append(f)
 
-    for elem in fireballs:
-        elem.move()
+
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
@@ -871,6 +881,7 @@ while running:
     hp_group.draw(screen)
     fire_group.draw(screen)
     mp_gpoup.draw(screen)
+    effect_group.draw(screen)
     if pg.mouse.get_focused():
         mouse_s.draw(screen)
     clock.tick(FPS)
@@ -895,6 +906,9 @@ while running:
     w.jump()
     w.attack()
     i.inter()
-    # w.magic_attack()
+    for elem in fireballs:
+        elem.move(d)
+        elem.move(m)
+        elem.move(s)
 
 pg.quit()
