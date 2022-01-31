@@ -570,6 +570,7 @@ class Witcher(pg.sprite.Sprite):
 
     def move(self):
         keys = pg.key.get_pressed()
+        keys_1 = pg.mouse.get_pressed()
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
         if self.count_walk_left >= 36:
@@ -618,8 +619,7 @@ class Witcher(pg.sprite.Sprite):
                 self.mask = pg.mask.from_surface(self.image)
                 self.count_stand += 1
 
-    def jump(self):
-        keys = pg.key.get_pressed()
+        # !!!ПРЫЖОК!!! #
         if keys[pg.K_SPACE]:
             self.is_jump = True
             self.stay = False
@@ -639,17 +639,15 @@ class Witcher(pg.sprite.Sprite):
                 self.is_jump = False
                 self.stay = True
 
-    def attack(self):
-        keys = pg.mouse.get_pressed()
-        keys_1 = pg.key.get_pressed()
+        # !!!АТАКА!!! #
         if self.count_hit >= 30:
             self.count_hit = 0
             self.is_hit = False
             self.can_attack = False
-        if self.count_cast_1 >= 40:
+        if self.count_cast_1 >= 24:
             self.count_cast_1 = 0
             self.is_cast = False
-        if self.count_cast_2 >= 40:
+        if self.count_cast_2 >= 24:
             self.count_cast_2 = 0
             self.is_cast = False
         if self.count_hit_2 >= 30:
@@ -665,7 +663,7 @@ class Witcher(pg.sprite.Sprite):
             self.count_hit_strong_2 = 0
             self.can_attack = False
 
-        if keys[0]:
+        if keys_1[0]:
             self.is_hit = True
         if self.is_hit:
             if self.stay:
@@ -680,7 +678,7 @@ class Witcher(pg.sprite.Sprite):
                     self.count_hit += 1
             else:
                 self.is_hit = False
-        if keys[0] and keys_1[pg.K_LSHIFT]:
+        if keys_1[0] and keys[pg.K_LSHIFT]:
             self.is_strong_hit = True
         if self.is_strong_hit:
             if self.stay:
@@ -697,7 +695,7 @@ class Witcher(pg.sprite.Sprite):
             else:
                 self.is_strong_hit = False
 
-        if keys[2]:
+        if keys_1[2]:
             self.is_cast = True
             self.count_click -= 0.2
             if self.count_click <= 1:
@@ -705,11 +703,11 @@ class Witcher(pg.sprite.Sprite):
         if self.is_cast:
             if self.stay:
                 if self.last_dir:
-                    self.image = witcher_images["cast"][self.count_cast_1 // 10]
+                    self.image = witcher_images["cast"][self.count_cast_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_1 += 1
                 else:
-                    self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 10], True, False)
+                    self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
 
@@ -730,28 +728,24 @@ class Fire(pg.sprite.Sprite):
         self.count = 0
         self.doing = True
 
-    def move(self, t):
+    def move(self):
         if self.count >= 70:
             self.count = 0
         if self.doing:
             if not self.dir:
-                self.rect.x -= 1
+                self.rect.x -= 10
                 self.image = witcher_images["fire"][self.count // 7]
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
                 if self.rect.x < -100:
                     self.doing = False
             else:
-                self.rect.x += 1
+                self.rect.x += 10
                 self.image = pg.transform.flip(witcher_images["fire"][self.count // 7], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
                 if self.rect.x > 1600:
                     self.doing = False
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 3
-                fire_group.remove(self)
-                del self
         else:
             fire_group.remove(self)
             del self
@@ -903,12 +897,8 @@ while running:
     w.update(m)
     w.update(d)
     w.update(s)
-    w.jump()
-    w.attack()
     i.inter()
     for elem in fireballs:
-        elem.move(d)
-        elem.move(m)
-        elem.move(s)
+        elem.move()
 
 pg.quit()
