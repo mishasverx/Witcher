@@ -171,34 +171,6 @@ class Portal(pg.sprite.Sprite):
             self.count += 1
 
 
-class Fire(pg.sprite.Sprite):
-    def __init__(self, x, y, dir):
-        super().__init__(fire_group)
-        self.dir = dir
-        if self.dir:
-            self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
-        else:
-            self.image = witcher_images["fire"][0]
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
-        self.mask = pg.mask.from_surface(self.image)
-        self.count = 0
-        self.doing = True
-
-    def move(self):
-        if self.count >= 100:
-            self.doing = False
-        if self.doing:
-            if self.dir:
-                self.rect.x -= 10
-                self.image = witcher_images["fire"][self.count // 10]
-                self.mask = pg.mask.from_surface(self.image)
-                self.count += 1
-            else:
-                self.rect.x += 10
-                self.image = pg.transform.flip(witcher_images["fire"][self.count // 10], True, False)
-                self.mask = pg.mask.from_surface(self.image)
-                self.count += 1
 
 
 class Light(pg.sprite.Sprite):
@@ -296,12 +268,11 @@ class Skeleton(pg.sprite.Sprite):
                     self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_left // 6], True, False)
                     self.count_hit_left += 1
 
-    def hp1(self):
-        if self.hp <= 0:
-            self.rect.x = 2100
-            self.hp = 10
 
     def update(self, t):
+        if self.hp <= 0:
+            self.hp = 10
+            self.rect.x = 2100
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.03
@@ -485,7 +456,7 @@ class Mage(pg.sprite.Sprite):
         if self.hp <= 0:
             self.rect.x = -1000
             self.hp = 20
-        if self.rect.x >= -100 and self.rect.x < 1600:
+        if -200 <= self.rect.x < 1600:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.04
             if l.count_hit - 1 == 0:
@@ -535,10 +506,16 @@ class Witcher(pg.sprite.Sprite):
         self.magic_count = 0
 
     def update(self, t):
-        if self.is_hit:
+        if self.is_hit and self.last_dir and t.rect.x > self.rect.x:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.25
-        if self.is_strong_hit:
+        if self.is_hit and not self.last_dir and t.rect.x < self.rect.x:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 0.25
+        if self.is_strong_hit and self.last_dir and t.rect.x > self.rect.x:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 0.5
+        if self.is_strong_hit and not self.last_dir and t.rect.x < self.rect.x:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.5
 
@@ -791,6 +768,7 @@ class HP(pg.sprite.Sprite):
             self.image = gui_images["HP"][floor(tr.hp)]
             if floor(tr.hp) <= 0.5:
                 pg.quit()
+                sys.exit()
 
 
 class MP(pg.sprite.Sprite):
@@ -806,7 +784,7 @@ class MP(pg.sprite.Sprite):
             self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/background_2.png")
+backg = pg.image.load("source/boloto.png")
 i = Int()
 hp = HP()
 mp = MP()
@@ -855,7 +833,6 @@ while running:
     m.update(w, l)
     s.walk(w)
     s.update(w)
-    s.hp1()
     hp.udpate(w)
     mp.udpate(w)
     p1.go(-160, 450)
