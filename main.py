@@ -2,6 +2,7 @@ import pygame as pg
 import os
 import sys
 from math import floor
+from random import choice
 
 pg.init()
 pg.display.set_caption("WITCHER")
@@ -21,6 +22,7 @@ hp_group = pg.sprite.Group()
 mp_gpoup = pg.sprite.Group()
 drowner_gpoup = pg.sprite.Group()
 skeleton_group = pg.sprite.Group()
+mobs_sprites = pg.sprite.Group()
 # ---------------------------------
 running = True
 jump = False
@@ -171,8 +173,6 @@ class Portal(pg.sprite.Sprite):
             self.count += 1
 
 
-
-
 class Light(pg.sprite.Sprite):
     def __init__(self, x, y, f):
         super().__init__(light_group)
@@ -184,17 +184,20 @@ class Light(pg.sprite.Sprite):
         self.count_hit = 0
         self.count = 0
 
-    def hit(self):
+    def hit(self, t):
         if self.count_hit >= 70:
             self.count_hit = 0
         self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit += 1
+        if pg.sprite.collide_mask(self, t):
+            t.hp -= 0.02
+
 
 
 class Skeleton(pg.sprite.Sprite):
     def __init__(self, x, y, s):
-        super().__init__(drowner_gpoup)
+        super().__init__(skeleton_group, mobs_sprites)
         self.image = mobs_images['skeleton'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y, self.s = x, y, s
@@ -238,7 +241,7 @@ class Skeleton(pg.sprite.Sprite):
                     self.count_walk_left += 1
             else:
                 if self.last_dir:
-                    self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_right // 6])
+                    self.image = mobs_images["skeleton_hit"][self.count_hit_right // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_right += 1
                 else:
@@ -268,19 +271,22 @@ class Skeleton(pg.sprite.Sprite):
                     self.image = pg.transform.flip(mobs_images["skeleton_hit"][self.count_hit_left // 6], True, False)
                     self.count_hit_left += 1
 
-
     def update(self, t):
+        a = choice([0, 1])
         if self.hp <= 0:
             self.hp = 10
-            self.rect.x = 2100
+            if a == 0:
+                self.rect.x = 2100
+            else:
+                self.rect.x = -600
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.03
+                t.hp -= 0.01
 
 
 class Drowner(pg.sprite.Sprite):
     def __init__(self, x, y, s):
-        super().__init__(drowner_gpoup)
+        super().__init__(drowner_gpoup, mobs_sprites)
         self.image = mobs_images['drowner'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y, self.s = x, y, s
@@ -359,17 +365,21 @@ class Drowner(pg.sprite.Sprite):
                     self.count_hit_left += 1
 
     def update(self, t):
+        a = choice([0, 1])
         if self.hp <= 0:
-            self.rect.x = 2100
+            if a == 0:
+                self.rect.x = 3100
+            else:
+                self.rect.x = -1000
             self.hp = 10
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.03
+                t.hp -= 0.01
 
 
 class Mage(pg.sprite.Sprite):
     def __init__(self, x, y, s):
-        super().__init__(mage_group)
+        super().__init__(mage_group, mobs_sprites)
         self.image = mobs_images['mage_walk'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y, self.s = x, y, s
@@ -453,22 +463,27 @@ class Mage(pg.sprite.Sprite):
                     self.can_attack = True
 
     def update(self, t, l):
+        a = choice([0, 1])
         if self.hp <= 0:
-            self.rect.x = -1000
+            if a == 0:
+                self.rect.x = 3600
+            else:
+                self.rect.x = -2000
             self.hp = 20
         if -200 <= self.rect.x < 1600:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.04
+                t.hp -= 0.01
             if l.count_hit - 1 == 0:
                 l.rect.x = t.rect.x + 50
-            l.hit()
+            l.hit(t)
         else:
             l.rect.x = -1000
 
 
+
 class Witcher(pg.sprite.Sprite):
-    def __init__(self, type, x, y):
-        super().__init__(witcher_sprites)
+    def __init__(self, x, y):
+        super().__init__(witcher_sprites, mobs_sprites)
         self.image = witcher_images["right_hit"][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -788,7 +803,7 @@ backg = pg.image.load("source/boloto.png")
 i = Int()
 hp = HP()
 mp = MP()
-w = Witcher("stand_left", 500, 500)
+w = Witcher(500, 500)
 m = Mage(-1000, 500, 5)
 d = Drowner(2500, 500, 7)
 s = Skeleton(1900, 500, 3)
