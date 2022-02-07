@@ -178,7 +178,6 @@ effects_images = {
 #     t = min(0, t)
 
 
-
 class Portal(pg.sprite.Sprite):
     def __init__(self, pos):
         super().__init__(all_sprites)
@@ -542,6 +541,8 @@ class Witcher(pg.sprite.Sprite):
         self.last_dir = True
         self.stay = False
         self.hp = 16
+        self.go_right = False
+        self.go_left = False
         self.is_jump = False
         self.is_hit = False
         self.fire = False
@@ -568,9 +569,12 @@ class Witcher(pg.sprite.Sprite):
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.5
 
-    def move(self):
+    def abilities(self):
         keys = pg.key.get_pressed()
         keys_1 = pg.mouse.get_pressed()
+
+        # Счётчики ходьбы
+
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
         if self.count_walk_left >= 36:
@@ -579,36 +583,63 @@ class Witcher(pg.sprite.Sprite):
             self.count_stand = 0
         if self.rect.y > 500:
             self.rect.y = 500
+
+        # Счётчики атаки
+
+        if self.count_hit >= 30:
+            self.count_hit = 0
+            self.is_hit = False
+            self.can_attack = False
+        if self.count_cast_1 >= 24:
+            self.count_cast_1 = 0
+            self.is_cast = False
+        if self.count_cast_2 >= 24:
+            self.count_cast_2 = 0
+            self.is_cast = False
+        if self.count_hit_2 >= 30:
+            self.count_hit_2 = 0
+            self.is_hit = False
+            self.can_attack = False
+        if self.count_hit_strong_1 >= 30:
+            self.count_hit_strong_1 = 0
+            self.is_strong_hit = False
+            self.can_attack = False
+        if self.count_hit_strong_2 >= 30:
+            self.is_strong_hit = False
+            self.count_hit_strong_2 = 0
+            self.can_attack = False
+
+        # Проверка взаимодействия с клавиатурой
+
         if keys[pg.K_d]:
             self.rect.x += speed
-            right = True
-            left = False
+            self.go_right = True
+            self.go_left = False
             self.stay = False
             self.last_dir = True
         elif keys[pg.K_a]:
-            right = False
-            left = True
+            self.go_right = False
+            self.go_left = True
             self.stay = False
             self.rect.x -= speed
             self.last_dir = False
-        else:
-            right = False
-            left = False
+        if not self.go_left and not self.go_right and not self.is_jump:
+            self.go_right = False
+            self.go_left = False
             self.stay = True
             self.count_walk_left = 0
             self.count_walk_right = 0
 
-        if right:
+        if self.go_right:
             self.image = witcher_images["walk_right"][self.count_walk_right // 9]
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_right += 1
-        elif left:
+        elif self.go_left:
             self.image = pg.transform.flip(witcher_images["walk_right"][self.count_walk_left // 9], True, False)
             self.mask = pg.mask.from_surface(self.image)
-
             self.count_walk_left += 1
 
-        else:
+        if self.stay:
             if self.last_dir:
                 self.image = witcher_images["stand_right"][self.count_stand // 15]
                 self.mask = pg.mask.from_surface(self.image)
@@ -710,6 +741,8 @@ class Witcher(pg.sprite.Sprite):
                     self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
+        self.go_left = False
+        self.go_right = False
 
 
 class Fire(pg.sprite.Sprite):
@@ -749,6 +782,7 @@ class Fire(pg.sprite.Sprite):
         else:
             fire_group.remove(self)
             del self
+
 
 
 class Mouse(pg.sprite.Sprite):
@@ -861,7 +895,6 @@ while running:
                 f = Fire(w.rect.x, w.rect.y, w.last_dir)
                 fireballs.append(f)
 
-
     screen.blit(backg, (0, 0))
     all_sprites.draw(screen)
     tile_group.draw(screen)
@@ -893,7 +926,7 @@ while running:
     mp.udpate(w)
     p1.go(-160, 450)
     p2.go(1360, 450)
-    w.move()
+    w.abilities()
     w.update(m)
     w.update(d)
     w.update(s)
