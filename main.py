@@ -164,11 +164,15 @@ class Camera:
 
     # сдвинуть объект obj на смещение камеры
     def apply(self, obj):
-        obj.rect.x += self.dx
+        if -1600 < obj.rect.x + self.dx < 0:
+                obj.rect.x += self.dx
+
+        print(obj.rect.x + self.dx)
 
     # позиционировать камеру на объекте target
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - width // 2)
+
 
 
 class Portal(pg.sprite.Sprite):
@@ -180,6 +184,8 @@ class Portal(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count = 0
         self.pos = pos
+
+        self.is_map = False
 
     def go(self, x, y):
         if self.pos:
@@ -208,6 +214,7 @@ class Light(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit = 0
         self.count = 0
+        self.is_map = False
 
     def hit(self, t):
         if self.count_hit >= 70:
@@ -235,6 +242,8 @@ class Skeleton(pg.sprite.Sprite):
         self.last_dir = True
         self.is_moving = True
         self.can_attack = True
+
+        self.is_map = False
 
     def walk(self, hero):
         if self.count_walk_right >= 70:
@@ -324,6 +333,8 @@ class Drowner(pg.sprite.Sprite):
         self.last_dir = True
         self.is_moving = True
         self.can_attack = True
+
+        self.is_map = False
 
     def walk(self, hero):
         if self.count_walk_right >= 40:
@@ -417,6 +428,8 @@ class Mage(pg.sprite.Sprite):
         self.last_dir = True
         self.is_moving = True
 
+        self.is_map = False
+
     def walk(self, hero):
         if self.count_walk_right >= 36:
             self.count_walk_right = 0
@@ -509,7 +522,7 @@ fireballs = []
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(witcher_sprites, mobs_sprites)
+        super().__init__(witcher_sprites)
         self.image = witcher_images["right_hit"][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -754,6 +767,8 @@ class Fire(pg.sprite.Sprite):
         self.count = 0
         self.doing = True
 
+        self.is_map = False
+
     def move(self):
         if self.count >= 70:
             self.count = 0
@@ -788,6 +803,8 @@ class Mouse(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
+
+        self.is_map = False
 
     def fly_right(self):
         if self.fly_count2 >= 28:
@@ -867,6 +884,8 @@ class Map(pg.sprite.Sprite):
             self.image = pg.image.load("source/background_3.png")
         self.rect = self.image.get_rect()
         self.rect.x = 0
+
+        self.is_map = True
 
 
 i = Int()
