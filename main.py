@@ -143,7 +143,12 @@ obj_images = {
                  load_image("source/obj/portal_b/3.png"),
                  load_image("source/obj/portal_b/4.png"), load_image("source/obj/portal_b/5.png"),
                  load_image("source/obj/portal_b/6.png"), load_image("source/obj/portal_b/7.png"),
-                 load_image("source/obj/portal_b/8.png"), load_image("source/obj/portal_b/9.png")]
+                 load_image("source/obj/portal_b/8.png"), load_image("source/obj/portal_b/9.png")],
+    "portal_o": [load_image("source/obj/portal_o/1.png"), load_image("source/obj/portal_o/2.png"),
+                 load_image("source/obj/portal_o/3.png"),
+                 load_image("source/obj/portal_o/4.png"), load_image("source/obj/portal_o/5.png"),
+                 load_image("source/obj/portal_o/6.png"), load_image("source/obj/portal_o/7.png"),
+                 load_image("source/obj/portal_o/8.png"), load_image("source/obj/portal_o/9.png")]
 }
 
 effects_images = {
@@ -181,7 +186,7 @@ effects_images = {
 class Portal(pg.sprite.Sprite):
     def __init__(self, pos):
         super().__init__(all_sprites)
-        self.image = obj_images['portal_b'][0]
+        self.image = obj_images['portal_o'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 0, 0
         self.mask = pg.mask.from_surface(self.image)
@@ -193,14 +198,14 @@ class Portal(pg.sprite.Sprite):
             self.rect.x, self.rect.y = x, y
             if self.count >= 90:
                 self.count = 0
-            self.image = obj_images["portal_b"][self.count // 10]
+            self.image = obj_images["portal_o"][self.count // 10]
             self.mask = pg.mask.from_surface(self.image)
             self.count += 1
         else:
             self.rect.x, self.rect.y = x, y
             if self.count >= 90:
                 self.count = 0
-            self.image = pg.transform.flip(obj_images["portal_b"][self.count // 10], True, False)
+            self.image = pg.transform.flip(obj_images["portal_o"][self.count // 10], True, False)
             self.mask = pg.mask.from_surface(self.image)
             self.count += 1
 
@@ -863,7 +868,7 @@ class MP(pg.sprite.Sprite):
             self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/boloto.png")
+backg = pg.image.load("source/background_3.png")
 i = Int()
 hp = HP()
 mp = MP()
