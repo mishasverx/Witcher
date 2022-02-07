@@ -157,30 +157,21 @@ effects_images = {
 }
 
 
-# class Camera:
-#     # зададим начальный сдвиг камеры
-#     def __init__(self, camera_func, width, height):
-#         self.camera_func = camera_func
-#         self.state = pg.Rect(0, 0, width, height)
-#
-#     # сдвинуть объект obj на смещение камеры
-#     def apply(self, target):
-#         return target.rect.move(self.state.topleft)
-#
-#     # позиционировать камеру на объекте target
-#     def update(self, target):
-#         self.state = self.camera_func(self.state, target.rect)
-#
-#
-# def camera_func(camera, target_rect):
-#     l = -target_rect.x + 800
-#     t = -target_rect.y + 450
-#     w, h = camera.width, camera.height
-#
-#     l = min(0, l)
-#     l = max(-(camera.width - 1600), l)
-#     t = max(-(camera.height - 900), t)
-#     t = min(0, t)
+class Camera:
+    # зададим начальный сдвиг камеры
+    def __init__(self):
+        self.dx = 0
+
+
+    # сдвинуть объект obj на смещение камеры
+    def apply(self, obj):
+        obj.rect.x += self.dx
+
+
+    # позиционировать камеру на объекте target
+    def update(self, target):
+        self.dx = -(target.rect.x + target.rect.w // 2 - width // 2)
+
 
 
 class Portal(pg.sprite.Sprite):
@@ -574,6 +565,8 @@ class Witcher(pg.sprite.Sprite):
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.5
 
+
+
     def abilities(self):
         keys = pg.key.get_pressed()
         keys_1 = pg.mouse.get_pressed()
@@ -881,11 +874,11 @@ l = Light(1000000, -20, True)
 m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
-# camera = Camera(camera_func, 3200, 900)
+camera = Camera()
 while running:
-    # camera.update(w)
-    # for sprite in all_sprites:
-    #     screen.blit(sprite.image, camera.apply(sprite))
+    camera.update(w)
+    for sprite in mobs_sprites:
+        camera.apply(sprite)
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
