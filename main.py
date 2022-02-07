@@ -162,21 +162,18 @@ class Camera:
     def __init__(self):
         self.dx = 0
 
-
     # сдвинуть объект obj на смещение камеры
     def apply(self, obj):
         obj.rect.x += self.dx
-
 
     # позиционировать камеру на объекте target
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - width // 2)
 
 
-
 class Portal(pg.sprite.Sprite):
     def __init__(self, pos):
-        super().__init__(all_sprites)
+        super().__init__(all_sprites, mobs_sprites)
         self.image = obj_images['portal_o'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = 0, 0
@@ -203,7 +200,7 @@ class Portal(pg.sprite.Sprite):
 
 class Light(pg.sprite.Sprite):
     def __init__(self, x, y, f):
-        super().__init__(light_group)
+        super().__init__(light_group, mobs_sprites)
         self.image = mobs_images['mage_hit_light'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
@@ -565,8 +562,6 @@ class Witcher(pg.sprite.Sprite):
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.5
 
-
-
     def abilities(self):
         keys = pg.key.get_pressed()
         keys_1 = pg.mouse.get_pressed()
@@ -745,7 +740,7 @@ class Witcher(pg.sprite.Sprite):
 
 class Fire(pg.sprite.Sprite):
     def __init__(self, x, y, dir):
-        super().__init__(fire_group)
+        super().__init__(fire_group, mobs_sprites)
         self.dir = dir
         if not self.dir:
             self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
@@ -782,10 +777,9 @@ class Fire(pg.sprite.Sprite):
             del self
 
 
-
 class Mouse(pg.sprite.Sprite):
     def __init__(self, h, w, x, y, s):
-        super().__init__(mouse_group)
+        super().__init__(mouse_group, mobs_sprites)
 
         self.fly_count1 = 0
         self.fly_count2 = 0
@@ -861,7 +855,20 @@ class MP(pg.sprite.Sprite):
             self.image = gui_images["MP"][floor(tr.count_click)]
 
 
-backg = pg.image.load("source/background_3.png")
+map_sprites = pg.sprite.Group()
+
+
+class Map(pg.sprite.Sprite):
+    def __init__(self, type):
+        super().__init__(map_sprites)
+        if type == 0:
+            self.image = pg.image.load("source/boloto.png")
+        else:
+            self.image = pg.image.load("source/background_3.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+
+
 i = Int()
 hp = HP()
 mp = MP()
@@ -875,9 +882,12 @@ m1 = Mouse(230, 230, 0, 350, 7)
 m2 = Mouse(115, 115, 1600 - 115, 500, 15)
 m3 = Mouse(300, 300, 1300, 200, 10)
 camera = Camera()
+maps = Map(0)
 while running:
     camera.update(w)
     for sprite in mobs_sprites:
+        camera.apply(sprite)
+    for sprite in map_sprites:
         camera.apply(sprite)
     for event in pg.event.get():
         if event.type == pg.QUIT:
@@ -893,7 +903,7 @@ while running:
                 f = Fire(w.rect.x, w.rect.y, w.last_dir)
                 fireballs.append(f)
 
-    screen.blit(backg, (0, 0))
+    map_sprites.draw(screen)
     all_sprites.draw(screen)
     tile_group.draw(screen)
     mage_group.draw(screen)
