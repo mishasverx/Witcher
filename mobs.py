@@ -1,7 +1,7 @@
 import pygame as pg
 from images import mobs_images
 from random import choice
-
+from numba import njit
 
 class Skeleton(pg.sprite.Sprite):
     def __init__(self, x, y, s, g1):
@@ -269,7 +269,6 @@ class Mage(pg.sprite.Sprite):
                     self.image = mobs_images["mage_hit"][self.count_hit_left // 10]
                     self.count_hit_left += 1
                     self.can_attack = True
-
     def update(self, t, l):
         a = choice([0, 1])
         if self.hp <= 0:

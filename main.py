@@ -16,7 +16,7 @@ pg.init()
 pg.display.set_caption("WITCHER")
 width, height = 1600, 900
 size = width, height
-screen = pg.display.set_mode(size)
+screen = pg.display.set_mode(size, pg.DOUBLEBUF)
 FPS = 60
 clock = pg.time.Clock()
 # -------------------------------d
@@ -61,7 +61,7 @@ def menu():
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
         clock.tick(FPS)
-        pg.display.update()
+        pg.display.flip()
         screen.blit(fon, (0, 0))
         start.update(screen)
         options.update(screen)
@@ -100,13 +100,15 @@ def play():
     l = Light(1000000, -20, True, mobs_sprites)
     m1 = Mouse(230, 230, 0, 350, 7, mobs_sprites)
     camera = Camera()
-    maps = Map(0, map_sprites)
+    maps = Map(0, map_sprites, w)
     while running:
         camera.update(w)
+        # print(w.rect.x)
+        pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
         for sprite in mobs_sprites:
-            camera.apply(sprite)
+            camera.apply(sprite, maps, w)
         for sprite in map_sprites:
-            camera.apply(sprite)
+            camera.apply(sprite, maps, w)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False

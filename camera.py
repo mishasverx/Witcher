@@ -2,8 +2,17 @@ class Camera:
     def __init__(self):
         self.dx = 0
 
-    def apply(self, obj):
+    def apply(self, obj, map, w):
         obj.rect.x += self.dx
+        print(map.rect.x)
+        if map.rect.x >= 0:
+            map.rect.x = -1
+        if map.rect.x == -1:
+            obj.rect.x += obj.s
+        if map.rect.x <= -4800:
+            map.rect.x = -4799
+        if map.rect.x == -4799:
+            obj.rect.x -= obj.s
 
     def update(self, target):
         self.dx = -(target.rect.x + target.rect.w // 2 - 1600 // 2)

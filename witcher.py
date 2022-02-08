@@ -35,6 +35,7 @@ class Witcher(pg.sprite.Sprite):
         self.fire = False
         self.is_cast = False
         self.fx = 1000
+        self.s = 10
         self.is_strong_hit = False
 
         self.can_attack = False
@@ -99,7 +100,7 @@ class Witcher(pg.sprite.Sprite):
         # Проверка взаимодействия с клавиатурой
 
         if keys[pg.K_d]:
-            self.rect.x += 10
+            self.rect.x += self.s
             self.go_right = True
             self.go_left = False
             self.stay = False
@@ -108,7 +109,7 @@ class Witcher(pg.sprite.Sprite):
             self.go_right = False
             self.go_left = True
             self.stay = False
-            self.rect.x -= 10
+            self.rect.x -= self.s
             self.last_dir = False
         if not self.go_left and not self.go_right and not self.is_jump:
             self.go_right = False
