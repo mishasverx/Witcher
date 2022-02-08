@@ -10,6 +10,7 @@ from obj import *
 from witcher import Witcher
 from gui import *
 from map import *
+from button import  Button
 
 pg.init()
 pg.display.set_caption("WITCHER")
@@ -35,11 +36,38 @@ mouse = pg.sprite.Sprite()
 mouse.image = load_image("source/arrow.png")
 mouse.rect = mouse.image.get_rect()
 mouse_s.add(mouse)
-pg.mouse.set_visible(False)
+# pg.mouse.set_visible(False)
 
-
-
-
+buttons = {
+    "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
+    "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
+    "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
+}
+def menu():
+    fon = load_image("source/GUI/menu/menu1.png")
+    screen.blit(fon, (0, 0))
+    while True:
+        MENU_MOUSE_POS = pg.mouse.get_pos()
+        start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
+        options = Button(buttons["options"][0], buttons["options"][1], (120, 530))
+        quit_ = Button(buttons["quit"][0], buttons["quit"][1], (120, 640))
+        start.update(screen)
+        options.update(screen)
+        quit_.update(screen)
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONUP:
+                if start.checkForInput(MENU_MOUSE_POS):
+                    play()
+                if options.checkForInput(MENU_MOUSE_POS):
+                    pg.quit()
+                    sys.exit()
+                if quit_.checkForInput(MENU_MOUSE_POS):
+                    pg.quit()
+                    sys.exit()
+        pg.display.update()
 def play():
     running = True
     i = Int(int_group)
@@ -103,4 +131,4 @@ def play():
 
     pg.quit()
 
-play()
+menu()
