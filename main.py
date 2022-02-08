@@ -24,6 +24,7 @@ int_group = pg.sprite.Group()
 hp_group = pg.sprite.Group()
 mp_gpoup = pg.sprite.Group()
 mobs_sprites = pg.sprite.Group()
+gui_group = pg.sprite.Group()
 map_sprites = pg.sprite.Group()
 # ---------------------------------
 jump = False
@@ -89,13 +90,12 @@ class HP(pg.sprite.Sprite):
     def udpate(self, tr):
         if self.fl:
             self.image = gui_images["HP"][floor(tr.hp)]
-            if floor(tr.hp) <= 0.5:
-                menu()
+
 def play():
     running = True
-    i = Int(int_group)
-    hp = HP(hp_group)
-    mp = MP(mp_gpoup)
+    i = Int(gui_group)
+    hp = HP(gui_group)
+    mp = MP(gui_group)
     w = Witcher(500, 500, witcher_sprites, mobs_sprites)
     m = Mage(-1000, 500, 5, mobs_sprites)
     d = Drowner(2500, 500, 7, mobs_sprites)
@@ -123,14 +123,22 @@ def play():
                 if w.stay:
                     f = Fire(w.rect.x, w.rect.y, w.last_dir, fire_group, mobs_sprites)
                     fireballs.append(f)
-
+        if w.hp <= 0.5:
+            for i in mobs_sprites:
+                i.kill()
+            for j in gui_group:
+                j.kill()
+            for k in map_sprites:
+                k.kill()
+            for r in witcher_sprites:
+                r.kill()
+            menu()
+        screen.fill((0, 0, 0))
         map_sprites.draw(screen)
         mobs_sprites.draw(screen)
+        gui_group.draw(screen)
         witcher_sprites.draw(screen)
-        int_group.draw(screen)
-        hp_group.draw(screen)
         fire_group.draw(screen)
-        mp_gpoup.draw(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
         clock.tick(FPS)
