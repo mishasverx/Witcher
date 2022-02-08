@@ -36,7 +36,7 @@ mouse = pg.sprite.Sprite()
 mouse.image = load_image("source/arrow.png")
 mouse.rect = mouse.image.get_rect()
 mouse_s.add(mouse)
-# pg.mouse.set_visible(False)
+pg.mouse.set_visible(False)
 
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
@@ -45,29 +45,52 @@ buttons = {
 }
 def menu():
     fon = load_image("source/GUI/menu/menu1.png")
-    screen.blit(fon, (0, 0))
     while True:
-        MENU_MOUSE_POS = pg.mouse.get_pos()
+        mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
         options = Button(buttons["options"][0], buttons["options"][1], (120, 530))
         quit_ = Button(buttons["quit"][0], buttons["quit"][1], (120, 640))
-        start.update(screen)
-        options.update(screen)
-        quit_.update(screen)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
             if event.type == pg.MOUSEBUTTONUP:
-                if start.checkForInput(MENU_MOUSE_POS):
+                if start.checkForInput(mouse_pos):
                     play()
-                if options.checkForInput(MENU_MOUSE_POS):
+                if options.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
-                if quit_.checkForInput(MENU_MOUSE_POS):
+                if quit_.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
+            if event.type == pg.MOUSEMOTION:
+                mouse.rect.topleft = event.pos
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse.image = load_image("source/arrow2.png")
+            elif event.type == pg.MOUSEBUTTONUP:
+                mouse.image = load_image("source/arrow.png")
+        clock.tick(FPS)
         pg.display.update()
+        screen.blit(fon, (0, 0))
+        start.update(screen)
+        options.update(screen)
+        quit_.update(screen)
+        if pg.mouse.get_focused():
+            mouse_s.draw(screen)
+
+class HP(pg.sprite.Sprite):
+    def __init__(self, g1):
+        super().__init__(g1)
+        self.image = gui_images["HP"][16]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 25, 35
+        self.fl = True
+
+    def udpate(self, tr):
+        if self.fl:
+            self.image = gui_images["HP"][floor(tr.hp)]
+            if floor(tr.hp) <= 0.5:
+                menu()
 def play():
     running = True
     i = Int(int_group)
