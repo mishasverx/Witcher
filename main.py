@@ -10,26 +10,14 @@ from obj import *
 from witcher import Witcher
 from gui import *
 from map import *
-from button import  Button
+from button import Button
 
 pg.init()
 pg.display.set_caption("WITCHER")
 width, height = 1600, 900
 size = width, height
 screen = pg.display.set_mode(size)
-# ---------------------------------
-witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
-fire_group = pg.sprite.Group()
-int_group = pg.sprite.Group()
-hp_group = pg.sprite.Group()
-mp_gpoup = pg.sprite.Group()
-mobs_sprites = pg.sprite.Group()
-gui_group = pg.sprite.Group()
-map_sprites = pg.sprite.Group()
-# ---------------------------------
-jump = False
 FPS = 60
-x_player, y_player = 0, 500
 clock = pg.time.Clock()
 # -------------------------------d
 mouse_s = pg.sprite.Group()
@@ -44,6 +32,8 @@ buttons = {
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
 }
+
+
 def menu():
     fon = load_image("source/GUI/menu/menu1.png")
     while True:
@@ -79,6 +69,7 @@ def menu():
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
 
+
 class HP(pg.sprite.Sprite):
     def __init__(self, g1):
         super().__init__(g1)
@@ -91,12 +82,18 @@ class HP(pg.sprite.Sprite):
         if self.fl:
             self.image = gui_images["HP"][floor(tr.hp)]
 
+
 def play():
+    witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
+    fire_group = pg.sprite.Group()
+    mobs_sprites = pg.sprite.Group()
+    gui_group = pg.sprite.Group()
+    map_sprites = pg.sprite.Group()
     running = True
     i = Int(gui_group)
     hp = HP(gui_group)
     mp = MP(gui_group)
-    w = Witcher(500, 500, witcher_sprites, mobs_sprites)
+    w = Witcher(3200, 500, witcher_sprites, mobs_sprites)
     m = Mage(-1000, 500, 5, mobs_sprites)
     d = Drowner(2500, 500, 7, mobs_sprites)
     s = Skeleton(1900, 500, 3, mobs_sprites)
@@ -121,17 +118,9 @@ def play():
                 mouse.image = load_image("source/arrow.png")
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
                 if w.stay:
-                    f = Fire(w.rect.x, w.rect.y, w.last_dir, fire_group, mobs_sprites)
+                    f = Fire(w.rect.x, w.rect.y, w.last_dir, mobs_sprites)
                     fireballs.append(f)
         if w.hp <= 0.5:
-            for i in mobs_sprites:
-                i.kill()
-            for j in gui_group:
-                j.kill()
-            for k in map_sprites:
-                k.kill()
-            for r in witcher_sprites:
-                r.kill()
             menu()
         screen.fill((0, 0, 0))
         map_sprites.draw(screen)
@@ -161,5 +150,6 @@ def play():
             elem.move()
 
     pg.quit()
+
 
 menu()

@@ -1,3 +1,5 @@
+import pygame as pg
+
 class Button():
     def __init__(self, image1, image2, pos):
         self.image1 = image1
@@ -12,9 +14,7 @@ class Button():
             screen.blit(self.image, self.rect)
 
     def checkForInput(self, position):
-        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top,
-                                                                                          self.rect.bottom):
+        if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
             self.image = self.image2
             return True
-        self.image = self.image1
         return False
