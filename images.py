@@ -43,7 +43,31 @@ witcher_images = {
              load_image("source/player/magic/fire/7.png"), load_image("source/player/magic/fire/8.png"),
              load_image("source/player/magic/fire/9.png"), load_image("source/player/magic/fire/10.png")]
 }
-# 🡩🡩🡩🡩🡩🡩🡩🡩 изображения ведьмака
+witcher_images_m = {
+    "walk_right": [load_image("source/player_m/right/2.png"), load_image("source/player_m/right/3.png"),
+                   load_image("source/player_m/right/2.png"), load_image("source/player_m/right/1.png")],
+    "stand_right": [load_image("source/player_m/stand_right/1.png"), load_image("source/player_m/stand_right/2.png"),
+                    load_image("source/player_m/stand_right/3.png"), load_image("source/player_m/stand_right/4.png"),
+                    load_image("source/player_m/stand_right/5.png")],
+    "right_hit": [load_image("source/player_m/right_hit/1.png"), load_image("source/player_m/right_hit/2.png"),
+                  load_image("source/player_m/right_hit/3.png"), load_image("source/player_m/right_hit/4.png"),
+                  load_image("source/player_m/right_hit/5.png")],
+    "left_hit": [load_image("source/player_m/left_hit/1.png"), load_image("source/player_m/left_hit/2.png"),
+                 load_image("source/player_m/left_hit/3.png"), load_image("source/player_m/left_hit/4.png"),
+                 load_image("source/player_m/left_hit/5.png")],
+    "run": [load_image("source/player_m/run/1.png"), load_image("source/player_m/run/2.png"),
+            load_image("source/player_m/run/3.png"), load_image("source/player_m/run/4.png")],
+    "jump": [load_image("source/player_m/jump/1.png"), load_image("source/player_m/jump/2.png"),
+             load_image("source/player_m/jump/3.png"), load_image("source/player_m/jump/4.png"),
+             load_image("source/player_m/jump/5.png")],
+    "cast": [load_image("source/player_m/cast/1.png"), load_image("source/player_m/cast/2.png"),
+             load_image("source/player_m/cast/3.png"), load_image("source/player_m/cast/3.png")],
+    "fire": [load_image("source/player_m/magic/fire/1.png"), load_image("source/player_m/magic/fire/2.png"),
+             load_image("source/player_m/magic/fire/3.png"), load_image("source/player_m/magic/fire/4.png"),
+             load_image("source/player_m/magic/fire/5.png"), load_image("source/player_m/magic/fire/6.png"),
+             load_image("source/player_m/magic/fire/7.png"), load_image("source/player_m/magic/fire/8.png"),
+             load_image("source/player_m/magic/fire/9.png"), load_image("source/player_m/magic/fire/10.png")]}
+
 mobs_images = {
     "mouse": [load_image("source/mobs/mouse/1.png"), load_image("source/mobs/mouse/2.png"),
               load_image("source/mobs/mouse/3.png"), load_image("source/mobs/mouse/4.png"),

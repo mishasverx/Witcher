@@ -1,10 +1,11 @@
 import pygame as pg
-from images import witcher_images
+from images import witcher_images, witcher_images_m
 
 class Witcher(pg.sprite.Sprite):
-    def __init__(self, x, y, g1, g2):
+    def __init__(self, x, y, g1, g2, type):
         super().__init__(g1, g2)
-        self.image = witcher_images["right_hit"][0]
+        self.type = type
+        self.image = self.type["right_hit"][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
@@ -119,22 +120,22 @@ class Witcher(pg.sprite.Sprite):
             self.count_walk_right = 0
 
         if self.go_right:
-            self.image = witcher_images["walk_right"][self.count_walk_right // 9]
+            self.image = self.type["walk_right"][self.count_walk_right // 9]
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_right += 1
         elif self.go_left:
-            self.image = pg.transform.flip(witcher_images["walk_right"][self.count_walk_left // 9], True, False)
+            self.image = pg.transform.flip(self.type["walk_right"][self.count_walk_left // 9], True, False)
             self.mask = pg.mask.from_surface(self.image)
             self.count_walk_left += 1
 
         if self.stay:
             if self.last_dir:
-                self.image = witcher_images["stand_right"][self.count_stand // 15]
+                self.image = self.type["stand_right"][self.count_stand // 15]
                 self.mask = pg.mask.from_surface(self.image)
 
                 self.count_stand += 1
             else:
-                self.image = pg.transform.flip(witcher_images["stand_right"][self.count_stand // 15], True, False)
+                self.image = pg.transform.flip(self.type["stand_right"][self.count_stand // 15], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count_stand += 1
 
@@ -149,9 +150,9 @@ class Witcher(pg.sprite.Sprite):
                 self.jump_count -= 1
                 self.anim_jump_count += 1
                 if self.last_dir:
-                    self.image = witcher_images["jump"][self.anim_jump_count // 9]
+                    self.image = self.type["jump"][self.anim_jump_count // 9]
                 else:
-                    self.image = pg.transform.flip(witcher_images["jump"][self.anim_jump_count // 9], True, False)
+                    self.image = pg.transform.flip(self.type["jump"][self.anim_jump_count // 9], True, False)
             else:
                 self.jump_count = 20
                 self.anim_jump_count = 0
@@ -188,11 +189,11 @@ class Witcher(pg.sprite.Sprite):
             if self.stay:
                 self.can_attack = True
                 if self.last_dir:
-                    self.image = witcher_images["right_hit"][self.count_hit // 6]
+                    self.image = self.type["right_hit"][self.count_hit // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit += 1
                 else:
-                    self.image = pg.transform.flip(witcher_images["right_hit"][self.count_hit // 6], True, False)
+                    self.image = pg.transform.flip(self.type["right_hit"][self.count_hit // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit += 1
             else:
@@ -203,11 +204,11 @@ class Witcher(pg.sprite.Sprite):
             if self.stay:
                 self.can_attack = True
                 if self.last_dir:
-                    self.image = witcher_images["left_hit"][self.count_hit_strong_1 // 6]
+                    self.image = self.type["left_hit"][self.count_hit_strong_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_strong_1 += 1
                 else:
-                    self.image = pg.transform.flip(witcher_images["left_hit"][self.count_hit_strong_2 // 6], True,
+                    self.image = pg.transform.flip(self.type["left_hit"][self.count_hit_strong_2 // 6], True,
                                                    False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_hit_strong_2 += 1
@@ -222,11 +223,11 @@ class Witcher(pg.sprite.Sprite):
         if self.is_cast:
             if self.stay:
                 if self.last_dir:
-                    self.image = witcher_images["cast"][self.count_cast_1 // 6]
+                    self.image = self.type["cast"][self.count_cast_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_1 += 1
                 else:
-                    self.image = pg.transform.flip(witcher_images["cast"][self.count_cast_2 // 6], True, False)
+                    self.image = pg.transform.flip(self.type["cast"][self.count_cast_2 // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
         self.go_left = False
