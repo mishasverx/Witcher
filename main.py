@@ -35,8 +35,12 @@ buttons = {
 
 
 def menu():
+    music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
     fon = load_image("source/GUI/menu/menu1.png")
-    while True:
+    running = True
+    if running:
+        music.play(-1)
+    while running:
         mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
         options = Button(buttons["options"][0], buttons["options"][1], (120, 530))
@@ -48,6 +52,7 @@ def menu():
             if event.type == pg.MOUSEBUTTONUP:
                 if start.checkForInput(mouse_pos):
                     play()
+                    running = False
                 if options.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
@@ -84,6 +89,7 @@ class HP(pg.sprite.Sprite):
 
 
 def play():
+
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
     mobs_sprites = pg.sprite.Group()
