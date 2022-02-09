@@ -37,6 +37,7 @@ buttons = {
 def menu():
     music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
     fon = load_image("source/GUI/menu/menu1.png")
+    music.set_volume(0.2)
     running = True
     if running:
         music.play(-1)
