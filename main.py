@@ -26,21 +26,41 @@ mouse.image = load_image("source/arrow.png")
 mouse.rect = mouse.image.get_rect()
 mouse_s.add(mouse)
 pg.mouse.set_visible(False)
-
+music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
+music.set_volume(0.2)
+music.play(-1)
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
 }
 
+def menu_options():
+    fon = load_image("source/GUI/options/options.png")
+    book = load_image("source/GUI/options/book.png")
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEMOTION:
+                mouse.rect.topleft = event.pos
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse.image = load_image("source/arrow2.png")
+            elif event.type == pg.MOUSEBUTTONUP:
+                mouse.image = load_image("source/arrow.png")
+        clock.tick(FPS)
+        pg.display.flip()
+        screen.blit(fon, (0, 0))
+        screen.blit(book, (300, 100))
+        if pg.mouse.get_focused():
+            mouse_s.draw(screen)
 
 def menu():
     music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
     fon = load_image("source/GUI/menu/menu1.png")
     music.set_volume(0.2)
     running = True
-    if running:
-        music.play(-1)
     while running:
         mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
@@ -55,8 +75,7 @@ def menu():
                     play()
                     running = False
                 if options.checkForInput(mouse_pos):
-                    pg.quit()
-                    sys.exit()
+                    menu_options()
                 if quit_.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
@@ -109,7 +128,6 @@ def play():
     maps = Map(0, map_sprites, w)
     while running:
         camera.update(w)
-        # print(w.rect.x)
         pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
         for sprite in mobs_sprites:
             camera.apply(sprite, maps, w)
@@ -118,6 +136,8 @@ def play():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+                pg.quit()
+                sys.exit()
             if event.type == pg.MOUSEMOTION:
                 mouse.rect.topleft = event.pos
             if event.type == pg.MOUSEBUTTONDOWN:
