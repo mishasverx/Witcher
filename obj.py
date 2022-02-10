@@ -1,6 +1,5 @@
 import pygame as pg
 from images import obj_images, witcher_images, mobs_images
-from numba import njit
 
 
 class Portal(pg.sprite.Sprite):
@@ -37,11 +36,9 @@ class Light(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.f = f
-        self.s = 0
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit = 0
         self.count = 0
-
     def hit(self, t):
         if self.count_hit >= 70:
             self.count_hit = 0
@@ -56,11 +53,10 @@ fireballs = []
 
 
 class Fire(pg.sprite.Sprite):
-    def __init__(self, x, y, dir, g1):
-        super().__init__(g1)
+    def __init__(self, x, y, dir, g1, g2):
+        super().__init__(g1, g2)
         self.dir = dir
         self.g = g1
-        self.s = 20
         if not self.dir:
             self.image = pg.transform.flip(witcher_images["fire"][0], True, False)
             self.rect = self.image.get_rect()
@@ -78,14 +74,14 @@ class Fire(pg.sprite.Sprite):
             self.count = 0
         if self.doing:
             if not self.dir:
-                self.rect.x -= self.s
+                self.rect.x -= 10
                 self.image = witcher_images["fire"][self.count // 7]
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1
                 if self.rect.x < -100:
                     self.doing = False
             else:
-                self.rect.x += self.s
+                self.rect.x += 10
                 self.image = pg.transform.flip(witcher_images["fire"][self.count // 7], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count += 1

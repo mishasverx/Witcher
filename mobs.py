@@ -1,7 +1,7 @@
 import pygame as pg
 from images import mobs_images
 from random import choice
-from numba import njit
+
 
 class Skeleton(pg.sprite.Sprite):
     def __init__(self, x, y, s, g1):

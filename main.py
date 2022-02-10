@@ -72,6 +72,7 @@ def menu():
                 sys.exit()
             if event.type == pg.MOUSEBUTTONUP:
                 if start.checkForInput(mouse_pos):
+                    pg.mixer.stop()
                     play()
                     running = False
                 if options.checkForInput(mouse_pos):
@@ -85,6 +86,7 @@ def menu():
                 mouse.image = load_image("source/arrow2.png")
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
+
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
