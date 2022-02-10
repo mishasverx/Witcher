@@ -53,8 +53,8 @@ fireballs = []
 
 
 class Fire(pg.sprite.Sprite):
-    def __init__(self, x, y, dir, g1, g2):
-        super().__init__(g1, g2)
+    def __init__(self, x, y, dir, g1):
+        super().__init__(g1)
         self.dir = dir
         self.g = g1
         if not self.dir:

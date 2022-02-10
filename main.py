@@ -28,7 +28,7 @@ mouse_s.add(mouse)
 pg.mouse.set_visible(False)
 music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
 music.set_volume(0.2)
-music.play(-1)
+
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
@@ -61,6 +61,7 @@ def menu():
     fon = load_image("source/GUI/menu/menu1.png")
     music.set_volume(0.2)
     running = True
+    music.play(-1)
     while running:
         mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
