@@ -21,7 +21,17 @@ class Int(pg.sprite.Sprite):
             self.count += 1
 
 
+class HP(pg.sprite.Sprite):
+    def __init__(self, g1):
+        super().__init__(g1)
+        self.image = gui_images["HP"][16]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 25, 35
+        self.fl = True
 
+    def udpate(self, tr):
+        if self.fl:
+            self.image = gui_images["HP"][floor(tr.hp)]
 
 
 class MP(pg.sprite.Sprite):
