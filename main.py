@@ -169,9 +169,7 @@ def play():
         hp.udpate(w)
         mp.udpate(w)
         w.abilities()
-        w.update(m)
-        w.update(d)
-        w.update(s)
+        w.update(m, d, s)
         i.inter()
         for elem in fireballs:
             elem.move()

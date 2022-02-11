@@ -44,19 +44,20 @@ class Witcher(pg.sprite.Sprite):
         self.magic = False
         self.magic_count = 0
 
-    def update(self, t):
-        if self.is_hit and self.last_dir and t.rect.x > self.rect.x:
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.25
-        if self.is_hit and not self.last_dir and t.rect.x < self.rect.x:
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.25
-        if self.is_strong_hit and self.last_dir and t.rect.x > self.rect.x:
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.5
-        if self.is_strong_hit and not self.last_dir and t.rect.x < self.rect.x:
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.5
+    def update(self, *args):
+        for t in args:
+            if self.is_hit and self.last_dir and t.rect.x > self.rect.x:
+                if pg.sprite.collide_mask(self, t):
+                    t.hp -= 0.25
+            if self.is_hit and not self.last_dir and t.rect.x < self.rect.x:
+                if pg.sprite.collide_mask(self, t):
+                    t.hp -= 0.25
+            if self.is_strong_hit and self.last_dir and t.rect.x > self.rect.x:
+                if pg.sprite.collide_mask(self, t):
+                    t.hp -= 0.5
+            if self.is_strong_hit and not self.last_dir and t.rect.x < self.rect.x:
+                if pg.sprite.collide_mask(self, t):
+                    t.hp -= 0.5
 
     def abilities(self):
         keys = pg.key.get_pressed()
