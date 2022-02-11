@@ -28,7 +28,7 @@ mouse_s.add(mouse)
 pg.mouse.set_visible(False)
 music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
 music.set_volume(0.2)
-
+music.play(-1)
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
@@ -36,9 +36,13 @@ buttons = {
 }
 
 def menu_options():
+    page_sprites = pg.sprite.Group()
     fon = load_image("source/GUI/options/options.png")
     book = load_image("source/GUI/options/book.png")
+    page = Page(page_sprites, 300, 0)
+    button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (20, 20))
     while True:
+        mouse_pos = pg.mouse.get_pos()
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -49,17 +53,20 @@ def menu_options():
                 mouse.image = load_image("source/arrow2.png")
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
+                if button.checkForInput(mouse_pos):
+                    menu()
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
         screen.blit(book, (300, 100))
+        page_sprites.draw(screen)
+        page.update()
+        button.update(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
 
 def menu():
-    music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
     fon = load_image("source/GUI/menu/menu1.png")
-    music.set_volume(0.2)
     running = True
     music.play(-1)
     while running:
@@ -78,6 +85,7 @@ def menu():
                     running = False
                 if options.checkForInput(mouse_pos):
                     menu_options()
+                    music.stop()
                 if quit_.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()

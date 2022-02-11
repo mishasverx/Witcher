@@ -138,3 +138,8 @@ effects_images = {
     'hp': [load_image("source/effects/hp/1.png"), load_image("source/effects/hp/2.png"),
            load_image("source/effects/hp/3.png")]
 }
+
+pages = {
+    0: [load_image("source/GUI/tutorial/1/1.png"), load_image("source/GUI/tutorial/1/2.png"),
+        load_image("source/GUI/tutorial/1/3.png"), load_image("source/GUI/tutorial/1/4.png")]
+}

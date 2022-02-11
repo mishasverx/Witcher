@@ -1,5 +1,5 @@
 import pygame as pg
-from images import gui_images
+from images import gui_images, pages
 import sys
 from math import floor
 
@@ -45,3 +45,20 @@ class MP(pg.sprite.Sprite):
     def udpate(self, tr):
         if self.fl:
             self.image = gui_images["MP"][floor(tr.count_click)]
+
+
+class Page(pg.sprite.Sprite):
+    def __init__(self, g1, x, type):
+        super().__init__(g1)
+        self.type = type
+        self.image = pages[self.type][0]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = 100
+        self.count = 0
+
+    def update(self):
+        if self.count >= 40:
+            self.count = 0
+        self.image = pages[self.type][self.count // 10]
+        self.count += 1
