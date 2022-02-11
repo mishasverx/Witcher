@@ -28,7 +28,6 @@ mouse_s.add(mouse)
 pg.mouse.set_visible(False)
 music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
 music.set_volume(0.2)
-music.play(-1)
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
@@ -36,6 +35,7 @@ buttons = {
 }
 
 def menu_options():
+    music.stop()
     page_sprites = pg.sprite.Group()
     fon = load_image("source/GUI/options/options.png")
     book = load_image("source/GUI/options/book.png")
@@ -66,9 +66,9 @@ def menu_options():
             mouse_s.draw(screen)
 
 def menu():
+    music.play(-1)
     fon = load_image("source/GUI/menu/menu1.png")
     running = True
-    music.play(-1)
     while running:
         mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
@@ -85,7 +85,6 @@ def menu():
                     running = False
                 if options.checkForInput(mouse_pos):
                     menu_options()
-                    music.stop()
                 if quit_.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
