@@ -29,25 +29,35 @@ class Portal(pg.sprite.Sprite):
             self.count += 1
 
 
+lightnings = []
+
+
 class Light(pg.sprite.Sprite):
-    def __init__(self, x, y, f, g1):
-        super().__init__(g1)
+    def __init__(self, mob, hero):
+        super().__init__(mob.g)
         self.image = mobs_images['mage_hit_light'][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = x, y
-        self.f = f
+        self.rect.x, self.rect.y = hero.rect.x + 50, -20
+        self.g = mob.g
         self.s = 0
         self.mask = pg.mask.from_surface(self.image)
         self.count_hit = 0
         self.count = 0
-    def hit(self, t):
+        self.doing = True
+        mob.is_attack = True
+
+    def hit(self, mob):
         if self.count_hit >= 70:
-            self.count_hit = 0
-        self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
-        self.mask = pg.mask.from_surface(self.image)
-        self.count_hit += 1
-        if pg.sprite.collide_mask(self, t):
-            t.hp -= 0.02
+            self.doing = False
+        if self.doing:
+            self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_hit += 1
+        else:
+            lightnings.remove(self)
+            self.g.remove(self)
+            del self
+            mob.is_attack = False
 
 
 fireballs = []
@@ -90,5 +100,6 @@ class Fire(pg.sprite.Sprite):
                 if self.rect.x > 1600:
                     self.doing = False
         else:
+            fireballs.remove(self)
             self.g.remove(self)
             del self

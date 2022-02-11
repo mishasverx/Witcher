@@ -4,7 +4,6 @@ class Camera:
 
     def apply(self, obj, map, w):
         obj.rect.x += self.dx
-        print(map.rect.x)
         if map.rect.x >= 0:
             map.rect.x = -1
         if map.rect.x == -1:

@@ -1,6 +1,7 @@
 import pygame as pg
 from images import mobs_images
 from random import choice
+from obj import *
 
 
 class Skeleton(pg.sprite.Sprite):
@@ -188,6 +189,7 @@ class Drowner(pg.sprite.Sprite):
 class Mage(pg.sprite.Sprite):
     def __init__(self, x, y, s, g1):
         super().__init__(g1)
+        self.g = g1
         self.image = mobs_images['mage_walk'][0]
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y, self.s = x, y, s
@@ -198,6 +200,7 @@ class Mage(pg.sprite.Sprite):
         self.count_hit_left = 0
         self.count_hit_right = 0
         self.can_attack = True
+        self.is_attack = False
         self.last_dir = True
         self.is_moving = True
 
@@ -269,7 +272,12 @@ class Mage(pg.sprite.Sprite):
                     self.image = mobs_images["mage_hit"][self.count_hit_left // 10]
                     self.count_hit_left += 1
                     self.can_attack = True
-    def update(self, t, l):
+        if self.can_attack:
+            if not self.is_attack:
+                light = Light(self, hero)
+                lightnings.append(light)
+
+    def update(self, t):
         a = choice([0, 1])
         if self.hp <= 0:
             if a == 0:
@@ -277,14 +285,14 @@ class Mage(pg.sprite.Sprite):
             else:
                 self.rect.x = -2000
             self.hp = 20
-        if -200 <= self.rect.x < 1600:
-            if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.01
-            if l.count_hit - 1 == 0:
-                l.rect.x = t.rect.x + 50
-            l.hit(t)
-        else:
-            l.rect.x = -1000
+        # if -200 <= self.rect.x < 1600:
+        #     if l.count_hit - 1 == 0:
+        #         l.rect.x = t.rect.x + 50
+        #     l.hit(t)
+        # else:
+        #     l.rect.x = -1000
+        for elem in lightnings:
+            elem.hit(self)
 
 
 class Mouse(pg.sprite.Sprite):
