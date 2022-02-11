@@ -141,5 +141,7 @@ effects_images = {
 
 pages = {
     0: [load_image("source/GUI/tutorial/1/1.png"), load_image("source/GUI/tutorial/1/2.png"),
-        load_image("source/GUI/tutorial/1/3.png"), load_image("source/GUI/tutorial/1/4.png")]
+        load_image("source/GUI/tutorial/1/3.png"), load_image("source/GUI/tutorial/1/4.png")],
+    1: [load_image("source/GUI/tutorial/2/1.png"), load_image("source/GUI/tutorial/2/2.png"),
+        load_image("source/GUI/tutorial/2/3.png"), load_image("source/GUI/tutorial/2/4.png")]
 }

@@ -39,7 +39,8 @@ def menu_options():
     page_sprites = pg.sprite.Group()
     fon = load_image("source/GUI/options/options.png")
     book = load_image("source/GUI/options/book.png")
-    page = Page(page_sprites, 300, 0)
+    page1 = Page(page_sprites, 300, 0)
+    page2 = Page(page_sprites, 800, 1)
     button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (20, 20))
     while True:
         mouse_pos = pg.mouse.get_pos()
@@ -60,7 +61,8 @@ def menu_options():
         screen.blit(fon, (0, 0))
         screen.blit(book, (300, 100))
         page_sprites.draw(screen)
-        page.update()
+        page1.update()
+        page2.update()
         button.update(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
