@@ -1,5 +1,4 @@
 import pygame as pg
-from images import witcher_images, witcher_images_m
 
 class Witcher(pg.sprite.Sprite):
     def __init__(self, x, y, g1, g2, type):
@@ -9,7 +8,6 @@ class Witcher(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
-        self.a = self.mask.count()
         # ------------------
         self.count_walk_right = 0
         self.count_stand = 0
@@ -38,8 +36,7 @@ class Witcher(pg.sprite.Sprite):
         self.fx = 1000
         self.s = 10
         self.is_strong_hit = False
-        self.run_left = False
-        self.run_right = False
+        self.run = False
         self.can_attack = False
 
         self.magic = False
@@ -76,8 +73,10 @@ class Witcher(pg.sprite.Sprite):
             self.rect.y = 500
         if self.count_run_right >= 40:
             self.count_run_right = 0
+            self.can_attack = False
         if self.count_run_left >= 40:
             self.count_run_left = 0
+            self.can_attack = False
 
         # Счётчики атаки
 
@@ -110,23 +109,20 @@ class Witcher(pg.sprite.Sprite):
             self.rect.x += self.s
             self.go_right = True
             self.go_left = False
-            self.run_right = False
-            self.run_left = False
+            self.run = False
             self.stay = False
             self.last_dir = True
         elif keys[pg.K_a]:
             self.rect.x -= self.s
             self.go_right = False
             self.go_left = True
-            self.run_right = False
-            self.run_left = False
+            self.run = False
             self.stay = False
             self.last_dir = False
-        if not self.go_left and not self.go_right and not self.is_jump and not self.run_right and not self.run_left:
+        if not self.go_left and not self.go_right and not self.is_jump and not self.run:
             self.go_right = False
             self.go_left = False
-            self.run_left = False
-            self.run_right = False
+            self.run = False
             self.stay = True
             self.count_walk_left = 0
             self.count_walk_right = 0
@@ -157,6 +153,7 @@ class Witcher(pg.sprite.Sprite):
             self.stay = False
 
         if self.is_jump:
+            self.run = False
             if self.jump_count >= -20:
                 self.rect.y -= self.jump_count
                 self.jump_count -= 1
@@ -246,27 +243,26 @@ class Witcher(pg.sprite.Sprite):
         self.go_right = False
         # БЕГ
         if keys[pg.K_LSHIFT] and keys[pg.K_d]:
-            self.rect.x += 13
-            self.run_right = True
+            self.rect.x += 11
+            self.run = True
             self.go_right = False
             self.go_left = False
-            self.run_left = False
             self.stay = False
             self.last_dir = True
         elif keys[pg.K_LSHIFT] and keys[pg.K_a]:
-            self.rect.x -= 13
-            self.run_right = False
+            self.rect.x -= 11
             self.go_right = False
             self.go_left = False
-            self.run_left = True
+            self.run = True
             self.stay = False
             self.last_dir = False
 
-        if self.run_right:
-            self.image = self.type["run"][self.count_run_right// 10]
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_run_right += 1
-        elif self.run_left:
-            self.image = pg.transform.flip(self.type["run"][self.count_run_left // 10], True, False)
-            self.mask = pg.mask.from_surface(self.image)
-            self.count_run_left += 1
+        if self.run:
+            if self.last_dir:
+                self.image = self.type["run"][self.count_run_right // 10]
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_run_right += 1
+            else:
+                self.image = pg.transform.flip(self.type["run"][self.count_run_left // 10], True, False)
+                self.mask = pg.mask.from_surface(self.image)
+                self.count_run_left += 1
