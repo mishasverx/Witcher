@@ -11,8 +11,8 @@ class Witcher(pg.sprite.Sprite):
         self.mask = pg.mask.from_surface(self.image)
         self.a = self.mask.count()
         # ------------------
-        self.count_walk_right = 0  # cчетчик анимации ходьбы
-        self.count_stand = 0  # cчетчик анимации стойки
+        self.count_walk_right = 0
+        self.count_stand = 0
         self.count_walk_left = 0
         self.count_hit = 0
         self.count_hit_2 = 0
@@ -38,7 +38,8 @@ class Witcher(pg.sprite.Sprite):
         self.fx = 1000
         self.s = 10
         self.is_strong_hit = False
-
+        self.run_left = False
+        self.run_right = False
         self.can_attack = False
 
         self.magic = False
@@ -73,6 +74,10 @@ class Witcher(pg.sprite.Sprite):
             self.count_stand = 0
         if self.rect.y > 500:
             self.rect.y = 500
+        if self.count_run_right >= 40:
+            self.count_run_right = 0
+        if self.count_run_left >= 40:
+            self.count_run_left = 0
 
         # Счётчики атаки
 
@@ -105,17 +110,23 @@ class Witcher(pg.sprite.Sprite):
             self.rect.x += self.s
             self.go_right = True
             self.go_left = False
+            self.run_right = False
+            self.run_left = False
             self.stay = False
             self.last_dir = True
         elif keys[pg.K_a]:
+            self.rect.x -= self.s
             self.go_right = False
             self.go_left = True
+            self.run_right = False
+            self.run_left = False
             self.stay = False
-            self.rect.x -= self.s
             self.last_dir = False
-        if not self.go_left and not self.go_right and not self.is_jump:
+        if not self.go_left and not self.go_right and not self.is_jump and not self.run_right and not self.run_left:
             self.go_right = False
             self.go_left = False
+            self.run_left = False
+            self.run_right = False
             self.stay = True
             self.count_walk_left = 0
             self.count_walk_right = 0
@@ -233,3 +244,29 @@ class Witcher(pg.sprite.Sprite):
                     self.count_cast_2 += 1
         self.go_left = False
         self.go_right = False
+        # БЕГ
+        if keys[pg.K_LSHIFT] and keys[pg.K_d]:
+            self.rect.x += 13
+            self.run_right = True
+            self.go_right = False
+            self.go_left = False
+            self.run_left = False
+            self.stay = False
+            self.last_dir = True
+        elif keys[pg.K_LSHIFT] and keys[pg.K_a]:
+            self.rect.x -= 13
+            self.run_right = False
+            self.go_right = False
+            self.go_left = False
+            self.run_left = True
+            self.stay = False
+            self.last_dir = False
+
+        if self.run_right:
+            self.image = self.type["run"][self.count_run_right// 10]
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_run_right += 1
+        elif self.run_left:
+            self.image = pg.transform.flip(self.type["run"][self.count_run_left // 10], True, False)
+            self.mask = pg.mask.from_surface(self.image)
+            self.count_run_left += 1
