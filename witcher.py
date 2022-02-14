@@ -60,6 +60,7 @@ class Witcher(pg.sprite.Sprite):
     def abilities(self):
         keys = pg.key.get_pressed()
         keys_1 = pg.mouse.get_pressed()
+        mods = pg.key.get_mods()
 
         # Счётчики ходьбы
 
@@ -207,7 +208,7 @@ class Witcher(pg.sprite.Sprite):
                     self.count_hit += 1
             else:
                 self.is_hit = False
-        if keys_1[0] and keys[pg.K_LSHIFT]:
+        if keys_1[0] and mods & pg.KMOD_LSHIFT:
             self.is_strong_hit = True
         if self.is_strong_hit:
             if self.stay:
@@ -242,14 +243,14 @@ class Witcher(pg.sprite.Sprite):
         self.go_left = False
         self.go_right = False
         # БЕГ
-        if keys[pg.K_LSHIFT] and keys[pg.K_d]:
+        if mods & pg.KMOD_LSHIFT and keys[pg.K_d]:
             self.rect.x += 11
             self.run = True
             self.go_right = False
             self.go_left = False
             self.stay = False
             self.last_dir = True
-        elif keys[pg.K_LSHIFT] and keys[pg.K_a]:
+        elif mods & pg.KMOD_LSHIFT and keys[pg.K_a]:
             self.rect.x -= 11
             self.go_right = False
             self.go_left = False
@@ -266,3 +267,5 @@ class Witcher(pg.sprite.Sprite):
                 self.image = pg.transform.flip(self.type["run"][self.count_run_left // 10], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count_run_left += 1
+
+        self.run = False

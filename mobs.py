@@ -324,4 +324,4 @@ class Mouse(pg.sprite.Sprite):
         self.rect.x -= self.s
         self.fly_count1 += 1
         if self.rect.x < -300:
-            self.rect.x = 1600 + 300
+            self.rect.x = 1900
