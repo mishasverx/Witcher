@@ -37,7 +37,7 @@ class Light(pg.sprite.Sprite):
         super().__init__(mob.g)
         self.image = mobs_images['mage_hit_light'][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = hero.rect.x + 50, 5
+        self.rect.x, self.rect.y = hero.rect.x + 50, 30
         self.g = mob.g
         self.s = 0
         self.mask = pg.mask.from_surface(self.image)
@@ -47,7 +47,7 @@ class Light(pg.sprite.Sprite):
         mob.is_attack = True
 
     def hit(self, mob):
-        if self.count_hit >= 70:
+        if self.count_hit >= 60:
             self.doing = False
         if self.doing:
             self.image = mobs_images["mage_hit_light"][self.count_hit // 5]
