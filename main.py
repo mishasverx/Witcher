@@ -34,6 +34,7 @@ buttons = {
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
 }
 
+
 def menu_options():
     music.stop()
     page_sprites = pg.sprite.Group()
@@ -42,7 +43,12 @@ def menu_options():
     page1 = Page(page_sprites, 300, 0)
     page2 = Page(page_sprites, 800, 1)
     button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (20, 20))
-    while True:
+    button1 = Button(load_image("source/GUI/options/button1.png"), load_image("source/GUI/options/button1.png"),
+                    (230, 400))
+    button2 = Button(load_image("source/GUI/options/button2.png"), load_image("source/GUI/options/button2.png"),
+                     (1250, 400))
+    running = True
+    while running:
         mouse_pos = pg.mouse.get_pos()
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -56,6 +62,8 @@ def menu_options():
                 mouse.image = load_image("source/arrow.png")
                 if button.checkForInput(mouse_pos):
                     menu()
+                    running = False
+
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
@@ -64,8 +72,11 @@ def menu_options():
         page1.update()
         page2.update()
         button.update(screen)
+        button1.update(screen)
+        button2.update(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
+
 
 def menu():
     music.play(-1)
@@ -105,8 +116,6 @@ def menu():
         quit_.update(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
-
-
 
 
 def play():
@@ -152,9 +161,9 @@ def play():
             menu()
         screen.fill((0, 0, 0))
         map_sprites.draw(screen)
-        mobs_sprites.draw(screen)
         gui_group.draw(screen)
         witcher_sprites.draw(screen)
+        mobs_sprites.draw(screen)
         fire_group.draw(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)

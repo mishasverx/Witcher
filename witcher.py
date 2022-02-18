@@ -72,10 +72,10 @@ class Witcher(pg.sprite.Sprite):
             self.count_stand = 0
         if self.rect.y > 500:
             self.rect.y = 500
-        if self.count_run_right >= 40:
+        if self.count_run_right >= 32:
             self.count_run_right = 0
             self.can_attack = False
-        if self.count_run_left >= 40:
+        if self.count_run_left >= 32:
             self.count_run_left = 0
             self.can_attack = False
 
@@ -244,14 +244,14 @@ class Witcher(pg.sprite.Sprite):
         self.go_right = False
         # БЕГ
         if mods & pg.KMOD_LSHIFT and keys[pg.K_d]:
-            self.rect.x += 11
+            self.rect.x += 3
             self.run = True
             self.go_right = False
             self.go_left = False
             self.stay = False
             self.last_dir = True
         elif mods & pg.KMOD_LSHIFT and keys[pg.K_a]:
-            self.rect.x -= 11
+            self.rect.x -= 3
             self.go_right = False
             self.go_left = False
             self.run = True
@@ -260,11 +260,11 @@ class Witcher(pg.sprite.Sprite):
 
         if self.run:
             if self.last_dir:
-                self.image = self.type["run"][self.count_run_right // 10]
+                self.image = self.type["run"][self.count_run_right // 8]
                 self.mask = pg.mask.from_surface(self.image)
                 self.count_run_right += 1
             else:
-                self.image = pg.transform.flip(self.type["run"][self.count_run_left // 10], True, False)
+                self.image = pg.transform.flip(self.type["run"][self.count_run_left // 8], True, False)
                 self.mask = pg.mask.from_surface(self.image)
                 self.count_run_left += 1
 

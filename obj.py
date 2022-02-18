@@ -37,7 +37,7 @@ class Light(pg.sprite.Sprite):
         super().__init__(mob.g)
         self.image = mobs_images['mage_hit_light'][0]
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = hero.rect.x + 50, 30
+        self.rect.x, self.rect.y = hero.rect.x + 150, 50
         self.g = mob.g
         self.s = 0
         self.mask = pg.mask.from_surface(self.image)
