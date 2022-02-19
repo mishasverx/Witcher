@@ -141,6 +141,14 @@ pages = {
         load_image("source/GUI/tutorial/1/3.png"), load_image("source/GUI/tutorial/1/4.png")],
     1: [load_image("source/GUI/tutorial/2/1.png"), load_image("source/GUI/tutorial/2/2.png"),
         load_image("source/GUI/tutorial/2/3.png"), load_image("source/GUI/tutorial/2/4.png")],
-
-
+    2: [load_image("source/GUI/tutorial/3/1.png"), load_image("source/GUI/tutorial/3/2.png"),
+        load_image("source/GUI/tutorial/3/3.png"), load_image("source/GUI/tutorial/3/4.png"),
+        load_image("source/GUI/tutorial/3/5.png"), load_image("source/GUI/tutorial/3/6.png")],
+    3: [load_image("source/GUI/tutorial/4/1.png"), load_image("source/GUI/tutorial/4/2.png"),
+        load_image("source/GUI/tutorial/4/3.png"), load_image("source/GUI/tutorial/4/4.png"),
+        load_image("source/GUI/tutorial/4/5.png"), load_image("source/GUI/tutorial/4/6.png"),
+        load_image("source/GUI/tutorial/4/7.png"), load_image("source/GUI/tutorial/4/8.png"),
+        load_image("source/GUI/tutorial/4/9.png"), load_image("source/GUI/tutorial/4/10.png"),
+        load_image("source/GUI/tutorial/4/11.png"), load_image("source/GUI/tutorial/4/12.png"),
+        load_image("source/GUI/tutorial/4/13.png")]
 }
