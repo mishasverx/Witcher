@@ -139,7 +139,7 @@ def play():
     i = Int(gui_group)
     hp = HP(gui_group)
     mp = MP(gui_group)
-    w = Witcher(500, 500, witcher_sprites, mobs_sprites, witcher_images_m)
+    w = Witcher(500, 500, witcher_sprites, mobs_sprites, witcher_images_sword)
     m = Mage(-1000, 500, 5, mobs_sprites)
     d = Drowner(2500, 500, 7, mobs_sprites)
     s = Skeleton(1900, 500, 3, mobs_sprites)

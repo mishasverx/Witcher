@@ -99,6 +99,35 @@ mobs_images = {
                      load_image("source/mobs/skeleton/hit/5.png"), load_image("source/mobs/skeleton/hit/6.png"),
                      load_image("source/mobs/skeleton/hit/7.png"), load_image("source/mobs/skeleton/hit/8.png")]
 }
+witcher_images_sword = {
+    "walk_right": [load_image("source/player_sword1/right/2.png"), load_image("source/player_sword1/right/3.png"),
+                   load_image("source/player_sword1/right/2.png"), load_image("source/player_sword1/right/1.png")],
+    "stand_right": [load_image("source/player_sword1/stand_right/1.png"),
+                    load_image("source/player_sword1/stand_right/2.png"),
+                    load_image("source/player_sword1/stand_right/3.png"),
+                    load_image("source/player_sword1/stand_right/4.png"),
+                    load_image("source/player_sword1/stand_right/5.png")],
+    "right_hit": [load_image("source/player_sword1/right_hit/1.png"),
+                  load_image("source/player_sword1/right_hit/2.png"),
+                  load_image("source/player_sword1/right_hit/3.png"),
+                  load_image("source/player_sword1/right_hit/4.png"),
+                  load_image("source/player_sword1/right_hit/5.png")],
+    "left_hit": [load_image("source/player_sword1/left_hit/1.png"), load_image("source/player_sword1/left_hit/2.png"),
+                 load_image("source/player_sword1/left_hit/3.png"), load_image("source/player_sword1/left_hit/4.png"),
+                 load_image("source/player_sword1/left_hit/5.png")],
+    "run": [load_image("source/player_sword1/run/1.png"), load_image("source/player_sword1/run/2.png"),
+            load_image("source/player_sword1/run/3.png"), load_image("source/player_sword1/run/4.png")],
+    "jump": [load_image("source/player_sword1/jump/1.png"), load_image("source/player_sword1/jump/2.png"),
+             load_image("source/player_sword1/jump/3.png"), load_image("source/player_sword1/jump/4.png"),
+             load_image("source/player_sword1/jump/5.png")],
+    "cast": [load_image("source/player_sword1/cast/1.png"), load_image("source/player_sword1/cast/2.png"),
+             load_image("source/player_sword1/cast/3.png"), load_image("source/player_sword1/cast/3.png")],
+    "fire": [load_image("source/player_sword1/magic/fire/1.png"), load_image("source/player_sword1/magic/fire/2.png"),
+             load_image("source/player_sword1/magic/fire/3.png"), load_image("source/player_sword1/magic/fire/4.png"),
+             load_image("source/player_sword1/magic/fire/5.png"), load_image("source/player_sword1/magic/fire/6.png"),
+             load_image("source/player_sword1/magic/fire/7.png"), load_image("source/player_sword1/magic/fire/8.png"),
+             load_image("source/player_sword1/magic/fire/9.png"), load_image("source/player_sword1/magic/fire/10.png")]}
+
 gui_images = {
     "INT": [load_image("source/GUI/int/1.png"), load_image("source/GUI/int/2.png"),
             load_image("source/GUI/int/3.png"), load_image("source/GUI/int/4.png"),
