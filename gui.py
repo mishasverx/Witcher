@@ -51,6 +51,15 @@ class Page(pg.sprite.Sprite):
     def __init__(self, g1, x, type):
         super().__init__(g1)
         self.type = type
+        if self.type == 0 or self.type == 1:
+            self.f = 40
+            self.a = 10
+        if self.type == 2:
+            self.f = 48
+            self.a = 8
+        if self.type == 3:
+            self.f = 84
+            self.a = 7
         self.image = pages[self.type][0]
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -58,7 +67,7 @@ class Page(pg.sprite.Sprite):
         self.count = 0
 
     def update(self):
-        if self.count >= 40:
+        if self.count >= self.f:
             self.count = 0
-        self.image = pages[self.type][self.count // 10]
+        self.image = pages[self.type][self.count // self.a]
         self.count += 1

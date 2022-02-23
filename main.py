@@ -28,6 +28,8 @@ mouse_s.add(mouse)
 pg.mouse.set_visible(False)
 music = pg.mixer.Sound('source/GUI/music/menu_music.mp3')
 music.set_volume(0.2)
+music2 = pg.mixer.Sound('source/GUI/music/game_music.mp3')
+music2.set_volume(0.2)
 buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
@@ -63,7 +65,14 @@ def menu_options():
                 if button.checkForInput(mouse_pos):
                     menu()
                     running = False
-
+                if button2.checkForInput(mouse_pos):
+                    page1.kill(), page2.kill()
+                    s1, s2 = 2, 3
+                    page1, page2 = Page(page_sprites, 300, s1), Page(page_sprites, 800, s2)
+                if button1.checkForInput(mouse_pos):
+                    page1.kill(), page2.kill()
+                    s1, s2 = 0, 1
+                    page1, page2 = Page(page_sprites, 300, s1), Page(page_sprites, 800, s2)
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
@@ -79,6 +88,7 @@ def menu_options():
 
 
 def menu():
+    music2.stop()
     music.play(-1)
     fon = load_image("source/GUI/menu/menu1.png")
     running = True
@@ -119,6 +129,7 @@ def menu():
 
 
 def play():
+    music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
     mobs_sprites = pg.sprite.Group()
@@ -128,7 +139,7 @@ def play():
     i = Int(gui_group)
     hp = HP(gui_group)
     mp = MP(gui_group)
-    w = Witcher(3200, 500, witcher_sprites, mobs_sprites, witcher_images_m)
+    w = Witcher(500, 500, witcher_sprites, mobs_sprites, witcher_images_m)
     m = Mage(-1000, 500, 5, mobs_sprites)
     d = Drowner(2500, 500, 7, mobs_sprites)
     s = Skeleton(1900, 500, 3, mobs_sprites)
@@ -137,6 +148,7 @@ def play():
     maps = Map(0, map_sprites, w)
     while running:
         camera.update(w)
+        print(w.rect.x)
         pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
         for sprite in mobs_sprites:
             camera.apply(sprite, maps, w)
@@ -159,6 +171,7 @@ def play():
                     fireballs.append(f)
         if w.hp <= 0.5:
             menu()
+
         screen.fill((0, 0, 0))
         map_sprites.draw(screen)
         gui_group.draw(screen)

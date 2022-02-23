@@ -90,7 +90,7 @@ class Skeleton(pg.sprite.Sprite):
                 self.rect.x = -600
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.01
+                t.hp -= 0.02
 
 
 class Drowner(pg.sprite.Sprite):
@@ -183,7 +183,7 @@ class Drowner(pg.sprite.Sprite):
             self.hp = 10
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 0.01
+                t.hp -= 0.02
 
 
 class Mage(pg.sprite.Sprite):
