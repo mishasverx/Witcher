@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 class Witcher(pg.sprite.Sprite):
     def __init__(self, x, y, g1, g2, type):
         super().__init__(g1, g2)

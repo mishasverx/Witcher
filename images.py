@@ -157,7 +157,10 @@ obj_images = {
                  load_image("source/obj/portal_o/3.png"),
                  load_image("source/obj/portal_o/4.png"), load_image("source/obj/portal_o/5.png"),
                  load_image("source/obj/portal_o/6.png"), load_image("source/obj/portal_o/7.png"),
-                 load_image("source/obj/portal_o/8.png"), load_image("source/obj/portal_o/9.png")]
+                 load_image("source/obj/portal_o/8.png"), load_image("source/obj/portal_o/9.png")],
+    "potion_hp": [load_image("source/obj/potion_hp/1.png"), load_image("source/obj/potion_hp/2.png"),
+                  load_image("source/obj/potion_hp/3.png"), load_image("source/obj/potion_hp/4.png"),
+                  load_image("source/obj/potion_hp/5.png")]
 }
 
 effects_images = {
