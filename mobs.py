@@ -21,6 +21,8 @@ class Skeleton(pg.sprite.Sprite):
         self.is_moving = True
         self.can_attack = True
 
+        self.is_mage = False
+
     def walk(self, hero):
         if self.count_walk_right >= 70:
             self.count_walk_right = 0
@@ -81,13 +83,6 @@ class Skeleton(pg.sprite.Sprite):
                     self.count_hit_left += 1
 
     def update(self, t):
-        a = choice([0, 1])
-        if self.hp <= 0:
-            self.hp = 10
-            if a == 0:
-                self.rect.x = 2100
-            else:
-                self.rect.x = -600
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.02
@@ -109,6 +104,7 @@ class Drowner(pg.sprite.Sprite):
         self.last_dir = True
         self.is_moving = True
         self.can_attack = True
+        self.is_mage = False
 
     def walk(self, hero):
         if self.count_walk_right >= 40:
@@ -174,13 +170,6 @@ class Drowner(pg.sprite.Sprite):
                     self.count_hit_left += 1
 
     def update(self, t):
-        a = choice([0, 1])
-        if self.hp <= 0:
-            if a == 0:
-                self.rect.x = 3100
-            else:
-                self.rect.x = -1000
-            self.hp = 10
         if self.can_attack:
             if pg.sprite.collide_mask(self, t):
                 t.hp -= 0.02
@@ -203,6 +192,7 @@ class Mage(pg.sprite.Sprite):
         self.is_attack = False
         self.last_dir = True
         self.is_moving = True
+        self.is_mage = True
 
     def walk(self, hero):
         if self.count_walk_right >= 36:
@@ -278,13 +268,6 @@ class Mage(pg.sprite.Sprite):
                 lightnings.append(light)
 
     def update(self, t):
-        a = choice([0, 1])
-        if self.hp <= 0:
-            if a == 0:
-                self.rect.x = 3600
-            else:
-                self.rect.x = -2000
-            self.hp = 20
         # if -200 <= self.rect.x < 1600:
         #     if l.count_hit - 1 == 0:
         #         l.rect.x = t.rect.x + 50
@@ -292,7 +275,7 @@ class Mage(pg.sprite.Sprite):
         # else:
         #     l.rect.x = -1000
         for elem in lightnings:
-            elem.hit(self)
+            elem.hit(self, t)
 
 
 class Mouse(pg.sprite.Sprite):

@@ -1,3 +1,5 @@
+import random
+
 import pygame as pg
 import os
 import sys
@@ -35,6 +37,27 @@ buttons = {
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
 }
+names_mobs = ['mage', 'drowner', 'skeleton']
+mobs = []
+mobs_dir = [-1, 1]
+can_spawn_mob = True
+
+
+def spawn_mobs(sprite_group, hero):
+    global can_spawn_mob
+    if can_spawn_mob:
+        can_spawn_mob = False
+        mob = random.choice(names_mobs)
+        mob_dir = random.choice(mobs_dir)
+        if mob == 'mage':
+            m = Mage(hero.rect.x + mob_dir * 1000, 500, 5, sprite_group)
+            mobs.append(m)
+        elif mob == 'drowner':
+            d = Drowner(hero.rect.x + mob_dir * 1000, 500, 7, sprite_group)
+            mobs.append(d)
+        elif mob == 'skeleton':
+            s = Skeleton(hero.rect.x + mob_dir * 1000, 500, 3, sprite_group)
+            mobs.append(s)
 
 
 def menu_options():
@@ -46,7 +69,7 @@ def menu_options():
     page2 = Page(page_sprites, 800, 1)
     button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (20, 20))
     button1 = Button(load_image("source/GUI/options/button1.png"), load_image("source/GUI/options/button1.png"),
-                    (230, 400))
+                     (230, 400))
     button2 = Button(load_image("source/GUI/options/button2.png"), load_image("source/GUI/options/button2.png"),
                      (1250, 400))
     running = True
@@ -129,6 +152,7 @@ def menu():
 
 
 def play():
+    global can_spawn_mob
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
@@ -140,14 +164,14 @@ def play():
     hp = HP(gui_group)
     mp = MP(gui_group)
     w = Witcher(1600, 500, witcher_sprites, mobs_sprites, witcher_images_sword)
-    m = Mage(-1000, 500, 5, mobs_sprites)
-    d = Drowner(2500, 500, 7, mobs_sprites)
-    s = Skeleton(1900, 500, 3, mobs_sprites)
     m1 = Mouse(230, 230, 0, 350, 7, mobs_sprites)
     php = Potion(mobs_sprites)
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
+        if mobs == []:
+            can_spawn_mob = True
+        spawn_mobs(mobs_sprites, w)
         camera.update(w)
         pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
         for sprite in mobs_sprites:
@@ -184,21 +208,29 @@ def play():
         clock.tick(FPS)
         pg.display.flip()
         m1.fly_right()
-        d.walk(w)
-        d.update(w)
+        for elem in mobs:
+            elem.walk(w)
+            elem.update(w)
+            w.update(elem)
+            for el in fireballs:
+                el.move(elem)
+            if elem.hp <= 0:
+                if elem.is_mage:
+                    for el in lightnings:
+                        lightnings.remove(el)
+                        el.g.remove(el)
+                        del el
+                mobs.remove(elem)
+                mobs_sprites.remove(elem)
+                del elem
+
         php.update(w)
-        m.walk(w)
-        m.update(w)
-        s.walk(w)
-        s.update(w)
+
         hp.udpate(w)
         mp.udpate(w)
         w.abilities()
-        w.update(m, d, s)
         i.inter()
-        for elem in fireballs:
-            elem.move(m, d, s)
-
+    can_spawn_mob = True
     pg.quit()
 
 
