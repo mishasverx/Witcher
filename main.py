@@ -166,9 +166,10 @@ def play():
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
-                if w.stay:
+                if w.stay and not w.is_cast:
                     f = Fire(w.rect.x, w.rect.y, w.last_dir, mobs_sprites)
                     fireballs.append(f)
+
         if w.hp <= 0.5:
             menu()
 
@@ -196,7 +197,7 @@ def play():
         w.update(m, d, s)
         i.inter()
         for elem in fireballs:
-            elem.move()
+            elem.move(m, d, s)
 
     pg.quit()
 

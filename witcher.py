@@ -226,7 +226,7 @@ class Witcher(pg.sprite.Sprite):
             else:
                 self.is_strong_hit = False
 
-        if keys_1[2]:
+        if keys_1[2] and not self.is_cast:
             self.is_cast = True
             self.count_click -= 0.2
             if self.count_click <= 1:

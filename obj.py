@@ -82,7 +82,13 @@ class Fire(pg.sprite.Sprite):
         self.count = 0
         self.doing = True
 
-    def move(self):
+    def move(self, *args):
+        for t in args:
+            if pg.sprite.collide_mask(self, t):
+                t.hp -= 10
+                print(t.hp)
+                self.doing = False
+
         if self.count >= 70:
             self.count = 0
         if self.doing:
@@ -104,6 +110,8 @@ class Fire(pg.sprite.Sprite):
             fireballs.remove(self)
             self.g.remove(self)
             del self
+
+
 
 
 class Potion(pg.sprite.Sprite):
