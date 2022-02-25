@@ -155,30 +155,28 @@ def menu():
 
 def play():
     global can_spawn_mob
-    print(can_spawn_mob)
-    print(mobs)
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
-    mobs_sprites = pg.sprite.Group()
+    active_sprites = pg.sprite.Group()
     gui_group = pg.sprite.Group()
     map_sprites = pg.sprite.Group()
     running = True
     i = Int(gui_group)
     hp = HP(gui_group)
     mp = MP(gui_group)
-    w = Witcher(1600, 500, witcher_sprites, mobs_sprites, witcher_images_sword)
-    m1 = Mouse(230, 230, 0, 350, 7, mobs_sprites)
+    w = Witcher(1600, 500, witcher_sprites, active_sprites, witcher_images_sword)
+    m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
     # php = Potion(mobs_sprites)
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
         if mobs == []:
             can_spawn_mob = True
-        spawn_mobs(mobs_sprites, w)
+        spawn_mobs(active_sprites, w)
         camera.update(w)
         pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
-        for sprite in mobs_sprites:
+        for sprite in active_sprites:
             camera.apply(sprite, maps, w)
         for sprite in map_sprites:
             camera.apply(sprite, maps, w)
@@ -195,7 +193,7 @@ def play():
                 mouse.image = load_image("source/arrow.png")
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
                 if w.stay and not w.is_cast:
-                    f = Fire(w.rect.x, w.rect.y, w.last_dir, mobs_sprites)
+                    f = Fire(w.rect.x, w.rect.y, w.last_dir, active_sprites)
                     fireballs.append(f)
 
         if w.hp <= 0.5:
@@ -208,7 +206,7 @@ def play():
         map_sprites.draw(screen)
         gui_group.draw(screen)
         witcher_sprites.draw(screen)
-        mobs_sprites.draw(screen)
+        active_sprites.draw(screen)
         fire_group.draw(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
@@ -228,7 +226,7 @@ def play():
                         el.g.remove(el)
                         del el
                 mobs.remove(elem)
-                mobs_sprites.remove(elem)
+                active_sprites.remove(elem)
                 del elem
 
         # php.update(w)

@@ -87,7 +87,7 @@ class Fire(pg.sprite.Sprite):
     def move(self, *args):
         for t in args:
             if pg.sprite.collide_mask(self, t):
-                t.hp -= 10
+                t.hp -= 5
                 print(t.hp)
                 self.doing = False
 
