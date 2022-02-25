@@ -268,12 +268,6 @@ class Mage(pg.sprite.Sprite):
                 lightnings.append(light)
 
     def update(self, t):
-        # if -200 <= self.rect.x < 1600:
-        #     if l.count_hit - 1 == 0:
-        #         l.rect.x = t.rect.x + 50
-        #     l.hit(t)
-        # else:
-        #     l.rect.x = -1000
         for elem in lightnings:
             elem.hit(self, t)
 

@@ -70,11 +70,11 @@ def menu_options():
     book = load_image("source/GUI/options/book.png")
     page1 = Page(page_sprites, 300, 0)
     page2 = Page(page_sprites, 800, 1)
-    button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (20, 20))
+    button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (30, 20))
     button1 = Button(load_image("source/GUI/options/button1.png"), load_image("source/GUI/options/button1.png"),
-                     (230, 400))
+                     (340, 690))
     button2 = Button(load_image("source/GUI/options/button2.png"), load_image("source/GUI/options/button2.png"),
-                     (1250, 400))
+                     (1140, 690))
     running = True
     while running:
         mouse_pos = pg.mouse.get_pos()
@@ -178,7 +178,7 @@ def play():
     hp = HP(gui_group)
     mp = MP(gui_group)
     w = Witcher(1600, 500, witcher_sprites, active_sprites, witcher_images_sword)
-    m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
+    # m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
     # php = Potion(mobs_sprites)
     camera = Camera()
     maps = Map(0, map_sprites, w)
@@ -228,7 +228,7 @@ def play():
             mouse_s.draw(screen)
         clock.tick(FPS)
         pg.display.flip()
-        m1.fly()
+        # m1.fly()
         for elem in mobs:
             elem.walk(w)
             elem.update(w)

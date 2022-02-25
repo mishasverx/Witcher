@@ -228,7 +228,7 @@ class Witcher(pg.sprite.Sprite):
 
         if keys_1[2] and not self.is_cast:
             self.is_cast = True
-            self.count_click -= 0.2
+            self.count_click -= 1
             if self.count_click <= 1:
                 self.count_click = 7
         if self.is_cast:
