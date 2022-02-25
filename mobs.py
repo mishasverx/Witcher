@@ -290,21 +290,24 @@ class Mouse(pg.sprite.Sprite):
         self.rect.x, self.rect.y = x, y
         self.mask = pg.mask.from_surface(self.image)
 
-    def fly_right(self):
-        if self.fly_count2 >= 28:
-            self.fly_count2 = 0
-        self.image = pg.transform.flip(pg.transform.scale(mobs_images["mouse"][self.fly_count2 // 4], [self.h, self.w]),
-                                       True, False)
-        self.rect.x += self.s
-        self.fly_count2 += 1
-        if self.rect.x > 1600:
-            self.rect.x = -300
+    def fly(self):
+        if 0 <= self.rect.x + self.rect.width <= 1600:
+            if self.fly_count2 >= 28:
+                self.fly_count2 = 0
+            self.image = pg.transform.flip(
+                pg.transform.scale(mobs_images["mouse"][self.fly_count2 // 4], [self.h, self.w]),
+                True, False)
+            self.rect.x += self.s
+            self.fly_count2 += 1
 
-    def fly_left(self):
-        if self.fly_count1 >= 28:
-            self.fly_count1 = 0
-        self.image = pg.transform.scale(mobs_images["mouse"][self.fly_count1 // 4], [self.h, self.w])
-        self.rect.x -= self.s
-        self.fly_count1 += 1
-        if self.rect.x < -300:
-            self.rect.x = 1900
+            if self.rect.x > 1600:
+                self.rect.x = -300
+        else:
+
+            if self.fly_count1 >= 28:
+                self.fly_count1 = 0
+            self.image = pg.transform.scale(mobs_images["mouse"][self.fly_count1 // 4], [self.h, self.w])
+            self.rect.x -= self.s
+            self.fly_count1 += 1
+            if self.rect.x < -300:
+                self.rect.x = 190

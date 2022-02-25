@@ -42,6 +42,9 @@ mobs = []
 mobs_dir = [-1, 1]
 can_spawn_mob = True
 
+record = 0
+last_score = 0
+
 
 def spawn_mobs(sprite_group, hero):
     global can_spawn_mob
@@ -111,11 +114,15 @@ def menu_options():
 
 
 def menu():
-    global can_spawn_mob
+    global record
+    global last_score
     music2.stop()
     music.play(-1)
     fon = load_image("source/GUI/menu/menu1.png")
     running = True
+    font = pg.font.Font('super_font.ttf', 50)
+    text1 = font.render(f'Ваш рекорд: {record}', True, (255, 255, 255))
+    text2 = font.render(f'Последний результат: {last_score}', True, (255, 255, 255))
     while running:
         mouse_pos = pg.mouse.get_pos()
         start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
@@ -130,7 +137,6 @@ def menu():
                     pg.mixer.stop()
                     play()
                     running = False
-                    print('r')
                 if options.checkForInput(mouse_pos):
                     menu_options()
                 if quit_.checkForInput(mouse_pos):
@@ -146,6 +152,8 @@ def menu():
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
+        screen.blit(text1, (725, 400))
+        screen.blit(text2, (725, 450))
         start.update(screen)
         options.update(screen)
         quit_.update(screen)
@@ -155,6 +163,10 @@ def menu():
 
 def play():
     global can_spawn_mob
+    global record
+    global last_score
+    score = 0
+    font = pg.font.Font('super_font.ttf', 20)
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
@@ -200,6 +212,10 @@ def play():
             running = False
             can_spawn_mob = True
             mobs.clear()
+            if score > record:
+                record = score
+            last_score = score
+            score = 0
             menu()
 
         screen.fill((0, 0, 0))
@@ -212,7 +228,7 @@ def play():
             mouse_s.draw(screen)
         clock.tick(FPS)
         pg.display.flip()
-        m1.fly_right()
+        m1.fly()
         for elem in mobs:
             elem.walk(w)
             elem.update(w)
@@ -228,6 +244,7 @@ def play():
                 mobs.remove(elem)
                 active_sprites.remove(elem)
                 del elem
+                score += 1
 
         # php.update(w)
 
