@@ -7,7 +7,7 @@ class Camera:
         if map.rect.x >= 0:
             map.rect.x = -1
         if map.rect.x == -1:
-            obj.rect.x += obj.s
+            pass
         if map.rect.x <= -4800:
             map.rect.x = -4799
         if map.rect.x == -4799:
