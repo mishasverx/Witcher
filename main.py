@@ -111,6 +111,7 @@ def menu_options():
 
 
 def menu():
+    global can_spawn_mob
     music2.stop()
     music.play(-1)
     fon = load_image("source/GUI/menu/menu1.png")
@@ -129,6 +130,7 @@ def menu():
                     pg.mixer.stop()
                     play()
                     running = False
+                    print('r')
                 if options.checkForInput(mouse_pos):
                     menu_options()
                 if quit_.checkForInput(mouse_pos):
@@ -153,6 +155,8 @@ def menu():
 
 def play():
     global can_spawn_mob
+    print(can_spawn_mob)
+    print(mobs)
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
@@ -165,7 +169,7 @@ def play():
     mp = MP(gui_group)
     w = Witcher(1600, 500, witcher_sprites, mobs_sprites, witcher_images_sword)
     m1 = Mouse(230, 230, 0, 350, 7, mobs_sprites)
-    php = Potion(mobs_sprites)
+    # php = Potion(mobs_sprites)
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
@@ -195,6 +199,9 @@ def play():
                     fireballs.append(f)
 
         if w.hp <= 0.5:
+            running = False
+            can_spawn_mob = True
+            mobs.clear()
             menu()
 
         screen.fill((0, 0, 0))
@@ -224,13 +231,12 @@ def play():
                 mobs_sprites.remove(elem)
                 del elem
 
-        php.update(w)
+        # php.update(w)
 
         hp.udpate(w)
         mp.udpate(w)
         w.abilities()
         i.inter()
-    can_spawn_mob = True
     pg.quit()
 
 
