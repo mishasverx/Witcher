@@ -43,6 +43,7 @@ class Witcher(pg.sprite.Sprite):
         self.magic = False
         self.magic_count = 0
 
+
     def update(self, *args):
         for t in args:
             if self.is_hit and self.last_dir and t.rect.x > self.rect.x:
@@ -209,8 +210,9 @@ class Witcher(pg.sprite.Sprite):
                     self.count_hit += 1
             else:
                 self.is_hit = False
-        if keys_1[0] and mods & pg.KMOD_LSHIFT:
+        if keys_1[0] and mods & pg.KMOD_LSHIFT and self.mp > 0:
             self.is_strong_hit = True
+            self.mp -= 0.05
         if self.is_strong_hit:
             if self.stay:
                 self.can_attack = True
@@ -226,23 +228,19 @@ class Witcher(pg.sprite.Sprite):
             else:
                 self.is_strong_hit = False
 
-        if keys_1[2] and not self.is_cast:
+        if keys_1[2] and not self.is_cast and self.mp > 0:
             self.is_cast = True
-            self.count_click -= 1
-            if self.count_click <= 1:
-                self.count_click = 7
+            self.mp -= 1
         if self.is_cast:
             if self.stay:
                 if self.last_dir:
                     self.image = self.type["cast"][self.count_cast_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_1 += 1
-                    self.mp -= 1
                 else:
                     self.image = pg.transform.flip(self.type["cast"][self.count_cast_2 // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
-                    self.mp -= 1
         self.go_left = False
         self.go_right = False
         # БЕГ

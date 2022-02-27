@@ -33,8 +33,10 @@ buttons = {
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
 }
 names_mobs = ['mage', 'drowner', 'skeleton']
+names_potions = ['hp', 'mp']
 mobs = []
-mobs_dir = [-1, 1]
+potions = []
+dirs = [-1, 1]
 can_spawn_mob = True
 last_score = 0
 with open("score.txt", "r") as f:
@@ -44,12 +46,13 @@ with open("last_result.txt", "r") as f:
     for j in f:
         last_score = j
 
+
 def spawn_mobs(sprite_group, hero):
     global can_spawn_mob
     if can_spawn_mob:
         can_spawn_mob = False
         mob = random.choice(names_mobs)
-        mob_dir = random.choice(mobs_dir)
+        mob_dir = random.choice(dirs)
         if mob == 'mage':
             m = Mage(hero.rect.x + mob_dir * 1000, 500, 5, sprite_group)
             mobs.append(m)
@@ -59,6 +62,18 @@ def spawn_mobs(sprite_group, hero):
         elif mob == 'skeleton':
             s = Skeleton(hero.rect.x + mob_dir * 1000, 500, 3, sprite_group)
             mobs.append(s)
+
+
+def spawn_potion(sprite_group, hero):
+    potion = random.choice(names_potions)
+    potion_dir = random.choice(dirs)
+    s = randint(100, 500)
+    if potion == 'hp':
+        hp_p = Potion(hero.rect.x + potion_dir * s, sprite_group, 'potion_hp')
+        potions.append(hp_p)
+    elif potion == 'mp':
+        mp_p = Potion(hero.rect.x + potion_dir * s, sprite_group, 'potion_mp')
+        potions.append(mp_p)
 
 
 def menu_options():
@@ -174,6 +189,7 @@ def play():
     global record
     global last_score
     score = 0
+    score_for_potion = 0
     font = pg.font.Font('super_font.ttf', 60)
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
@@ -186,17 +202,17 @@ def play():
     running = True
     i = Int(gui_group)
     hp = HP(gui_group)
-    mp = MP(gui_group)
     w = Witcher(1600, 500, witcher_sprites, active_sprites, witcher_images_sword)
+    mp = MP(gui_group)
     # m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
-    php = Potion(potion_group, "potion_hp")
-    pmp = Potion(potion_group, "potion_mp")
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
-        print(w.mp)
-        if mobs == []:
+        if len(mobs) < 1:
             can_spawn_mob = True
+        if score_for_potion > 0 and score_for_potion % 5 == 0:
+            spawn_potion(potion_group, w)
+            score_for_potion = 0
         spawn_mobs(active_sprites, w)
         camera.update(w)
         pg.event.set_allowed([pg.QUIT, pg.MOUSEBUTTONDOWN, pg.MOUSEMOTION, pg.MOUSEBUTTONUP])
@@ -218,7 +234,7 @@ def play():
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
             if event.type == pg.MOUSEBUTTONDOWN and event.button == 3:
-                if w.stay and not w.is_cast:
+                if w.stay and not w.is_cast and w.mp > 0:
                     f = Fire(w.rect.x, w.rect.y, w.last_dir, active_sprites)
                     fireballs.append(f)
 
@@ -236,6 +252,7 @@ def play():
                 score_l[1] = last_score
                 f.write(str(score_l[1]))
             score = 0
+            score_for_potion = 0
             menu()
 
         screen.fill((0, 0, 0))
@@ -268,8 +285,14 @@ def play():
                 active_sprites.remove(elem)
                 del elem
                 score += 1
-        php.update(w)
-        pmp.update(w)
+                score_for_potion += 1
+        for elem in potions:
+            if elem.used:
+                elem.kill()
+                del elem
+            else:
+                elem.update(w)
+
         hp.udpate(w)
         mp.udpate(w)
         w.abilities()

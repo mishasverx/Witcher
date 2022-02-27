@@ -40,7 +40,7 @@ class MP(pg.sprite.Sprite):
         self.rect.x, self.rect.y = 25, 35
 
     def udpate(self, tr):
-        self.image = gui_images["MP"][floor(tr.count_click)]
+        self.image = gui_images["MP"][int(tr.mp)]
 
 
 class Page(pg.sprite.Sprite):
