@@ -27,7 +27,7 @@ class Witcher(pg.sprite.Sprite):
         # ------------------
         self.last_dir = True
         self.stay = False
-        self.hp = 16
+        self.hp, self.mp = 16, 7
         self.go_right = False
         self.go_left = False
         self.is_jump = False
@@ -237,10 +237,12 @@ class Witcher(pg.sprite.Sprite):
                     self.image = self.type["cast"][self.count_cast_1 // 6]
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_1 += 1
+                    self.mp -= 1
                 else:
                     self.image = pg.transform.flip(self.type["cast"][self.count_cast_2 // 6], True, False)
                     self.mask = pg.mask.from_surface(self.image)
                     self.count_cast_2 += 1
+                    self.mp -= 1
         self.go_left = False
         self.go_right = False
         # БЕГ

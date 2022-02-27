@@ -183,6 +183,7 @@ def play():
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
+        print(w.mp)
         if mobs == []:
             can_spawn_mob = True
         spawn_mobs(active_sprites, w)
