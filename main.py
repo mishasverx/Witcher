@@ -70,10 +70,11 @@ def menu_options():
     page2 = Page(page_sprites, 800, 1)
     button = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (30, 20))
     button1 = Button(load_image("source/GUI/options/button1.png"), load_image("source/GUI/options/button1.png"),
-                     (340, 690))
+                     (360, 690))
     button2 = Button(load_image("source/GUI/options/button2.png"), load_image("source/GUI/options/button2.png"),
                      (1140, 690))
     running = True
+    s1, s2 = 0, 1
     while running:
         mouse_pos = pg.mouse.get_pos()
         for event in pg.event.get():
@@ -91,11 +92,21 @@ def menu_options():
                     running = False
                 if button2.checkForInput(mouse_pos):
                     page1.kill(), page2.kill()
-                    s1, s2 = 2, 3
+                    s1 += 2
+                    s2 += 2
+                    if s1 > 4:
+                        s1 = 4
+                    if s2 > 5:
+                        s2 = 5
                     page1, page2 = Page(page_sprites, 300, s1), Page(page_sprites, 800, s2)
                 if button1.checkForInput(mouse_pos):
                     page1.kill(), page2.kill()
-                    s1, s2 = 0, 1
+                    s1 -= 2
+                    s2 -= 2
+                    if s1 < 0:
+                        s1 = 0
+                    if s2 < 1:
+                        s2 = 1
                     page1, page2 = Page(page_sprites, 300, s1), Page(page_sprites, 800, s2)
         clock.tick(FPS)
         pg.display.flip()

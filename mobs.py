@@ -4,6 +4,82 @@ from random import choice
 from obj import *
 
 
+class Boss(pg.sprite.Sprite):
+    def __init__(self, x, y, s, g1):
+        super().__init__(g1)
+        self.image = mobs_images['boss_walk'][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y, self.s = x, y, s
+        self.mask = pg.mask.from_surface(self.image)
+        self.count_walk_right = 0
+        self.count_walk_left = 0
+        self.hp = 30
+        self.count_hit_left = 0
+        self.count_hit_right = 0
+        self.last_dir = True
+        self.is_mage = False
+        self.is_moving = True
+        self.can_attack = True
+
+    def walk(self, hero):
+        if self.count_walk_right >= 50:
+            self.count_walk_right = 0
+        if self.count_walk_left >= 50:
+            self.count_walk_left = 0
+        if self.count_hit_right >= 60:
+            self.count_hit_right = 0
+        if self.count_hit_left >= 50:
+            self.count_hit_left = 0
+        if self.rect.x < hero.rect.x:
+            self.last_dir = True
+        else:
+            self.last_dir = False
+
+        if self.rect.x > hero.rect.x:
+            if self.rect.x - (hero.rect.x + hero.rect.width) > -400:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = mobs_images["boss_walk"][self.count_walk_left // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
+
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.flip(mobs_images["boss_walk"][self.count_walk_left // 10], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
+            else:
+                if self.last_dir:
+                    self.image = mobs_images["boss_hit"][self.count_hit_right // 6]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.flip(mobs_images["boss_hit"][self.count_hit_left // 6], True, False)
+                    self.count_hit_left += 1
+        else:
+            if hero.rect.x - (self.rect.x + self.rect.width) > -400:
+                if self.last_dir:
+                    self.rect.x += self.s
+                    self.image = mobs_images["boss_walk"][self.count_walk_right // 10]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_right += 1
+
+                else:
+                    self.rect.x -= self.s
+                    self.image = pg.transform.flip(mobs_images["boss_walk"][self.count_walk_left // 10], True, False)
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_walk_left += 1
+            else:
+                if self.last_dir:
+                    self.image = mobs_images["boss_hit"][self.count_hit_right // 6]
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.count_hit_right += 1
+                else:
+                    self.mask = pg.mask.from_surface(self.image)
+                    self.image = pg.transform.flip(mobs_images["boss_hit"][self.count_hit_left // 6], True, False)
+                    self.count_hit_left += 1
+
 class Skeleton(pg.sprite.Sprite):
     def __init__(self, x, y, s, g1):
         super().__init__(g1)

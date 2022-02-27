@@ -56,6 +56,9 @@ class Page(pg.sprite.Sprite):
         if self.type == 3:
             self.f = 84
             self.a = 7
+        if self.type == 4 or self.type == 5:
+            self.f = 45
+            self.a = 9
         self.image = pages[self.type][0]
         self.rect = self.image.get_rect()
         self.rect.x = x

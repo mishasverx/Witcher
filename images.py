@@ -97,7 +97,21 @@ mobs_images = {
     "skeleton_hit": [load_image("source/mobs/skeleton/hit/1.png"), load_image("source/mobs/skeleton/hit/2.png"),
                      load_image("source/mobs/skeleton/hit/3.png"), load_image("source/mobs/skeleton/hit/4.png"),
                      load_image("source/mobs/skeleton/hit/5.png"), load_image("source/mobs/skeleton/hit/6.png"),
-                     load_image("source/mobs/skeleton/hit/7.png"), load_image("source/mobs/skeleton/hit/8.png")]
+                     load_image("source/mobs/skeleton/hit/7.png"), load_image("source/mobs/skeleton/hit/8.png")],
+    "boss_walk": [load_image("source/mobs/boss/walk/1.png"), load_image("source/mobs/boss/walk/2.png"),
+                  load_image("source/mobs/boss/walk/3.png"), load_image("source/mobs/boss/walk/4.png"),
+                  load_image("source/mobs/boss/walk/5.png")],
+    "boss_hit1": [load_image("source/mobs/boss/hit1/1.png"), load_image("source/mobs/boss/hit1/2.png"),
+                 load_image("source/mobs/boss/hit1/3.png"), load_image("source/mobs/boss/hit1/4.png"),
+                 load_image("source/mobs/boss/hit1/5.png"), load_image("source/mobs/boss/hit1/6.png")],
+    "boss_hit2": [load_image("source/mobs/boss/hit2/1.png"), load_image("source/mobs/boss/hit2/2.png"),
+                  load_image("source/mobs/boss/hit2/3.png"), load_image("source/mobs/boss/hit2/4.png"),
+                  load_image("source/mobs/boss/hit2/5.png")],
+    "boss_hit3": [load_image("source/mobs/boss/hit3/1.png"), load_image("source/mobs/boss/hit3//2.png"),
+                  load_image("source/mobs/boss/hit3/3.png"), load_image("source/mobs/boss/hit3/4.png"),
+                  load_image("source/mobs/boss/hit3/5.png"), load_image("source/mobs/boss/hit3/6.png"),
+                  load_image("source/mobs/boss/hit3/7.png"), load_image("source/mobs/boss/hit3/8.png"),
+                  load_image("source/mobs/boss/hit3/9.png"), load_image("source/mobs/boss/hit3/10.png")]
 }
 witcher_images_sword = {
     "walk_right": [load_image("source/player_sword1/right/2.png"), load_image("source/player_sword1/right/3.png"),
@@ -185,5 +199,11 @@ pages = {
         load_image("source/GUI/tutorial/4/7.png"), load_image("source/GUI/tutorial/4/8.png"),
         load_image("source/GUI/tutorial/4/9.png"), load_image("source/GUI/tutorial/4/10.png"),
         load_image("source/GUI/tutorial/4/11.png"), load_image("source/GUI/tutorial/4/12.png"),
-        load_image("source/GUI/tutorial/4/13.png")]
+        load_image("source/GUI/tutorial/4/13.png")],
+    4: [load_image("source/GUI/tutorial/5/1.png"), load_image("source/GUI/tutorial/5/2.png"),
+        load_image("source/GUI/tutorial/5/3.png"), load_image("source/GUI/tutorial/5/4.png"),
+        load_image("source/GUI/tutorial/5/5.png")],
+    5: [load_image("source/GUI/tutorial/6/1.png"), load_image("source/GUI/tutorial/6/2.png"),
+        load_image("source/GUI/tutorial/6/3.png"), load_image("source/GUI/tutorial/6/4.png"),
+        load_image("source/GUI/tutorial/6/5.png")],
 }
