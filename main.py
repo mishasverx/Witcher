@@ -1,18 +1,13 @@
 import random
 
-import pygame as pg
-import os
-import sys
-from math import floor
-from random import choice
-from camera import *
+from button import Button
+from camera import Camera
+from gui import *
 from images import *
+from map import *
 from mobs import *
 from obj import *
 from witcher import Witcher
-from gui import *
-from map import *
-from button import Button
 
 pg.init()
 pg.display.set_caption("WITCHER")
@@ -41,10 +36,13 @@ names_mobs = ['mage', 'drowner', 'skeleton']
 mobs = []
 mobs_dir = [-1, 1]
 can_spawn_mob = True
-
-record = 0
 last_score = 0
-
+with open("score.txt", "r") as f:
+    for i in f:
+        record = i
+with open("last_result.txt", "r") as f:
+    for j in f:
+        last_score = j
 
 def spawn_mobs(sprite_group, hero):
     global can_spawn_mob
@@ -114,13 +112,12 @@ def menu_options():
 
 
 def menu():
-    global record
     global last_score
     music2.stop()
     music.play(-1)
     fon = load_image("source/GUI/menu/menu1.png")
     running = True
-    font = pg.font.Font('super_font.ttf', 50)
+    font = pg.font.Font('super_font.ttf', 70)
     text1 = font.render(f'Ваш рекорд: {record}', True, (255, 255, 255))
     text2 = font.render(f'Последний результат: {last_score}', True, (255, 255, 255))
     while running:
@@ -153,7 +150,7 @@ def menu():
         pg.display.flip()
         screen.blit(fon, (0, 0))
         screen.blit(text1, (725, 400))
-        screen.blit(text2, (725, 450))
+        screen.blit(text2, (725, 470))
         start.update(screen)
         options.update(screen)
         quit_.update(screen)
@@ -166,20 +163,23 @@ def play():
     global record
     global last_score
     score = 0
-    font = pg.font.Font('super_font.ttf', 20)
+    font = pg.font.Font('super_font.ttf', 60)
     music2.play()
     witcher_sprites = pg.sprite.Group()  # группа спрайтов ведьмака
     fire_group = pg.sprite.Group()
     active_sprites = pg.sprite.Group()
     gui_group = pg.sprite.Group()
     map_sprites = pg.sprite.Group()
+    potion_group = pg.sprite.Group()
+    score_l = [0, 0]
     running = True
     i = Int(gui_group)
     hp = HP(gui_group)
     mp = MP(gui_group)
     w = Witcher(1600, 500, witcher_sprites, active_sprites, witcher_images_sword)
     # m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
-    # php = Potion(mobs_sprites)
+    php = Potion(potion_group, "potion_hp")
+    pmp = Potion(potion_group, "potion_mp")
     camera = Camera()
     maps = Map(0, map_sprites, w)
     while running:
@@ -191,6 +191,8 @@ def play():
         for sprite in active_sprites:
             camera.apply(sprite, maps, w)
         for sprite in map_sprites:
+            camera.apply(sprite, maps, w)
+        for sprite in potion_group:
             camera.apply(sprite, maps, w)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -212,9 +214,15 @@ def play():
             running = False
             can_spawn_mob = True
             mobs.clear()
-            if score > record:
-                record = score
-            last_score = score
+            if score > int(record):
+                with open("score.txt", "w") as f:
+                    record = score
+                    score_l[0] = record
+                    f.write(str(score_l[0]))
+            with open("last_result.txt", "w") as f:
+                last_score = score
+                score_l[1] = last_score
+                f.write(str(score_l[1]))
             score = 0
             menu()
 
@@ -223,10 +231,13 @@ def play():
         gui_group.draw(screen)
         witcher_sprites.draw(screen)
         active_sprites.draw(screen)
+        potion_group.draw(screen)
         fire_group.draw(screen)
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
         clock.tick(FPS)
+        text1 = font.render(f'Текущий счет: {score}', True, (255, 255, 255))
+        screen.blit(text1, (900, 70))
         pg.display.flip()
         # m1.fly()
         for elem in mobs:
@@ -245,9 +256,8 @@ def play():
                 active_sprites.remove(elem)
                 del elem
                 score += 1
-
-        # php.update(w)
-
+        php.update(w)
+        pmp.update(w)
         hp.udpate(w)
         mp.udpate(w)
         w.abilities()

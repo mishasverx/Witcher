@@ -115,11 +115,12 @@ class Fire(pg.sprite.Sprite):
 
 
 class Potion(pg.sprite.Sprite):
-    def __init__(self, g1):
+    def __init__(self, g1, type):
         super().__init__(g1)
-        self.image = obj_images['potion_hp'][0]
+        self.type = type
+        self.image = obj_images[self.type][0]
         self.rect = self.image.get_rect()
-        self.rect.x = randint(500, 4200)
+        self.rect.x = randint(0, 5000)
         self.rect.y = 720
         self.count = 0
         self.s = 0
@@ -127,8 +128,13 @@ class Potion(pg.sprite.Sprite):
     def update(self, t):
         if self.count >= 40:
             self.count = 0
-        self.image = obj_images['potion_hp'][self.count // 8]
+        self.image = obj_images[self.type][self.count // 8]
         self.count += 1
         if pg.sprite.collide_mask(self, t):
-            t.hp = 16
-            self.kill()
+            if self.type == 'potion_hp':
+                t.hp = 16
+                self.kill()
+            if self.type == 'potion_mp':
+                t.mp = 7
+                self.kill()
+

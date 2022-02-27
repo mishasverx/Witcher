@@ -160,7 +160,10 @@ obj_images = {
                  load_image("source/obj/portal_o/8.png"), load_image("source/obj/portal_o/9.png")],
     "potion_hp": [load_image("source/obj/potion_hp/1.png"), load_image("source/obj/potion_hp/2.png"),
                   load_image("source/obj/potion_hp/3.png"), load_image("source/obj/potion_hp/4.png"),
-                  load_image("source/obj/potion_hp/5.png")]
+                  load_image("source/obj/potion_hp/5.png")],
+    "potion_mp": [load_image("source/obj/potion_mp/1.png"), load_image("source/obj/potion_mp/2.png"),
+                  load_image("source/obj/potion_mp/3.png"), load_image("source/obj/potion_mp/4.png"),
+                  load_image("source/obj/potion_mp/5.png")]
 }
 
 effects_images = {
