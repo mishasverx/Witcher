@@ -43,7 +43,6 @@ class Witcher(pg.sprite.Sprite):
         self.magic = False
         self.magic_count = 0
 
-
     def update(self, *args):
         for t in args:
             if self.is_hit and self.last_dir and t.rect.x > self.rect.x:
@@ -194,6 +193,9 @@ class Witcher(pg.sprite.Sprite):
             self.is_strong_hit = False
             self.count_hit_strong_2 = 0
             self.can_attack = False
+        if self.count_cast_1 == 1 or self.count_cast_2 == 1 or \
+                self.count_hit_strong_1 == 1 or self.count_hit_strong_2 == 1:
+            self.mp -= 1
 
         if keys_1[0]:
             self.is_hit = True
@@ -212,7 +214,6 @@ class Witcher(pg.sprite.Sprite):
                 self.is_hit = False
         if keys_1[0] and mods & pg.KMOD_LSHIFT and self.mp > 0:
             self.is_strong_hit = True
-            self.mp -= 0.05
         if self.is_strong_hit:
             if self.stay:
                 self.can_attack = True
@@ -230,7 +231,6 @@ class Witcher(pg.sprite.Sprite):
 
         if keys_1[2] and not self.is_cast and self.mp > 0:
             self.is_cast = True
-            self.mp -= 1
         if self.is_cast:
             if self.stay:
                 if self.last_dir:

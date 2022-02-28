@@ -49,7 +49,7 @@ class Light(pg.sprite.Sprite):
 
     def hit(self, mob, hero):
         if pg.sprite.collide_mask(self, hero):
-            hero.hp -= 0.1
+            hero.hp -= 0.05
         if self.count_hit >= 40:
             self.doing = False
         if self.doing:
