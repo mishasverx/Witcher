@@ -70,3 +70,23 @@ class Page(pg.sprite.Sprite):
             self.count = 0
         self.image = pages[self.type][self.count // self.a]
         self.count += 1
+
+
+class ChoicePlayer(pg.sprite.Sprite):
+    def __init__(self, g1):
+        super().__init__(g1)
+        self.image = gui_images["choice_player"][0]
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = 150, 200
+        self.choice = pg.image.load('source/GUI/options/choice.png')
+        self.count = 0
+
+    def update(self):
+        if self.count >= 40:
+            self.count = 0
+        self.image = gui_images["choice_player"][self.count // 10]
+        self.count += 1
+
+    def check(self, pos, scr):
+        if pos[0] in range(200, 300) and pos[1] in range(450, 550):
+            scr.blit(self.choice, (200, 450))

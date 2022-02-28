@@ -159,7 +159,9 @@ gui_images = {
     "MP": [load_image("source/GUI/mp/0.png"), load_image("source/GUI/mp/1.png"), load_image("source/GUI/mp/2.png"),
            load_image("source/GUI/mp/3.png"), load_image("source/GUI/mp/4.png"),
            load_image("source/GUI/mp/5.png"), load_image("source/GUI/mp/6.png"),
-           load_image("source/GUI/mp/7.png")]
+           load_image("source/GUI/mp/7.png")],
+    "choice_player": [load_image("source/GUI/options/1.png"), load_image("source/GUI/options/2.png"),
+                      load_image("source/GUI/options/3.png"), load_image("source/GUI/options/2.png")]
 }
 obj_images = {
     "portal_b": [load_image("source/obj/portal_b/1.png"), load_image("source/obj/portal_b/2.png"),

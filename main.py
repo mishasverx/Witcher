@@ -31,6 +31,7 @@ buttons = {
     "start": [load_image("source/GUI/menu/s1.png"), load_image("source/GUI/menu/s2.png")],
     "options": [load_image("source/GUI/menu/o1.png"), load_image("source/GUI/menu/o2.png")],
     "quit": [load_image("source/GUI/menu/q1.png"), load_image("source/GUI/menu/q2.png")],
+    "tutorial": [load_image("source/GUI/options/tutorial.png")]
 }
 names_mobs = ['mage', 'drowner', 'skeleton']
 names_potions = ['hp', 'mp']
@@ -103,7 +104,7 @@ def menu_options():
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
                 if button.checkForInput(mouse_pos):
-                    menu()
+                    option()
                     running = False
                 if button2.checkForInput(mouse_pos):
                     page1.kill(), page2.kill()
@@ -137,6 +138,51 @@ def menu_options():
             mouse_s.draw(screen)
 
 
+def option():
+    fl = False
+    group = pg.sprite.Group()
+    ch = ChoicePlayer(group)
+    music.stop()
+    fon = load_image("source/GUI/options/options.png")
+    skins = load_image("source/GUI/options/1.png")
+    choices = pg.image.load('source/GUI/options/choice.png')
+    running = True
+    tutorial = Button(buttons["tutorial"][0], buttons["tutorial"][0], (900, 400))
+    ex_ = Button(load_image("source/GUI/options/X.png"), load_image("source/GUI/options/X.png"), (30, 20))
+    while running:
+        mouse_pos = pg.mouse.get_pos()
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()
+            if event.type == pg.MOUSEBUTTONUP:
+                if tutorial.checkForInput(mouse_pos):
+                    menu_options()
+                    running = False
+                if ex_.checkForInput(mouse_pos):
+                    menu()
+                    running = False
+            if event.type == pg.MOUSEMOTION:
+                mouse.rect.topleft = event.pos
+            if event.type == pg.MOUSEBUTTONDOWN:
+                mouse.image = load_image("source/arrow2.png")
+                if mouse_pos[0] in range(200, 300) and mouse_pos[1] in range(450, 550):
+                    fl = True
+            elif event.type == pg.MOUSEBUTTONUP:
+                mouse.image = load_image("source/arrow.png")
+        clock.tick(FPS)
+        pg.display.flip()
+        if fl:
+            screen.blit(choices, (200, 450))
+        screen.blit(fon, (0, 0))
+        ex_.update(screen)
+        group.draw(screen)
+        ch.update()
+        tutorial.update(screen)
+        if pg.mouse.get_focused():
+            mouse_s.draw(screen)
+
+
 def menu():
     global last_score
     music2.stop()
@@ -146,11 +192,11 @@ def menu():
     font = pg.font.Font('super_font.ttf', 70)
     text1 = font.render(f'Ваш рекорд: {record}', True, (255, 255, 255))
     text2 = font.render(f'Последний результат: {last_score}', True, (255, 255, 255))
+    start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
+    options = Button(buttons["options"][0], buttons["options"][1], (120, 530))
+    quit_ = Button(buttons["quit"][0], buttons["quit"][1], (120, 640))
     while running:
         mouse_pos = pg.mouse.get_pos()
-        start = Button(buttons["start"][0], buttons["start"][1], (120, 420))
-        options = Button(buttons["options"][0], buttons["options"][1], (120, 530))
-        quit_ = Button(buttons["quit"][0], buttons["quit"][1], (120, 640))
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
@@ -161,7 +207,8 @@ def menu():
                     play()
                     running = False
                 if options.checkForInput(mouse_pos):
-                    menu_options()
+                    option()
+                    running = False
                 if quit_.checkForInput(mouse_pos):
                     pg.quit()
                     sys.exit()
