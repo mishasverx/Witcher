@@ -172,13 +172,13 @@ def option():
                 mouse.image = load_image("source/arrow.png")
         clock.tick(FPS)
         pg.display.flip()
-        if fl:
-            screen.blit(choices, (200, 450))
         screen.blit(fon, (0, 0))
         ex_.update(screen)
         group.draw(screen)
         ch.update()
         tutorial.update(screen)
+        if fl:
+            screen.blit(choices, (200, 450))
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
 
