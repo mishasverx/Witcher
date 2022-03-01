@@ -86,7 +86,3 @@ class ChoicePlayer(pg.sprite.Sprite):
             self.count = 0
         self.image = gui_images["choice_player"][self.count // 10]
         self.count += 1
-
-    def check(self, pos, scr):
-        if pos[0] in range(200, 300) and pos[1] in range(450, 550):
-            scr.blit(self.choice, (200, 450))

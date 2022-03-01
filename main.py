@@ -40,12 +40,20 @@ potions = []
 dirs = [-1, 1]
 can_spawn_mob = True
 last_score = 0
+skin = witcher_images_sword
 with open("score.txt", "r") as f:
     for i in f:
         record = i
 with open("last_result.txt", "r") as f:
     for j in f:
         last_score = j
+
+
+def draw_rect(sc, a):
+    if a:
+        pg.draw.rect(sc, (255, 255, 255), (481, 247, 250, 350), 8)
+    else:
+        pg.draw.rect(screen, (255, 255, 255), (207, 247, 250, 350), 8)
 
 
 def spawn_mobs(sprite_group, hero):
@@ -139,7 +147,8 @@ def menu_options():
 
 
 def option():
-    fl = False
+    global skin
+    a = False
     group = pg.sprite.Group()
     ch = ChoicePlayer(group)
     music.stop()
@@ -166,10 +175,16 @@ def option():
                 mouse.rect.topleft = event.pos
             if event.type == pg.MOUSEBUTTONDOWN:
                 mouse.image = load_image("source/arrow2.png")
-                if mouse_pos[0] in range(200, 300) and mouse_pos[1] in range(450, 550):
-                    fl = True
+                if mouse_pos[0] in range(207, 457) and mouse_pos[1] in range(247, 597):
+                    a = False
+                    skin = witcher_images_sword
+                elif mouse_pos[0] in range(481, 731) and mouse_pos[1] in range(247, 597):
+                    a = True
+                    skin = witcher_images_m
+
             elif event.type == pg.MOUSEBUTTONUP:
                 mouse.image = load_image("source/arrow.png")
+        draw_rect(screen, a)
         clock.tick(FPS)
         pg.display.flip()
         screen.blit(fon, (0, 0))
@@ -177,8 +192,6 @@ def option():
         group.draw(screen)
         ch.update()
         tutorial.update(screen)
-        if fl:
-            screen.blit(choices, (200, 450))
         if pg.mouse.get_focused():
             mouse_s.draw(screen)
 
@@ -249,7 +262,7 @@ def play():
     running = True
     i = Int(gui_group)
     hp = HP(gui_group)
-    w = Witcher(1600, 500, witcher_sprites, active_sprites, witcher_images_sword)
+    w = Witcher(1600, 500, witcher_sprites, active_sprites, skin)
     mp = MP(gui_group)
     # m1 = Mouse(230, 230, 0, 350, 7, active_sprites)
     camera = Camera()
